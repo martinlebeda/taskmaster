@@ -22,6 +22,7 @@ dep:
   go get github.com/mattn/go-sqlite3
   go get github.com/fatih/color
   go get github.com/inconshreveable/mousetrap
+  go get github.com/GuiaBolso/darwin
 
 #  go get github.com/gin-gonic/gin
 #  go get github.com/satori/go.uuid
