@@ -50,9 +50,7 @@ var (
 func OpenDB() *sql.DB {
     dbFileName := viper.GetString("dbfile")
     db, err := sql.Open("sqlite3", dbFileName)
-    if err != nil {
-        panic(err)
-    }
+    CheckErr(err)
 
     return db
 }
@@ -75,14 +73,10 @@ func DbUpgrade() {
 func getDbVersion(db *sql.DB) float32 {
     var result float32
     rows, err := db.Query("select max(version) from darwin_migrations")
-    if err != nil {
-        panic(err)
-    }
+    CheckErr(err)
     for rows.Next() {
         err := rows.Scan(&result)
-        if err != nil {
-            panic(err)
-        }
+        CheckErr(err)
     }
 
     rows.Close()
