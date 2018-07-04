@@ -21,15 +21,24 @@
 package termout
 
 import (
-	"fmt"
+    "fmt"
     "github.com/martinlebeda/taskmaster/model"
+    "text/tabwriter"
+    "os"
+    "time"
+    "strconv"
 )
 
 func ListDistance(distances []model.TimerDistance) {
-	for _, distance := range distances {
-		fmt.Println(distance)
-	}
-	if isVerbose() {
-		fmt.Println("\nCount of timers: ", len(distances))
-	}
+
+    w := tabwriter.NewWriter(os.Stdout, 5, 2, 1, ' ', 0)
+    for _, distance := range distances {
+        duration, _ := time.ParseDuration(strconv.Itoa(distance.Distance)+"s")
+        fmt.Fprintf(w, "%d\t%s\t  %v\t  %s\n" , distance.Rowid, duration.String(), distance.Goal.Format("2006-01-02 15:04"), distance.Note)
+    }
+    w.Flush()
+
+    if isVerbose() {
+        fmt.Println("\nCount of timers: ", len(distances))
+    }
 }

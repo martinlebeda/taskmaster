@@ -30,17 +30,6 @@ var tmListCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
         timerDistances := service.GetTimerDistance()
         termout.ListDistance(timerDistances)
-
-        /*
-        SELECT rowid,
-        strftime('%s', goal) - strftime('%s', 'now', 'localtime') as distance,
-        strftime('%H:%M:%S', abs(strftime('%s', goal) - strftime('%s', 'now', 'localtime')), 'unixepoch'),
-        strftime('(%H:%M)', goal),
-        note from timer order by distance;
-
-
-         */
-
 	},
 }
 
