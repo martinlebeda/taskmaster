@@ -38,11 +38,11 @@ var (
             Description: "Creating table timer",
             Script:      `CREATE TABLE timer (note VARCHAR, goal DATETIME);`,
         },
-        //{
-        //	Version:     2,
-        //	Description: "Adding column body",
-        //	Script:      "ALTER TABLE posts ADD body TEXT AFTER title;",
-        //},
+        {
+        	Version:     2,
+        	Description: "view for timer",
+        	Script:      `create view timer_distance as SELECT rowid, strftime('%s', goal, 'localtime') - strftime('%s', 'now', 'localtime') as distance, goal, note from timer order by distance;`,
+        },
     }
 )
 

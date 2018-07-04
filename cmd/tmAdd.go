@@ -32,6 +32,7 @@ var tmAddCmd = &cobra.Command{
 	Use:   "add",
 	Short: "add new timer",
 	Long: `Add new timer for watching`,
+	// TODO Lebeda - popis duration formátu
     Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
         service.TmrAdd(args[0], args[1])

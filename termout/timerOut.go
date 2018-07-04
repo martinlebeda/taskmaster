@@ -21,20 +21,15 @@
 package termout
 
 import (
-	"github.com/fatih/color"
-	"github.com/spf13/viper"
 	"fmt"
+    "github.com/martinlebeda/taskmaster/model"
 )
 
-var styleHeader = color.New(color.FgCyan).Add(color.Bold)
-var styleKey = color.New(color.Bold)
-
-func Verbose(msg ...string) {
-	if isVerbose() {
-		fmt.Println(msg)
+func ListDistance(distances []model.TimerDistance) {
+	for _, distance := range distances {
+		fmt.Println(distance)
 	}
-}
-
-func isVerbose() bool {
-	return viper.GetBool("verbose")
+	if isVerbose() {
+		fmt.Println("\nCount of timers: ", len(distances))
+	}
 }
