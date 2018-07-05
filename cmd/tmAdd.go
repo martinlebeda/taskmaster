@@ -23,9 +23,8 @@ package cmd
 import (
 	"github.com/spf13/cobra"
     "github.com/martinlebeda/taskmaster/service"
+    "github.com/martinlebeda/taskmaster/termout"
 )
-
-var duration, title string
 
 // tmAddCmd represents the tmAdd command
 var tmAddCmd = &cobra.Command{
@@ -36,6 +35,10 @@ var tmAddCmd = &cobra.Command{
     Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
         service.TmrAdd(args[0], args[1])
+        if tmlistAfterChange {
+            timerDistances := service.TmrGetDistance()
+            termout.TmrListDistance(timerDistances)
+        }
 		// TODO Lebeda - list after changed
 	},
 }

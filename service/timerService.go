@@ -23,7 +23,7 @@ func TmrAdd(duration, title string) {
     CheckErr(err)
 }
 
-func GetTimerDistance() []TimerDistance {
+func TmrGetDistance() []TimerDistance {
     db := OpenDB()
     rows, err := db.Query("select rowid, distance, goal, note from timer_distance order by distance")
     CheckErr(err)

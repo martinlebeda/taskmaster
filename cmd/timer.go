@@ -26,6 +26,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var tmlistAfterChange bool
+
 // timerCmd represents the timer command
 var timerCmd = &cobra.Command{
 	Use:   "timer",
@@ -44,7 +46,7 @@ func init() {
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// timerCmd.PersistentFlags().String("foo", "", "A help for foo")
+	timerCmd.PersistentFlags().BoolVarP(&tmlistAfterChange, "list", "l",  false, "List timers after change (add, set, clear, delete)")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:

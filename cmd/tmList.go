@@ -28,8 +28,8 @@ var tmListCmd = &cobra.Command{
 	Long: `List of timer records.`,
 	Args: cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
-        timerDistances := service.GetTimerDistance()
-        termout.ListDistance(timerDistances)
+        timerDistances := service.TmrGetDistance()
+        termout.TmrListDistance(timerDistances)
 	},
 }
 

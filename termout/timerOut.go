@@ -29,7 +29,7 @@ import (
     "strconv"
 )
 
-func ListDistance(distances []model.TimerDistance) {
+func TmrListDistance(distances []model.TimerDistance) {
 
     w := tabwriter.NewWriter(os.Stdout, 5, 2, 1, ' ', 0)
     for _, distance := range distances {
