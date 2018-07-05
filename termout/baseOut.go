@@ -35,6 +35,11 @@ func Verbose(msg ...string) {
 	}
 }
 
+func EmptyLineOut()  {
+    fmt.Println("")
+}
+
 func isVerbose() bool {
 	return viper.GetBool("verbose")
 }
+

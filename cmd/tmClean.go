@@ -21,25 +21,32 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
+    "fmt"
+
+    "github.com/spf13/cobra"
     "github.com/martinlebeda/taskmaster/service"
 )
 
-// tmAddCmd represents the tmAdd command
-var tmAddCmd = &cobra.Command{
-	Use:   "add",
-	Short: "add new timer",
-	Long: `Add new timer for watching`,
-	// TODO Lebeda - popis duration formátu
-    Args: cobra.ExactArgs(2),
-	Run: func(cmd *cobra.Command, args []string) {
-        service.TmrAdd(args[0], args[1])
+var tmrDeleteAll bool
+
+// tmCleanCmd represents the tmClean command
+var tmCleanCmd = &cobra.Command{
+    Use:   "clean",
+    Short: "clean old timers",
+    Long:  `Delete old timers from DB.`,
+    Run: func(cmd *cobra.Command, args []string) {
+        fmt.Println("tmClean called")
+        service.TmrClean(tmrDeleteAll)
         if tmlistAfterChange {
             service.TmrListAfterChange()
         }
-	},
+    },
 }
 
+
+
 func init() {
-	timerCmd.AddCommand(tmAddCmd)
+    timerCmd.AddCommand(tmCleanCmd)
+
+    tmCleanCmd.Flags().BoolVarP(&tmrDeleteAll, "all", "a", false, "delete all timers")
 }
