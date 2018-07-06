@@ -5,6 +5,7 @@ import (
     "github.com/martinlebeda/taskmaster/termout"
     . "github.com/martinlebeda/taskmaster/model"
     "strconv"
+    "strings"
 )
 
 func TmrSet(dateOpt, timeArg, title string) {
@@ -24,13 +25,22 @@ func TmrAdd(duration, title string) {
 }
 
 func insertNewTimer(title string, goal time.Time) {
-    termout.Verbose("Nový cíl pro ", title, " nastaven na ", goal.String())
+    termout.Verbose("New goal for ", title, " set to ", goal.String())
     db := OpenDB()
     stmt, err := db.Prepare("INSERT INTO timer(note, goal) values(?,?)")
     CheckErr(err)
     _, err = stmt.Exec(title, goal)
     CheckErr(err)
     termout.Verbose("New timer inserted")
+}
+
+func TmrDel(args []string)  {
+    db := OpenDB()
+    stmt, err := db.Prepare("delete from timer where rowid in (" + strings.Join(args,",") + ")")
+    CheckErr(err)
+    _, err = stmt.Exec()
+    CheckErr(err)
+    termout.Verbose("Timer deleted: ", strings.Join(args,","))
 }
 
 func TmrGetDistance() []TimerDistance {
