@@ -26,6 +26,8 @@ import (
     "github.com/martinlebeda/taskmaster/termout"
 )
 
+var pastOpt, nextOpt bool
+
 // tmListCmd represents the tmList command
 var tmListCmd = &cobra.Command{
 	Use:   "list",
@@ -34,7 +36,7 @@ var tmListCmd = &cobra.Command{
 	Long: `List of timer records.`,
 	Args: cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
-        timerDistances := service.TmrGetDistance()
+        timerDistances := service.TmrGetDistance(pastOpt, nextOpt)
         termout.TmrListDistance(timerDistances)
 	},
 }
@@ -50,5 +52,6 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// tmListCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	tmListCmd.Flags().BoolVarP(&nextOpt, "next", "n", false, "list only next timer")
+	tmListCmd.Flags().BoolVarP(&pastOpt, "past", "p", false, "list only past timers")
 }

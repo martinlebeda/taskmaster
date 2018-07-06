@@ -43,9 +43,24 @@ func TmrDel(args []string)  {
     termout.Verbose("Timer deleted: ", strings.Join(args,","))
 }
 
-func TmrGetDistance() []TimerDistance {
+func TmrGetDistance(pastOpt, nextOpt bool) []TimerDistance {
     db := OpenDB()
-    rows, err := db.Query("select rowid, distance, goal, note from timer_distance order by distance")
+    sql := "select rowid, distance, goal, note from timer_distance "
+
+    if pastOpt {
+        sql += " where distance < 0 "
+    }
+    if nextOpt {
+        sql += " where distance > 0 "
+    }
+
+    sql +=    " order by distance "
+
+    if nextOpt {
+        sql += " limit 1 "
+    }
+
+    rows, err := db.Query(sql)
     CheckErr(err)
 
     var result []TimerDistance
@@ -75,6 +90,6 @@ func TmrClean(deleteAll bool) {
 
 func TmrListAfterChange() {
     termout.EmptyLineOut()
-    timerDistances := TmrGetDistance()
+    timerDistances := TmrGetDistance(false, false)
     termout.TmrListDistance(timerDistances)
 }
