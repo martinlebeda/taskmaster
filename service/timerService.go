@@ -7,15 +7,24 @@ import (
     "strconv"
 )
 
-func TmrAdd(duration, title string) {
+func TmrSet(dateOpt, timeArg, title string) {
+    goal, err := time.Parse("2006-01-02 15:04", dateOpt+" "+timeArg)
+    CheckErr(err)
 
+    insertNewTimer(title, goal)
+}
+
+func TmrAdd(duration, title string) {
     parseDuration, err := time.ParseDuration(duration)
     CheckErr(err)
 
     goal := time.Now().Add(parseDuration)
 
-    termout.Verbose("Nový cíl pro ", title, " nastaven na ", goal.String())
+    insertNewTimer(title, goal)
+}
 
+func insertNewTimer(title string, goal time.Time) {
+    termout.Verbose("Nový cíl pro ", title, " nastaven na ", goal.String())
     db := OpenDB()
     stmt, err := db.Prepare("INSERT INTO timer(note, goal) values(?,?)")
     CheckErr(err)
