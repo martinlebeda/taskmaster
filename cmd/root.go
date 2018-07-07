@@ -56,6 +56,9 @@ func init() {
 	rootCmd.PersistentFlags().String("dbfile", filepath.Join(os.Getenv("HOME"), ".taskmaster.db"), "database file")
 	viper.BindPFlag("dbfile", rootCmd.PersistentFlags().Lookup("dbfile"))
 
+	rootCmd.PersistentFlags().String("notifycmd", "notify-send", "command for system notification")
+	viper.BindPFlag("notifycmd", rootCmd.PersistentFlags().Lookup("notifycmd"))
+
 	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "Verbose output")
 	viper.BindPFlag("verbose", rootCmd.PersistentFlags().Lookup("verbose"))
 }
