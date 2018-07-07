@@ -21,32 +21,34 @@
 package cmd
 
 import (
-    "fmt"
+	"fmt"
 
-    "github.com/spf13/cobra"
-    "github.com/martinlebeda/taskmaster/service"
+	"github.com/martinlebeda/taskmaster/service"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var tmrDeleteAll bool
 
 // tmCleanCmd represents the tmClean command
 var tmCleanCmd = &cobra.Command{
-    Use:   "clean",
-    Short: "clean old timers",
-    Long:  `Delete old timers from DB.`,
-    Run: func(cmd *cobra.Command, args []string) {
-        fmt.Println("tmClean called")
-        service.TmrClean(tmrDeleteAll)
-        if tmlistAfterChange {
-            service.TmrListAfterChange()
-        }
-    },
+	Use:   "clean",
+	Short: "clean old timers",
+	Long:  `Delete old timers from DB.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Println("tmClean called")
+		service.TmrClean(tmrDeleteAll)
+		if tmlistAfterChange {
+			service.TmrListAfterChange()
+		}
+		if viper.GetString("afterchange") != "" {
+			service.SysAfterChange()
+		}
+	},
 }
 
-
-
 func init() {
-    timerCmd.AddCommand(tmCleanCmd)
+	timerCmd.AddCommand(tmCleanCmd)
 
-    tmCleanCmd.Flags().BoolVarP(&tmrDeleteAll, "all", "a", false, "delete all timers")
+	tmCleanCmd.Flags().BoolVarP(&tmrDeleteAll, "all", "a", false, "delete all timers")
 }

@@ -7,6 +7,7 @@ import (
 	"log"
 	"os/exec"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -26,6 +27,18 @@ func SysNotifyDistance(distance model.TimerDistance) {
 	notifycmd := viper.GetString("notifycmd")
 	cmd := exec.Command(notifycmd, msg)
 	out, err := cmd.CombinedOutput()
+	if err != nil {
+		log.Printf("Command finished with error: %v", err)
+		log.Printf("combined out:\n%s\n", string(out))
+	}
+}
+
+func SysAfterChange() {
+	afterChangeCmd := viper.GetString("afterchange")
+	fields := strings.Fields(afterChangeCmd)
+	cmd := exec.Command(fields[0], fields[1:]...)
+	out, err := cmd.CombinedOutput()
+
 	if err != nil {
 		log.Printf("Command finished with error: %v", err)
 		log.Printf("combined out:\n%s\n", string(out))

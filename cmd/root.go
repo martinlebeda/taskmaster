@@ -59,6 +59,9 @@ func init() {
 	rootCmd.PersistentFlags().String("notifycmd", "notify-send", "command for system notification")
 	viper.BindPFlag("notifycmd", rootCmd.PersistentFlags().Lookup("notifycmd"))
 
+	rootCmd.PersistentFlags().String("afterchange", "", "command for run after change (ie. some refresh in external app)")
+	viper.BindPFlag("afterchange", rootCmd.PersistentFlags().Lookup("afterchange"))
+
 	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "Verbose output")
 	viper.BindPFlag("verbose", rootCmd.PersistentFlags().Lookup("verbose"))
 }

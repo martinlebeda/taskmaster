@@ -21,22 +21,26 @@
 package cmd
 
 import (
+	"github.com/martinlebeda/taskmaster/service"
 	"github.com/spf13/cobra"
-    "github.com/martinlebeda/taskmaster/service"
+	"github.com/spf13/viper"
 )
 
 // tmAddCmd represents the tmAdd command
 var tmAddCmd = &cobra.Command{
 	Use:   "add",
 	Short: "add new timer",
-	Long: `Add new timer for watching`,
+	Long:  `Add new timer for watching`,
 	// TODO Lebeda - popis duration formátu
-    Args: cobra.ExactArgs(2),
+	Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
-        service.TmrAdd(args[0], args[1])
-        if tmlistAfterChange {
-            service.TmrListAfterChange()
-        }
+		service.TmrAdd(args[0], args[1])
+		if tmlistAfterChange {
+			service.TmrListAfterChange()
+		}
+		if viper.GetString("afterchange") != "" {
+			service.SysAfterChange()
+		}
 	},
 }
 

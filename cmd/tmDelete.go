@@ -21,35 +21,39 @@
 package cmd
 
 import (
-    "github.com/spf13/cobra"
-    "github.com/martinlebeda/taskmaster/service"
+	"github.com/martinlebeda/taskmaster/service"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // tmDeleteCmd represents the tmDelete command
 var tmDeleteCmd = &cobra.Command{
-    Use:     "delete",
-    Aliases: []string{"del"},
-    Short:   "delete timer",
-    Long:    `Delete timer records.`,
-    Args: cobra.MinimumNArgs(1),
-    Run: func(cmd *cobra.Command, args []string) {
-        service.TmrDel(args)
-        if tmlistAfterChange {
-           service.TmrListAfterChange()
-        }
-    },
+	Use:     "delete",
+	Aliases: []string{"del"},
+	Short:   "delete timer",
+	Long:    `Delete timer records.`,
+	Args:    cobra.MinimumNArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		service.TmrDel(args)
+		if tmlistAfterChange {
+			service.TmrListAfterChange()
+		}
+		if viper.GetString("afterchange") != "" {
+			service.SysAfterChange()
+		}
+	},
 }
 
 func init() {
-    timerCmd.AddCommand(tmDeleteCmd)
+	timerCmd.AddCommand(tmDeleteCmd)
 
-    // Here you will define your flags and configuration settings.
+	// Here you will define your flags and configuration settings.
 
-    // Cobra supports Persistent Flags which will work for this command
-    // and all subcommands, e.g.:
-    // tmDeleteCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// Cobra supports Persistent Flags which will work for this command
+	// and all subcommands, e.g.:
+	// tmDeleteCmd.PersistentFlags().String("foo", "", "A help for foo")
 
-    // Cobra supports local flags which will only run when this command
-    // is called directly, e.g.:
-    // tmDeleteCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// Cobra supports local flags which will only run when this command
+	// is called directly, e.g.:
+	// tmDeleteCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

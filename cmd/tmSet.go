@@ -21,30 +21,34 @@
 package cmd
 
 import (
-    "github.com/spf13/cobra"
-    "time"
-    "github.com/martinlebeda/taskmaster/service"
+	"github.com/martinlebeda/taskmaster/service"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+	"time"
 )
 
 var dateOpt string
 
 // tmSetCmd represents the tmSet command
 var tmSetCmd = &cobra.Command{
-    Use:   "set",
-    Short: "Set timer for date and time",
-    Args:  cobra.ExactArgs(2),
-    Long:  `Set timer for concrete date and time.`,
-    Run: func(cmd *cobra.Command, args []string) {
-        service.TmrSet(dateOpt, args[0], args[1])
-        if tmlistAfterChange {
-            service.TmrListAfterChange()
-        }
-    },
+	Use:   "set",
+	Short: "Set timer for date and time",
+	Args:  cobra.ExactArgs(2),
+	Long:  `Set timer for concrete date and time.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		service.TmrSet(dateOpt, args[0], args[1])
+		if tmlistAfterChange {
+			service.TmrListAfterChange()
+		}
+		if viper.GetString("afterchange") != "" {
+			service.SysAfterChange()
+		}
+	},
 }
 
 func init() {
-    timerCmd.AddCommand(tmSetCmd)
+	timerCmd.AddCommand(tmSetCmd)
 
-    curDate := time.Now()
-    tmSetCmd.Flags().StringVar(&dateOpt, "date", curDate.Format("2006-01-02"), "date for timer, default is current date")
+	curDate := time.Now()
+	tmSetCmd.Flags().StringVar(&dateOpt, "date", curDate.Format("2006-01-02"), "date for timer, default is current date")
 }
