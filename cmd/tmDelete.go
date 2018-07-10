@@ -26,6 +26,8 @@ import (
 	"github.com/spf13/viper"
 )
 
+var tmDeleteByTag, tmDeleteByName bool
+
 // tmDeleteCmd represents the tmDelete command
 var tmDeleteCmd = &cobra.Command{
 	Use:     "delete",
@@ -34,7 +36,7 @@ var tmDeleteCmd = &cobra.Command{
 	Long:    `Delete timer records.`,
 	Args:    cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		service.TmrDel(args)
+		service.TmrDel(tmDeleteByName, tmDeleteByTag, args)
 		if tmlistAfterChange {
 			service.TmrListAfterChange()
 		}
@@ -55,5 +57,6 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// tmDeleteCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	tmDeleteCmd.Flags().BoolVarP(&tmDeleteByTag, "tag", "t", false, "Delete by tag")
+	tmDeleteCmd.Flags().BoolVarP(&tmDeleteByName, "name", "n", false, "Delete by name")
 }

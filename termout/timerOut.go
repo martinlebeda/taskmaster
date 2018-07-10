@@ -21,39 +21,39 @@
 package termout
 
 import (
-    "fmt"
-    "github.com/martinlebeda/taskmaster/model"
-    "text/tabwriter"
-    "os"
-    "time"
-    "strconv"
+	"fmt"
+	"github.com/martinlebeda/taskmaster/model"
+	"os"
+	"strconv"
+	"text/tabwriter"
+	"time"
 )
 
 func TmrListDistance(distances []model.TimerDistance, cndOut bool) {
 
-    w := tabwriter.NewWriter(os.Stdout, 5, 2, 1, ' ', 0)
-    for _, distance := range distances {
-        duration, _ := time.ParseDuration(strconv.Itoa(distance.Distance) + "s")
+	w := tabwriter.NewWriter(os.Stdout, 5, 2, 1, ' ', 0)
+	for _, distance := range distances {
+		duration, _ := time.ParseDuration(strconv.Itoa(distance.Distance) + "s")
 
-        // check for today and format by this
-        format := "2006-01-02 15:04"
-        t := time.Now()
-       	roundedToday := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
-       	roundedGoal := time.Date(distance.Goal.Year(), distance.Goal.Month(), distance.Goal.Day(), 0, 0, 0, 0, t.Location())
-       	if roundedToday == roundedGoal {
-            format = "15:04"
-        }
+		// check for today and format by this
+		format := "2006-01-02 15:04"
+		t := time.Now()
+		roundedToday := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
+		roundedGoal := time.Date(distance.Goal.Year(), distance.Goal.Month(), distance.Goal.Day(), 0, 0, 0, 0, t.Location())
+		if roundedToday == roundedGoal {
+			format = "15:04"
+		}
 
-        // output
-        if cndOut {
-            fmt.Fprintf(w, "%s - %v - %s\n", duration.String(), distance.Goal.Format(format), distance.Note)
-        } else {
-            fmt.Fprintf(w, "%d\t%s\t  %v\t  %s\n", distance.Rowid, duration.String(), distance.Goal.Format(format), distance.Note)
-        }
-    }
-    w.Flush()
+		// output
+		if cndOut {
+			fmt.Fprintf(w, "%s - %v - %s\n", duration.String(), distance.Goal.Format(format), distance.Note)
+		} else {
+			fmt.Fprintf(w, "%d\t%s\t  %v\t %s\t %s\n", distance.Rowid, duration.String(), distance.Goal.Format(format), distance.Tag, distance.Note)
+		}
+	}
+	w.Flush()
 
-    if isVerbose() {
-        fmt.Println("\nCount of timers: ", len(distances))
-    }
+	if isVerbose() {
+		fmt.Println("\nCount of timers: ", len(distances))
+	}
 }

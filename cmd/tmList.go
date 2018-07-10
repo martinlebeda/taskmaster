@@ -21,57 +21,58 @@
 package cmd
 
 import (
-    "github.com/spf13/cobra"
-    "github.com/martinlebeda/taskmaster/service"
-    "github.com/martinlebeda/taskmaster/termout"
-    "fmt"
+	"fmt"
+	"github.com/martinlebeda/taskmaster/service"
+	"github.com/martinlebeda/taskmaster/termout"
+	"github.com/spf13/cobra"
 )
 
 var tmPastOpt, tmNextOpt, tmCntOpt, tmCndOut, tmNotify bool
+var tmListTagOpt string
 
 // tmListCmd represents the tmList command
 var tmListCmd = &cobra.Command{
-    Use:     "list",
-    Aliases: []string{"ls"},
-    Short:   "list timer",
-    Long:    `List of timer records.`,
-    Args:    cobra.NoArgs,
-    Run: func(cmd *cobra.Command, args []string) {
-        timerDistances := service.TmrGetDistance(tmPastOpt, tmNextOpt)
+	Use:     "list",
+	Aliases: []string{"ls"},
+	Short:   "list timer",
+	Long:    `List of timer records.`,
+	Args:    cobra.NoArgs,
+	Run: func(cmd *cobra.Command, args []string) {
+		timerDistances := service.TmrGetDistance(tmPastOpt, tmNextOpt, tmListTagOpt)
 
-        // notify
-        if tmNotify {
-            for _, distance := range timerDistances {
-                if distance.Distance < 0 {
-                    service.SysNotifyDistance(distance)
-                }
-            }
-        }
+		// notify
+		if tmNotify {
+			for _, distance := range timerDistances {
+				if distance.Distance < 0 {
+					service.SysNotifyDistance(distance)
+				}
+			}
+		}
 
-        // output
-        if tmCntOpt {
-            fmt.Println(len(timerDistances))
-        } else {
-            termout.TmrListDistance(timerDistances, tmCndOut)
-        }
-    },
+		// output
+		if tmCntOpt {
+			fmt.Println(len(timerDistances))
+		} else {
+			termout.TmrListDistance(timerDistances, tmCndOut)
+		}
+	},
 }
 
 func init() {
-    timerCmd.AddCommand(tmListCmd)
+	timerCmd.AddCommand(tmListCmd)
 
-    // Here you will define your flags and configuration settings.
+	// Here you will define your flags and configuration settings.
 
-    // Cobra supports Persistent Flags which will work for this command
-    // and all subcommands, e.g.:
-    // tmListCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// Cobra supports Persistent Flags which will work for this command
+	// and all subcommands, e.g.:
+	// tmListCmd.PersistentFlags().String("foo", "", "A help for foo")
 
-    // Cobra supports local flags which will only run when this command
-    // is called directly, e.g.:
-    tmListCmd.Flags().BoolVarP(&tmNextOpt, "next", "n", false, "list only next timer")
-    tmListCmd.Flags().BoolVarP(&tmPastOpt, "past", "p", false, "list only past timers")
-    tmListCmd.Flags().BoolVar(&tmCntOpt, "count", false, "print only count of timers")
-    tmListCmd.Flags().BoolVar(&tmCndOut, "condensed", false, "print timers without ID and no big spaces (ie for statusbar)")
+	// Cobra supports local flags which will only run when this command
+	// is called directly, e.g.:
+	tmListCmd.Flags().BoolVarP(&tmNextOpt, "next", "n", false, "list only next timer")
+	tmListCmd.Flags().BoolVarP(&tmPastOpt, "past", "p", false, "list only past timers")
+	tmListCmd.Flags().BoolVar(&tmCntOpt, "count", false, "print only count of timers")
+	tmListCmd.Flags().BoolVar(&tmCndOut, "condensed", false, "print timers without ID and no big spaces (ie for statusbar)")
 
-    tmListCmd.Flags().BoolVar(&tmNotify, "notify", false, "system notify when past")
+	tmListCmd.Flags().BoolVar(&tmNotify, "notify", false, "system notify when past")
 }

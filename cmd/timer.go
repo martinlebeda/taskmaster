@@ -26,6 +26,8 @@ import (
 
 var tmlistAfterChange bool
 
+// TODO Lebeda - subcommand tag TAGNAME ID ID ID
+
 // timerCmd represents the timer command
 var timerCmd = &cobra.Command{
 	Use:     "timer",

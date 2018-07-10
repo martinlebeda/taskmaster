@@ -26,6 +26,9 @@ import (
 	"github.com/spf13/viper"
 )
 
+var tmAddTagOpt string
+var tmAddReplaceTagOpt bool
+
 // tmAddCmd represents the tmAdd command
 var tmAddCmd = &cobra.Command{
 	Use:   "add",
@@ -34,7 +37,7 @@ var tmAddCmd = &cobra.Command{
 	// TODO Lebeda - popis duration formátu
 	Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
-		service.TmrAdd(args[0], args[1])
+		service.TmrAdd(tmAddReplaceTagOpt, tmAddTagOpt, args[0], args[1])
 		if tmlistAfterChange {
 			service.TmrListAfterChange()
 		}
@@ -46,4 +49,7 @@ var tmAddCmd = &cobra.Command{
 
 func init() {
 	timerCmd.AddCommand(tmAddCmd)
+
+	tmAddCmd.Flags().StringVarP(&tmAddTagOpt, "tag", "t", "", "Create timer with tag")
+	tmAddCmd.Flags().BoolVar(&tmAddReplaceTagOpt, "replace-tag", false, "replace all timers with tag by this new")
 }

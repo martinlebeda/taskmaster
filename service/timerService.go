@@ -1,95 +1,118 @@
 package service
 
 import (
-    "time"
-    "github.com/martinlebeda/taskmaster/termout"
-    . "github.com/martinlebeda/taskmaster/model"
-    "strconv"
-    "strings"
+	. "github.com/martinlebeda/taskmaster/model"
+	"github.com/martinlebeda/taskmaster/termout"
+	"strconv"
+	"strings"
+	"time"
 )
 
-func TmrSet(dateOpt, timeArg, title string) {
-    goal, err := time.Parse("2006-01-02 15:04", dateOpt+" "+timeArg)
-    CheckErr(err)
+func TmrSet(replaceTag bool, tag, dateOpt, timeArg, title string) {
+	goal, err := time.Parse("2006-01-02 15:04", dateOpt+" "+timeArg)
+	CheckErr(err)
 
-    insertNewTimer(title, goal)
+	insertNewTimer(replaceTag, tag, title, goal)
 }
 
-func TmrAdd(duration, title string) {
-    parseDuration, err := time.ParseDuration(duration)
-    CheckErr(err)
+func TmrAdd(replaceTag bool, tag, duration, title string) {
+	parseDuration, err := time.ParseDuration(duration)
+	CheckErr(err)
 
-    goal := time.Now().Add(parseDuration)
+	goal := time.Now().Add(parseDuration)
 
-    insertNewTimer(title, goal)
+	insertNewTimer(replaceTag, tag, title, goal)
 }
 
-func insertNewTimer(title string, goal time.Time) {
-    termout.Verbose("New goal for ", title, " set to ", goal.String())
-    db := OpenDB()
-    stmt, err := db.Prepare("INSERT INTO timer(note, goal) values(?,?)")
-    CheckErr(err)
-    _, err = stmt.Exec(title, goal)
-    CheckErr(err)
-    termout.Verbose("New timer inserted")
+func insertNewTimer(replaceTag bool, tag, title string, goal time.Time) {
+	termout.Verbose("New goal for ", tag, " - ", title, " set to ", goal.String())
+	db := OpenDB()
+
+	if tag != "" && replaceTag {
+		stmt, err := db.Prepare("delete from timer where tag = ?")
+		CheckErr(err)
+		_, err = stmt.Exec(tag)
+		CheckErr(err)
+	}
+
+	stmt, err := db.Prepare("INSERT INTO timer(note, goal, tag) values(?,?,?)")
+	CheckErr(err)
+	_, err = stmt.Exec(title, goal, tag)
+	CheckErr(err)
+	termout.Verbose("New timer inserted")
 }
 
-func TmrDel(args []string)  {
-    db := OpenDB()
-    stmt, err := db.Prepare("delete from timer where rowid in (" + strings.Join(args,",") + ")")
-    CheckErr(err)
-    _, err = stmt.Exec()
-    CheckErr(err)
-    termout.Verbose("Timer deleted: ", strings.Join(args,","))
+func TmrDel(tmDeleteByName, tmDeleteByTag bool, args []string) {
+	// sql by field
+	sql := ""
+	if tmDeleteByTag {
+		sql = "delete from timer where tag in ('" + strings.Join(args, "','") + "')"
+	} else if tmDeleteByName {
+		sql = "delete from timer where note in ('" + strings.Join(args, "','") + "')"
+	} else {
+		sql = "delete from timer where rowid in (" + strings.Join(args, ",") + ")"
+	}
+
+	// execute delete
+	db := OpenDB()
+	stmt, err := db.Prepare(sql)
+	CheckErr(err)
+	_, err = stmt.Exec()
+	CheckErr(err)
+	termout.Verbose("Timer deleted: ", strings.Join(args, ","))
 }
 
-func TmrGetDistance(pastOpt, nextOpt bool) []TimerDistance {
-    db := OpenDB()
-    sql := "select rowid, distance, goal, note from timer_distance "
+func TmrGetDistance(pastOpt, nextOpt bool, tag string) []TimerDistance {
+	db := OpenDB()
+	sql := "select rowid, distance, goal, CASE WHEN tag IS NULL THEN '' ELSE tag END, note from timer_distance where goal is not null "
 
-    if pastOpt {
-        sql += " where distance < 0 "
-    }
-    if nextOpt {
-        sql += " where distance > 0 "
-    }
+	if pastOpt {
+		sql += " and distance < 0 "
+	}
+	if nextOpt {
+		sql += " and distance > 0 "
+	}
 
-    sql +=    " order by distance "
+	if tag != "" {
+		sql += " and tag '" + tag + "' "
+	}
 
-    if nextOpt {
-        sql += " limit 1 "
-    }
+	sql += " order by distance "
 
-    rows, err := db.Query(sql)
-    CheckErr(err)
+	if nextOpt {
+		sql += " limit 1 "
+	}
 
-    var result []TimerDistance
-    for rows.Next() {
-        var timerDistance TimerDistance
-        rows.Scan(&timerDistance.Rowid, &timerDistance.Distance, &timerDistance.Goal, &timerDistance.Note)
-        result = append(result, timerDistance)
-    }
+	rows, err := db.Query(sql)
+	CheckErr(err)
 
-    return result
+	var result []TimerDistance
+	for rows.Next() {
+		var timerDistance TimerDistance
+		rows.Scan(&timerDistance.Rowid, &timerDistance.Distance, &timerDistance.Goal, &timerDistance.Tag, &timerDistance.Note)
+		result = append(result, timerDistance)
+	}
+
+	return result
 }
 
 func TmrClean(deleteAll bool) {
-    db := OpenDB()
+	db := OpenDB()
 
-    sql := "delete from timer"
-    if !deleteAll {
-        sql += " where rowid in (select rowid from timer_distance where distance < 0)"
-    }
+	sql := "delete from timer"
+	if !deleteAll {
+		sql += " where rowid in (select rowid from timer_distance where distance < 0)"
+	}
 
-    result, err := db.Exec(sql)
-    CheckErr(err)
-    count, err := result.RowsAffected()
-    CheckErr(err)
-    termout.Verbose("Count of deleted timers: ", strconv.FormatInt(count, 10))
+	result, err := db.Exec(sql)
+	CheckErr(err)
+	count, err := result.RowsAffected()
+	CheckErr(err)
+	termout.Verbose("Count of deleted timers: ", strconv.FormatInt(count, 10))
 }
 
 func TmrListAfterChange() {
-    termout.EmptyLineOut()
-    timerDistances := TmrGetDistance(false, false)
-    termout.TmrListDistance(timerDistances, false)
+	termout.EmptyLineOut()
+	timerDistances := TmrGetDistance(false, false, "")
+	termout.TmrListDistance(timerDistances, false)
 }

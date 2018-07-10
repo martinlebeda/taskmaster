@@ -28,6 +28,8 @@ import (
 )
 
 var dateOpt string
+var tmSetTagOpt string
+var tmSetReplaceTagOpt bool
 
 // tmSetCmd represents the tmSet command
 var tmSetCmd = &cobra.Command{
@@ -36,7 +38,7 @@ var tmSetCmd = &cobra.Command{
 	Args:  cobra.ExactArgs(2),
 	Long:  `Set timer for concrete date and time.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		service.TmrSet(dateOpt, args[0], args[1])
+		service.TmrSet(tmSetReplaceTagOpt, tmSetTagOpt, dateOpt, args[0], args[1])
 		if tmlistAfterChange {
 			service.TmrListAfterChange()
 		}
@@ -51,4 +53,7 @@ func init() {
 
 	curDate := time.Now()
 	tmSetCmd.Flags().StringVar(&dateOpt, "date", curDate.Format("2006-01-02"), "date for timer, default is current date")
+
+	tmSetCmd.Flags().StringVarP(&tmSetTagOpt, "tag", "t", "", "Create timer with tag")
+	tmSetCmd.Flags().BoolVar(&tmSetReplaceTagOpt, "replace-tag", false, "replace all timers with tag by this new")
 }

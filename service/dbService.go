@@ -21,64 +21,72 @@
 package service
 
 import (
-    "database/sql"
-    _ "github.com/mattn/go-sqlite3"
-    "github.com/spf13/viper"
-    "github.com/GuiaBolso/darwin"
-    "log"
-    "github.com/martinlebeda/taskmaster/termout"
-    "github.com/spf13/cast"
+	"database/sql"
+	"github.com/GuiaBolso/darwin"
+	"github.com/martinlebeda/taskmaster/termout"
+	_ "github.com/mattn/go-sqlite3"
+	"github.com/spf13/cast"
+	"github.com/spf13/viper"
+	"log"
 )
 
 var (
-    // definition of DB migrations and schemas
-    migrations = []darwin.Migration{
-        {
-            Version:     1,
-            Description: "Creating table timer",
-            Script:      `CREATE TABLE timer (note VARCHAR, goal DATETIME);`,
-        },
-        {
-        	Version:     2,
-        	Description: "view for timer",
-        	Script:      `create view timer_distance as SELECT rowid, strftime('%s', goal, 'localtime') - strftime('%s', 'now', 'localtime') as distance, goal, note from timer order by distance;`,
-        },
-    }
+	// definition of DB migrations and schemas
+	migrations = []darwin.Migration{
+		{
+			Version:     1,
+			Description: "Creating table timer",
+			Script:      `CREATE TABLE timer (note VARCHAR, goal DATETIME);`,
+		},
+		{
+			Version:     2,
+			Description: "view for timer",
+			Script:      `create view timer_distance as SELECT rowid, strftime('%s', goal, 'localtime') - strftime('%s', 'now', 'localtime') as distance, goal, note from timer order by distance;`,
+		},
+		{
+			Version:     3,
+			Description: "add tag to timer",
+			Script: `ALTER TABLE timer ADD COLUMN tag VARCHAR;
+DROP VIEW IF EXISTS timer_distance;
+CREATE VIEW timer_distance AS SELECT rowid, strftime('%s', goal, 'localtime') - strftime('%s', 'now', 'localtime') as distance, goal, tag, note FROM timer ORDER BY distance;
+`,
+		},
+	}
 )
 
 // Open database file
 func OpenDB() *sql.DB {
-    dbFileName := viper.GetString("dbfile")
-    db, err := sql.Open("sqlite3", dbFileName)
-    CheckErr(err)
+	dbFileName := viper.GetString("dbfile")
+	db, err := sql.Open("sqlite3", dbFileName)
+	CheckErr(err)
 
-    return db
+	return db
 }
 
 // make DB schema actual
 func DbUpgrade() {
-    database := OpenDB()
+	database := OpenDB()
 
-    driver := darwin.NewGenericDriver(database, darwin.SqliteDialect{})
-    d := darwin.New(driver, migrations, nil)
-    err := d.Migrate()
-    if err != nil {
-        log.Println(err)
-    }
+	driver := darwin.NewGenericDriver(database, darwin.SqliteDialect{})
+	d := darwin.New(driver, migrations, nil)
+	err := d.Migrate()
+	if err != nil {
+		log.Println(err)
+	}
 
-    termout.Verbose("Database upgraded to version " + cast.ToString(getDbVersion(database)) + ".")
+	termout.Verbose("Database upgraded to version " + cast.ToString(getDbVersion(database)) + ".")
 
-    database.Close()
+	database.Close()
 }
 func getDbVersion(db *sql.DB) float32 {
-    var result float32
-    rows, err := db.Query("select max(version) from darwin_migrations")
-    CheckErr(err)
-    for rows.Next() {
-        err := rows.Scan(&result)
-        CheckErr(err)
-    }
+	var result float32
+	rows, err := db.Query("select max(version) from darwin_migrations")
+	CheckErr(err)
+	for rows.Next() {
+		err := rows.Scan(&result)
+		CheckErr(err)
+	}
 
-    rows.Close()
-    return result
+	rows.Close()
+	return result
 }
