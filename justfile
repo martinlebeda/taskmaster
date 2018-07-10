@@ -3,11 +3,11 @@ GITHUB_TOKEN = 'bbb4e7b26e057090e0652a518bf48b5709c7ca85'
 
 # build production program
 build: dep
-  go build -ldflags "-s -w" -o bin/dict
+  go build -ldflags "-s -w" -o bin/tm
 
 # build windows version
 win: build
-  GOOS=windows go build -ldflags "-s -w" -o bin/dict.exe
+  GOOS=windows go build -ldflags "-s -w" -o bin/tm.exe
 
 # rebuild docs
 docs: install
@@ -38,7 +38,7 @@ dep:
 
 # copy release binary to ~/bin directory
 install: build
-  cp -v bin/dict ~/bin/
+  cp -v bin/tm ~/bin/
 
 # clean all temporary files
 clean:
@@ -53,9 +53,9 @@ clean:
 release: install docs win
   git tag {{TAG}}
   git push origin --tags
-  gothub release --user martinlebeda --repo mldict --tag {{TAG}}
-  gothub upload --user martinlebeda --repo mldict --tag {{TAG}} --name "dict.linux.x64" --file bin/dict
-  gothub upload --user martinlebeda --repo mldict --tag {{TAG}} --name "dict.windows.x64.exe" --file bin/dict.exe
+  gothub release --user martinlebeda --repo taskmaster --tag {{TAG}}
+  gothub upload --user martinlebeda --repo taskmaster --tag {{TAG}} --name "tm.linux.x64" --file bin/tm
+  gothub upload --user martinlebeda --repo taskmaster --tag {{TAG}} --name "tm.windows.x64.exe" --file bin/tm.exe
 
   # TODO - add some way to release build
   #  --name "the wolf of source street" --description "Not a movie, contrary to popular opinion. Still, my first release!" --pre-release

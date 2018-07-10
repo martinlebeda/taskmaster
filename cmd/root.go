@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/martinlebeda/taskmaster/termout"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -88,6 +89,6 @@ func initConfig() {
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+		termout.Verbose("Using config file:", viper.ConfigFileUsed())
 	}
 }

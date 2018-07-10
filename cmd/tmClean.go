@@ -21,8 +21,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/martinlebeda/taskmaster/service"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -36,7 +34,6 @@ var tmCleanCmd = &cobra.Command{
 	Short: "clean old timers",
 	Long:  `Delete old timers from DB.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("tmClean called")
 		service.TmrClean(tmrDeleteAll)
 		if tmlistAfterChange {
 			service.TmrListAfterChange()
