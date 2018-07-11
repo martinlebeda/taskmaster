@@ -23,7 +23,10 @@ package cmd
 import (
 	"github.com/martinlebeda/taskmaster/service"
 	"github.com/spf13/cobra"
+	"time"
 )
+
+var wkCategoryOpt, wkCodeOpt, wkBeforeOpt, wkTimeOpt, wkDateOpt string
 
 // wkStartCmd represents the wkStart command
 var wkStartCmd = &cobra.Command{
@@ -33,20 +36,19 @@ var wkStartCmd = &cobra.Command{
 	//Long: ``, TODO Lebeda - add description
 	//Long: `A longer description that spans multiple lines and likely contains examples to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		service.WrkStart(args[0])
+		service.WrkStart(args[0], wkCategoryOpt, wkCodeOpt, wkBeforeOpt, wkTimeOpt, wkDateOpt)
 	},
 }
 
 func init() {
 	workCmd.AddCommand(wkStartCmd)
 
-	// Here you will define your flags and configuration settings.
+	wkStartCmd.Flags().StringVarP(&wkCategoryOpt, "category", "g", "", "Category of record")
+	wkStartCmd.Flags().StringVarP(&wkCodeOpt, "code", "e", "", "External code of record")
 
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// wkStartCmd.PersistentFlags().String("foo", "", "A help for foo")
+	wkStartCmd.Flags().StringVarP(&wkBeforeOpt, "before", "b", "", "Time shift of record")
 
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// wkStartCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	curDate := time.Now()
+	wkStartCmd.Flags().StringVarP(&wkTimeOpt, "time", "t", curDate.Format("15:04"), "Time of begin record")
+	wkStartCmd.Flags().StringVar(&wkDateOpt, "date", curDate.Format("2006-01-02"), "Time of begin record")
 }

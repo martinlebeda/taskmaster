@@ -23,6 +23,7 @@ package cmd
 import (
 	"github.com/martinlebeda/taskmaster/service"
 	"github.com/spf13/cobra"
+	"time"
 )
 
 // wkStopCmd represents the wkStop command
@@ -31,7 +32,7 @@ var wkStopCmd = &cobra.Command{
 	Short: "stop work on current task",
 	//Long: ``, TODO Lebeda - add description
 	Run: func(cmd *cobra.Command, args []string) {
-		service.WrkStop()
+		service.WrkStop(wkBeforeOpt, wkTimeOpt, wkDateOpt)
 	},
 }
 
@@ -47,4 +48,10 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// wkStopCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+
+	wkStartCmd.Flags().StringVarP(&wkBeforeOpt, "before", "b", "", "Time shift of record")
+
+	curDate := time.Now()
+	wkStartCmd.Flags().StringVarP(&wkTimeOpt, "time", "t", curDate.Format("15:04"), "Time of begin record")
+	wkStartCmd.Flags().StringVar(&wkDateOpt, "date", curDate.Format("2006-01-02"), "Time of begin record")
 }

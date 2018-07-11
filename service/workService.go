@@ -7,24 +7,39 @@ import (
 	"time"
 )
 
-func WrkStop() {
+func WrkStop(before, timeOpt, dateOpt string) {
 	db := OpenDB()
 	stmt, err := db.Prepare("update work set stop = ? where stop is null")
 	CheckErr(err)
-	result, err := stmt.Exec(time.Now()) // TODO Lebeda - add time shift
+	dateTime := getDateTime(before, timeOpt, dateOpt)
+	result, err := stmt.Exec(dateTime)
 	CheckErr(err)
 	count, err := result.RowsAffected()
 	CheckErr(err)
 	termout.Verbose("Count of stopped task: " + strconv.FormatInt(count, 10))
 }
 
-func WrkStart(taskName string) {
-	WrkStop()
+func getDateTime(before, timeOpt, dateOpt string) time.Time {
+	result, err := time.Parse("2006-01-02 15:04", dateOpt+" "+timeOpt)
+	CheckErr(err)
+
+	if before != "" {
+		duration, err := time.ParseDuration(before)
+		CheckErr(err)
+		result = result.Add(duration)
+	}
+
+	return result
+}
+
+func WrkStart(taskName string, category, code, before, timeOpt, dateOpt string) {
+	WrkStop(before, timeOpt, dateOpt)
 
 	db := OpenDB()
-	stmt, err := db.Prepare("insert into work (desc, start) values (?, ?)")
+	stmt, err := db.Prepare("insert into work (desc, start, category, code) values (?, ?, ?, ?)")
 	CheckErr(err)
-	result, err := stmt.Exec(taskName, time.Now()) // TODO Lebeda - add time shift
+	dateTime := getDateTime(before, timeOpt, dateOpt)
+	result, err := stmt.Exec(taskName, dateTime, category, code)
 	CheckErr(err)
 	count, err := result.RowsAffected()
 	CheckErr(err)
