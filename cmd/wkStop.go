@@ -49,9 +49,9 @@ func init() {
 	// is called directly, e.g.:
 	// wkStopCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
-	wkStartCmd.Flags().StringVarP(&wkBeforeOpt, "before", "b", "", "Time shift of record")
+	wkStopCmd.Flags().StringVarP(&wkBeforeOpt, "before", "b", "", "Time shift of record")
 
 	curDate := time.Now()
-	wkStartCmd.Flags().StringVarP(&wkTimeOpt, "time", "t", curDate.Format("15:04"), "Time of begin record")
-	wkStartCmd.Flags().StringVar(&wkDateOpt, "date", curDate.Format("2006-01-02"), "Time of begin record")
+	wkStopCmd.Flags().StringVarP(&wkTimeOpt, "time", "t", curDate.Format("15:04"), "Time of begin record")
+	wkStopCmd.Flags().StringVar(&wkDateOpt, "date", curDate.Format("2006-01-02"), "Time of begin record")
 }

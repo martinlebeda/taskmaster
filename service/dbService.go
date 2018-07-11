@@ -56,6 +56,12 @@ CREATE VIEW timer_distance AS SELECT rowid, strftime('%s', goal, 'localtime') - 
 			Description: "Creating table work",
 			Script:      `CREATE TABLE work (category VARCHAR, code VARCHAR, desc VARCHAR, start DATETIME, stop DATETIME);`,
 		},
+		{
+			Version:     5,
+			Description: "Fix view timer_distance",
+			Script: `DROP VIEW IF EXISTS timer_distance;
+            CREATE VIEW timer_distance AS SELECT rowid, strftime('%s', goal) - strftime('%s', 'now', 'localtime') as distance, goal, tag, note FROM timer ORDER BY distance;`,
+		},
 	}
 )
 
