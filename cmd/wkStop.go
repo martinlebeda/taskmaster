@@ -21,7 +21,9 @@
 package cmd
 
 import (
+	"github.com/jinzhu/now"
 	"github.com/martinlebeda/taskmaster/service"
+	"github.com/martinlebeda/taskmaster/termout"
 	"github.com/spf13/cobra"
 	"time"
 )
@@ -33,6 +35,10 @@ var wkStopCmd = &cobra.Command{
 	//Long: ``, TODO Lebeda - add description
 	Run: func(cmd *cobra.Command, args []string) {
 		service.WrkStop(wkBeforeOpt, wkTimeOpt, wkDateOpt)
+		if wklistAfterChange {
+			workList := service.WrkGetWork(now.BeginningOfDay(), now.EndOfDay())
+			termout.WrkListWork(workList)
+		}
 	},
 }
 

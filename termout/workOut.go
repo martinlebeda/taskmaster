@@ -25,6 +25,7 @@ import (
 	"github.com/martinlebeda/taskmaster/model"
 	"os"
 	"text/tabwriter"
+	"time"
 )
 
 func WrkListWork(works []model.WorkList) {
@@ -47,14 +48,21 @@ func WrkListWork(works []model.WorkList) {
 		//if cndOut {
 		//	fmt.Fprintf(w, "%s - %v - %s\n", duration.String(), distance.Goal.Format(format), distance.Note)
 		//} else {
-		fmt.Fprintf(w, "%d\t%s\t - %s  - \t%s -  \t%s\t %s\t %s\n", work.Rowid,
-			work.Start.Format(format), work.Stop.Format(format), duration,
+		stopFmt := ""
+		durationFmt := ""
+		if work.Stop.After(time.Date(0001, time.January, 1, 0, 0, 0, 0, time.UTC)) {
+			stopFmt = work.Stop.Format(format)
+			durationFmt = duration.Round(time.Second).String()
+		}
+
+		fmt.Fprintf(w, "%d\t%s\t - %s  \t%s   \t%s\t %s\t %s\n", work.Rowid,
+			work.Start.Format(format), stopFmt, durationFmt,
 			work.Category, work.Code, work.Desc)
 		//}
 	}
 	w.Flush()
 
 	if isVerbose() {
-		fmt.Println("\nCount of timers: ", len(works))
+		fmt.Println("\nCount of timers: ", len(works)) // TODO Lebeda - zajistit součet odpracovaného času
 	}
 }

@@ -46,15 +46,19 @@ func WrkStart(taskName string, category, code, before, timeOpt, dateOpt string) 
 	termout.Verbose("Task inserted: " + strconv.FormatInt(count, 10))
 }
 
-func WrkGetWork() []WorkList {
+func WrkGetWork(timeFrom, timeTo time.Time) []WorkList {
 	db := OpenDB()
 	sql := "select rowid, " +
 		" CASE WHEN category IS NULL THEN '' ELSE category END," +
 		" CASE WHEN code IS NULL THEN '' ELSE code END," +
 		" CASE WHEN desc IS NULL THEN '' ELSE desc END," +
-		" start, stop from work order by start "
+		" start, stop from work "
 
-	rows, err := db.Query(sql)
+	sql += " where start >= ? and start <= ? "
+
+	sql += " order by start "
+
+	rows, err := db.Query(sql, timeFrom, timeTo)
 	CheckErr(err)
 
 	var result []WorkList

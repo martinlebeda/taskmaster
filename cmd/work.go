@@ -24,6 +24,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var wklistAfterChange bool
+
 // workCmd represents the work command
 var workCmd = &cobra.Command{
 	Use:     "work",
@@ -47,4 +49,6 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// workCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+
+	workCmd.PersistentFlags().BoolVarP(&wklistAfterChange, "list", "l", false, "List today work after change")
 }

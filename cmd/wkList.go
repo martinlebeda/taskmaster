@@ -21,20 +21,28 @@
 package cmd
 
 import (
+	"github.com/jinzhu/now"
 	"github.com/martinlebeda/taskmaster/service"
 	"github.com/martinlebeda/taskmaster/termout"
 	"github.com/spf13/cobra"
+	"time"
 )
+
+var wkListFromOpt, wkListToOpt string
 
 // wkListCmd represents the wkList command
 var wkListCmd = &cobra.Command{
-	Use:   "list",
-	Short: "simple work report",
+	Use:     "list",
+	Short:   "simple work report",
+	Aliases: []string{"ls"},
 	//Long: ``, TODO Lebeda - add descroption
 	Run: func(cmd *cobra.Command, args []string) {
-		workList := service.WrkGetWork()
+		timeFrom, err := time.Parse("2006-01-02 15:04", wkListFromOpt)
+		service.CheckErr(err)
+		timeTo, err := time.Parse("2006-01-02 15:04", wkListToOpt)
+		service.CheckErr(err)
+		workList := service.WrkGetWork(timeFrom, timeTo)
 		termout.WrkListWork(workList)
-		// TODO Lebeda -
 	},
 }
 
@@ -50,4 +58,8 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// wkListCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+
+	wkListCmd.Flags().StringVarP(&wkListFromOpt, "from", "f", now.BeginningOfDay().Format("2006-01-02 15:04"), "Record start after date and time")
+	wkListCmd.Flags().StringVarP(&wkListToOpt, "to", "t", now.EndOfDay().Format("2006-01-02 15:04"), "Record start before date and time")
+
 }
