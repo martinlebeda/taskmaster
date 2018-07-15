@@ -10,3 +10,8 @@ type WorkList struct {
 	Start    time.Time
 	Stop     time.Time
 }
+
+type WorkSum struct {
+	Desc    string
+	Seconds int
+}

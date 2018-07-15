@@ -70,3 +70,27 @@ func WrkGetWork(timeFrom, timeTo time.Time) []WorkList {
 
 	return result
 }
+
+func WrkGetWorkSum(timeFrom, timeTo time.Time, sumByField string) []WorkSum {
+	db := OpenDB()
+	sql := "select " + "CASE WHEN " + sumByField + " IS NULL THEN '' ELSE " + sumByField + " END," +
+		" sum(strftime('%s', CASE WHEN stop IS NULL THEN 'now' ELSE stop END, 'localtime') - strftime('%s', start, 'localtime')) as distance " +
+		" from work "
+
+	sql += " where start >= ? and start <= ? "
+
+	sql += " group by " + sumByField
+	sql += " order by " + sumByField
+
+	rows, err := db.Query(sql, timeFrom, timeTo)
+	CheckErr(err)
+
+	var result []WorkSum
+	for rows.Next() {
+		var workSum WorkSum
+		rows.Scan(&workSum.Desc, &workSum.Seconds)
+		result = append(result, workSum)
+	}
+
+	return result
+}

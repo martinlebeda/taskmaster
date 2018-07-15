@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"github.com/martinlebeda/taskmaster/model"
 	"os"
+	"strconv"
 	"text/tabwriter"
 	"time"
 )
@@ -35,19 +36,8 @@ func WrkListWork(works []model.WorkList) {
 
 		duration := work.Stop.Sub(work.Start)
 
-		//// check for today and format by this
 		format := "2006-01-02 15:04"
-		//t := time.Now()
-		//roundedToday := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
-		//roundedGoal := time.Date(distance.Goal.Year(), distance.Goal.Month(), distance.Goal.Day(), 0, 0, 0, 0, t.Location())
-		//if roundedToday == roundedGoal {
-		//	format = "15:04"
-		//}
 
-		// output
-		//if cndOut {
-		//	fmt.Fprintf(w, "%s - %v - %s\n", duration.String(), distance.Goal.Format(format), distance.Note)
-		//} else {
 		stopFmt := ""
 		durationFmt := ""
 		if work.Stop.After(time.Date(0001, time.January, 1, 0, 0, 0, 0, time.UTC)) {
@@ -65,4 +55,14 @@ func WrkListWork(works []model.WorkList) {
 	if isVerbose() {
 		fmt.Println("\nCount of timers: ", len(works)) // TODO Lebeda - zajistit součet odpracovaného času
 	}
+}
+
+func WrkSumWork(sums []model.WorkSum) {
+
+	w := tabwriter.NewWriter(os.Stdout, 5, 2, 1, ' ', 0)
+	for _, workSum := range sums {
+		duration, _ := time.ParseDuration(strconv.Itoa(workSum.Seconds) + "s")
+		fmt.Fprintf(w, "%s\t    %s\n", workSum.Desc, duration)
+	}
+	w.Flush()
 }
