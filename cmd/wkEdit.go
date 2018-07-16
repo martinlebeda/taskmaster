@@ -28,13 +28,40 @@ import (
 	"time"
 )
 
-// wkStopCmd represents the wkStop command
-var wkStopCmd = &cobra.Command{
-	Use:   "stop",
-	Short: "stop work on current task",
-	//Long: ``, TODO Lebeda - add description
+// wkEditCmd represents the wkEdit command
+var wkEditCmd = &cobra.Command{
+	Use:   "edit",
+	Short: "Edit worklog items",
+	Args:  cobra.MinimumNArgs(1),
+	// TODO Lebeda - add long description
+	//	Long: `A longer description that spans multiple lines and likely contains examples
+	//and usage of using your command. For example:
+	//
+	//Cobra is a CLI library for Go that empowers applications.
+	//This application is a tool to generate the needed files
+	//to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		service.WrkStop(wkBeforeOpt, wkTimeOpt, wkDateOpt)
+		code, err := cmd.Flags().GetString("code")
+		service.CheckErr(err)
+
+		category, err := cmd.Flags().GetString("category")
+		service.CheckErr(err)
+
+		desc, err := cmd.Flags().GetString("desc")
+		service.CheckErr(err)
+
+		startOpt, err := cmd.Flags().GetString("start")
+		service.CheckErr(err)
+		start, err := time.Parse(service.BaseDateTimeFormat, startOpt)
+		service.CheckErr(err)
+
+		stopOpt, err := cmd.Flags().GetString("stop")
+		service.CheckErr(err)
+		stop, err := time.Parse(service.BaseDateTimeFormat, stopOpt)
+		service.CheckErr(err)
+
+		service.WrkUpdate(code, category, desc, start, stop, args)
+
 		if wklistAfterChange {
 			workList := service.WrkGetWork(now.BeginningOfDay(), now.EndOfDay(), false)
 			termout.WrkListWork(workList)
@@ -43,21 +70,21 @@ var wkStopCmd = &cobra.Command{
 }
 
 func init() {
-	workCmd.AddCommand(wkStopCmd)
+	workCmd.AddCommand(wkEditCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// wkStopCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// wkEditCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// wkStopCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// wkEditCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	tmEditCmd.Flags().String("code", "", "new code value")
+	tmEditCmd.Flags().String("category", "", "new category value")
+	tmEditCmd.Flags().String("desc", "", "new desc value")
 
-	wkStopCmd.Flags().StringVarP(&wkBeforeOpt, "before", "b", "", "Time shift of record")
-
-	curDate := time.Now()
-	wkStopCmd.Flags().StringVarP(&wkTimeOpt, "time", "t", curDate.Format("15:04"), "Time of begin record")
-	wkStopCmd.Flags().StringVar(&wkDateOpt, "date", curDate.Format("2006-01-02"), "Time of begin record")
+	tmEditCmd.Flags().String("start", time.Time{}.Format(service.BaseDateTimeFormat), "new start value")
+	tmEditCmd.Flags().String("stop", time.Time{}.Format(service.BaseDateTimeFormat), "new stop value")
 }

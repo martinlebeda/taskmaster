@@ -21,40 +21,46 @@
 package cmd
 
 import (
-	"github.com/jinzhu/now"
 	"github.com/martinlebeda/taskmaster/service"
-	"github.com/martinlebeda/taskmaster/termout"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"time"
 )
 
-var wkCategoryOpt, wkCodeOpt, wkBeforeOpt, wkTimeOpt, wkDateOpt string
-
-// wkStartCmd represents the wkStart command
-var wkStartCmd = &cobra.Command{
-	Use:   "start",
-	Short: "record start of task",
-	Args:  cobra.ExactArgs(1),
-	//Long: ``, TODO Lebeda - add description
-	//Long: `A longer description that spans multiple lines and likely contains examples to quickly create a Cobra application.`,
+// tmEditCmd represents the tmEdit command
+var tmEditCmd = &cobra.Command{
+	Use:   "edit",
+	Short: "Edit timer items",
+	Args:  cobra.MinimumNArgs(1),
+	// TODO Lebeda - add long description
+	//Long: `A longer description that spans multiple lines and likely contains examples
+	//and usage of using your command. For example:
+	//
+	//Cobra is a CLI library for Go that empowers applications.
+	//This application is a tool to generate the needed files
+	//to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		service.WrkStart(args[0], wkCategoryOpt, wkCodeOpt, wkBeforeOpt, wkTimeOpt, wkDateOpt)
-		if wklistAfterChange {
-			workList := service.WrkGetWork(now.BeginningOfDay(), now.EndOfDay(), false)
-			termout.WrkListWork(workList)
+		note, err := cmd.Flags().GetString("note")
+		service.CheckErr(err)
+
+		goalOpt, err := cmd.Flags().GetString("goal")
+		service.CheckErr(err)
+		goal, err := time.Parse(service.BaseDateTimeFormat, goalOpt)
+		service.CheckErr(err)
+
+		service.TmrUpdate(note, goal, args)
+		if tmlistAfterChange {
+			service.TmrListAfterChange()
+		}
+		if viper.GetString("afterchange") != "" {
+			service.SysAfterChange()
 		}
 	},
 }
 
 func init() {
-	workCmd.AddCommand(wkStartCmd)
+	timerCmd.AddCommand(tmEditCmd)
 
-	wkStartCmd.Flags().StringVarP(&wkCategoryOpt, "category", "g", "", "Category of record")
-	wkStartCmd.Flags().StringVarP(&wkCodeOpt, "code", "e", "", "External code of record")
-
-	wkStartCmd.Flags().StringVarP(&wkBeforeOpt, "before", "b", "", "Time shift of record")
-
-	curDate := time.Now()
-	wkStartCmd.Flags().StringVarP(&wkTimeOpt, "time", "t", curDate.Format("15:04"), "Time of begin record")
-	wkStartCmd.Flags().StringVar(&wkDateOpt, "date", curDate.Format("2006-01-02"), "Time of begin record")
+	tmEditCmd.Flags().String("note", "", "new note value")
+	tmEditCmd.Flags().String("goal", time.Time{}.Format(service.BaseDateTimeFormat), "new note value")
 }

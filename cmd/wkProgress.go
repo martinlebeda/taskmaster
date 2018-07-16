@@ -21,40 +21,40 @@
 package cmd
 
 import (
-	"github.com/jinzhu/now"
 	"github.com/martinlebeda/taskmaster/service"
 	"github.com/martinlebeda/taskmaster/termout"
 	"github.com/spf13/cobra"
 	"time"
 )
 
-var wkCategoryOpt, wkCodeOpt, wkBeforeOpt, wkTimeOpt, wkDateOpt string
-
-// wkStartCmd represents the wkStart command
-var wkStartCmd = &cobra.Command{
-	Use:   "start",
-	Short: "record start of task",
-	Args:  cobra.ExactArgs(1),
-	//Long: ``, TODO Lebeda - add description
-	//Long: `A longer description that spans multiple lines and likely contains examples to quickly create a Cobra application.`,
+// wkProgressCmd represents the wkProgress command
+var wkProgressCmd = &cobra.Command{
+	Use:     "progress",
+	Short:   "Show open worklog",
+	Aliases: []string{"open", "prg"},
+	// TODO Lebeda - add long description
+	//Long: `A longer description that spans multiple lines and likely contains examples
+	//and usage of using your command. For example:
+	//
+	//Cobra is a CLI library for Go that empowers applications.
+	//This application is a tool to generate the needed files
+	//to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		service.WrkStart(args[0], wkCategoryOpt, wkCodeOpt, wkBeforeOpt, wkTimeOpt, wkDateOpt)
-		if wklistAfterChange {
-			workList := service.WrkGetWork(now.BeginningOfDay(), now.EndOfDay(), false)
-			termout.WrkListWork(workList)
-		}
+		workList := service.WrkGetWork(time.Time{}, time.Time{}, true)
+		termout.WrkListWork(workList)
 	},
 }
 
 func init() {
-	workCmd.AddCommand(wkStartCmd)
+	workCmd.AddCommand(wkProgressCmd)
 
-	wkStartCmd.Flags().StringVarP(&wkCategoryOpt, "category", "g", "", "Category of record")
-	wkStartCmd.Flags().StringVarP(&wkCodeOpt, "code", "e", "", "External code of record")
+	// Here you will define your flags and configuration settings.
 
-	wkStartCmd.Flags().StringVarP(&wkBeforeOpt, "before", "b", "", "Time shift of record")
+	// Cobra supports Persistent Flags which will work for this command
+	// and all subcommands, e.g.:
+	// wkProgressCmd.PersistentFlags().String("foo", "", "A help for foo")
 
-	curDate := time.Now()
-	wkStartCmd.Flags().StringVarP(&wkTimeOpt, "time", "t", curDate.Format("15:04"), "Time of begin record")
-	wkStartCmd.Flags().StringVar(&wkDateOpt, "date", curDate.Format("2006-01-02"), "Time of begin record")
+	// Cobra supports local flags which will only run when this command
+	// is called directly, e.g.:
+	// wkProgressCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

@@ -62,6 +62,33 @@ func TmrDel(tmDeleteByName, tmDeleteByTag bool, args []string) {
 	termout.Verbose("Timer deleted: ", strings.Join(args, ","))
 }
 
+func TmrUpdate(note string, goal time.Time, ids []string) {
+	sql := "update timer set"
+
+	// add parameters
+	var setSql []string
+	var argSql []interface{}
+	if note != "" {
+		setSql = append(setSql, "note = ?")
+		argSql = append(argSql, note)
+	}
+	if !goal.IsZero() {
+		setSql = append(setSql, "goal = ?")
+		argSql = append(argSql, goal)
+	}
+
+	sql += "set " + strings.Join(setSql, ", ")
+	sql += " where rowid in (" + strings.Join(ids, ",") + ")"
+
+	// execute update
+	db := OpenDB()
+	stmt, err := db.Prepare(sql)
+	CheckErr(err)
+	_, err = stmt.Exec(argSql...)
+	CheckErr(err)
+	termout.Verbose("Timer updated: ", strings.Join(ids, ","))
+}
+
 func TmrGetDistance(pastOpt, nextOpt bool, tag string) []TimerDistance {
 	db := OpenDB()
 	sql := "select rowid, distance, goal, CASE WHEN tag IS NULL THEN '' ELSE tag END, note from timer_distance where goal is not null "

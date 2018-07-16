@@ -4,6 +4,7 @@ import (
 	. "github.com/martinlebeda/taskmaster/model"
 	"github.com/martinlebeda/taskmaster/termout"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -46,15 +47,21 @@ func WrkStart(taskName string, category, code, before, timeOpt, dateOpt string) 
 	termout.Verbose("Task inserted: " + strconv.FormatInt(count, 10))
 }
 
-func WrkGetWork(timeFrom, timeTo time.Time) []WorkList {
+func WrkGetWork(timeFrom, timeTo time.Time, onlyOpen bool) []WorkList {
 	db := OpenDB()
 	sql := "select rowid, " +
 		" CASE WHEN category IS NULL THEN '' ELSE category END," +
 		" CASE WHEN code IS NULL THEN '' ELSE code END," +
 		" CASE WHEN desc IS NULL THEN '' ELSE desc END," +
-		" start, stop from work "
+		" start, stop from work where 1=1 "
 
-	sql += " where start >= ? and start <= ? "
+	if !timeFrom.IsZero() {
+		sql += " and start >= ? and start <= ? "
+	}
+
+	if onlyOpen {
+		sql += " and stop is null "
+	}
 
 	sql += " order by start "
 
@@ -69,6 +76,60 @@ func WrkGetWork(timeFrom, timeTo time.Time) []WorkList {
 	}
 
 	return result
+}
+
+func WrkDel(args []string) {
+	// sql by field
+	sql := ""
+	sql = "delete from work where rowid in (" + strings.Join(args, ",") + ")"
+
+	// execute delete
+	db := OpenDB()
+	stmt, err := db.Prepare(sql)
+	CheckErr(err)
+	_, err = stmt.Exec()
+	CheckErr(err)
+	termout.Verbose("Worklog deleted: ", strings.Join(args, ","))
+}
+
+func WrkUpdate(code, category, desc string, start, stop time.Time, ids []string) {
+	sql := "update work set"
+
+	// add parameters
+	var setSql []string
+	var argSql []interface{}
+	if code != "" {
+		setSql = append(setSql, "code = ?")
+		argSql = append(argSql, code)
+	}
+	if category != "" {
+		setSql = append(setSql, "category = ?")
+		argSql = append(argSql, category)
+	}
+	if desc != "" {
+		setSql = append(setSql, "desc = ?")
+		argSql = append(argSql, desc)
+	}
+
+	if !start.IsZero() {
+		setSql = append(setSql, "start = ?")
+		argSql = append(argSql, start)
+	}
+	if !stop.IsZero() {
+		setSql = append(setSql, "stop = ?")
+		argSql = append(argSql, stop)
+	}
+
+	sql += "set " + strings.Join(setSql, ", ")
+	sql += " where rowid in (" + strings.Join(ids, ",") + ")"
+
+	// execute update
+	db := OpenDB()
+	stmt, err := db.Prepare(sql)
+	CheckErr(err)
+	_, err = stmt.Exec(argSql...)
+	CheckErr(err)
+	termout.Verbose("Worklog updated: ", strings.Join(ids, ","))
 }
 
 func WrkGetWorkSum(timeFrom, timeTo time.Time, sumByField string) []WorkSum {

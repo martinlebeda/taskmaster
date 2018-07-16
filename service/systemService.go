@@ -11,8 +11,10 @@ import (
 	"time"
 )
 
+const BaseDateTimeFormat = "2006-01-02 15:04"
+
 func SysNotifyDistance(distance model.TimerDistance) {
-	format := "2006-01-02 15:04"
+	format := BaseDateTimeFormat
 	t := time.Now()
 	roundedToday := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
 	roundedGoal := time.Date(distance.Goal.Year(), distance.Goal.Month(), distance.Goal.Day(), 0, 0, 0, 0, t.Location())
