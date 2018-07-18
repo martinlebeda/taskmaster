@@ -24,33 +24,39 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var wklistAfterChange bool
-
-// workCmd represents the work command
-var workCmd = &cobra.Command{
-	Use:     "work",
-	Aliases: []string{"wk", "wrk"},
-	Short:   "work accounting",
-	Long:    `Work accounting for reporting.`,
-	//Run: func(cmd *cobra.Command, args []string) {
-	//	fmt.Println("work called")
-	//},
+// taskCmd represents the task command
+var taskCmd = &cobra.Command{
+	Use:     "task",
+	Aliases: []string{"tk", "tsk"},
+	Short:   "task manager",
+	// TODO Lebeda - add long description
+	//Long: `A longer description that spans multiple lines and likely contains examples
+	//and usage of using your command. For example:
+	//
+	//Cobra is a CLI library for Go that empowers applications.
+	//This application is a tool to generate the needed files
+	//to quickly create a Cobra application.`,
+	//	Run: func(cmd *cobra.Command, args []string) {
+	//		fmt.Println("task called")
+	//	},
 }
 
 func init() {
-	rootCmd.AddCommand(workCmd)
+	rootCmd.AddCommand(taskCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// workCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// taskCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// workCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// taskCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
-	workCmd.PersistentFlags().BoolVarP(&wklistAfterChange, "list", "l", false, "List today work after change")
+	// TODO Lebeda - list after change
 }
 
-//TODO Lebeda - list za období, popř. za x dní zpět
+// TODO Lebeda - work - change status and start worklog and timer
+// TODO Lebeda - maybe - change status
+// TODO Lebeda - context - add or remove context from task

@@ -32,7 +32,7 @@ var tmlistAfterChange bool
 var timerCmd = &cobra.Command{
 	Use:     "timer",
 	Short:   "Simple timer",
-	Aliases: []string{"tm"},
+	Aliases: []string{"tm", "tmr"},
 	Long:    `Simple timer ie. for pomodoro technique.`,
 	//Run: func(cmd *cobra.Command, args []string) {
 	//	fmt.Println("timer called")
