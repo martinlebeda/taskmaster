@@ -62,6 +62,22 @@ CREATE VIEW timer_distance AS SELECT rowid, strftime('%s', goal, 'localtime') - 
 			Script: `DROP VIEW IF EXISTS timer_distance;
             CREATE VIEW timer_distance AS SELECT rowid, strftime('%s', goal, 'localtime') - strftime('%s', 'now', 'localtime') as distance, goal, tag, note FROM timer ORDER BY distance;`,
 		},
+		{
+			Version:     6,
+			Description: "Create table task",
+			Script: `CREATE TABLE task (
+id INTEGER PRIMARY KEY AUTOINCREMENT, 
+parent_id INTEGER, 
+prio VARCHAR,
+status VARCHAR, 
+desc VARCHAR, 
+date_in DATETIME, 
+date_done DATETIME, 
+url VARCHAR, 
+note VARCHAR, 
+script VARCHAR
+);`,
+		},
 	}
 )
 

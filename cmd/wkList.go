@@ -63,3 +63,5 @@ func init() {
 	wkListCmd.Flags().StringVarP(&wkListToOpt, "to", "t", now.EndOfDay().Format("2006-01-02 15:04"), "Record start before date and time")
 
 }
+
+//TODO Lebeda - list za období, popř. za x dní zpět

@@ -52,3 +52,5 @@ func init() {
 
 	workCmd.PersistentFlags().BoolVarP(&wklistAfterChange, "list", "l", false, "List today work after change")
 }
+
+//TODO Lebeda - list za období, popř. za x dní zpět
