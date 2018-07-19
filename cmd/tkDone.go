@@ -21,15 +21,17 @@
 package cmd
 
 import (
-	"fmt"
-
+	"github.com/martinlebeda/taskmaster/model"
+	"github.com/martinlebeda/taskmaster/service"
 	"github.com/spf13/cobra"
+	"time"
 )
 
 // tkDoneCmd represents the tkDone command
 var tkDoneCmd = &cobra.Command{
-	Use:   "done",
-	Short: "A brief description of your command",
+	Use:     "done",
+	Aliases: []string{"complete"},
+	Short:   "A brief description of your command",
 	// TODO Lebeda - add long description
 	//Long: `A longer description that spans multiple lines and likely contains examples
 	//and usage of using your command. For example:
@@ -38,7 +40,12 @@ var tkDoneCmd = &cobra.Command{
 	//This application is a tool to generate the needed files
 	//to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("tkDone called")
+		var tsk model.Task
+		//tsk.Status = "N"
+		//tsk.DateDone = tools.GetZeroTime()
+		tsk.Status = "X"
+		tsk.DateDone = time.Now()
+		service.TskUpdate(tsk, args)
 	},
 }
 
@@ -53,5 +60,5 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// tkDoneCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	//tkDoneCmd.Flags().BoolP("undone", "u", false, "undone task")
 }

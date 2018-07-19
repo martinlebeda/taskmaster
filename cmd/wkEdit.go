@@ -24,6 +24,7 @@ import (
 	"github.com/jinzhu/now"
 	"github.com/martinlebeda/taskmaster/service"
 	"github.com/martinlebeda/taskmaster/termout"
+	"github.com/martinlebeda/taskmaster/tools"
 	"github.com/spf13/cobra"
 	"time"
 )
@@ -42,23 +43,23 @@ var wkEditCmd = &cobra.Command{
 	//to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		code, err := cmd.Flags().GetString("code")
-		service.CheckErr(err)
+		tools.CheckErr(err)
 
 		category, err := cmd.Flags().GetString("category")
-		service.CheckErr(err)
+		tools.CheckErr(err)
 
 		desc, err := cmd.Flags().GetString("desc")
-		service.CheckErr(err)
+		tools.CheckErr(err)
 
 		startOpt, err := cmd.Flags().GetString("start")
-		service.CheckErr(err)
+		tools.CheckErr(err)
 		start, err := time.Parse(service.BaseDateTimeFormat, startOpt)
-		service.CheckErr(err)
+		tools.CheckErr(err)
 
 		stopOpt, err := cmd.Flags().GetString("stop")
-		service.CheckErr(err)
+		tools.CheckErr(err)
 		stop, err := time.Parse(service.BaseDateTimeFormat, stopOpt)
-		service.CheckErr(err)
+		tools.CheckErr(err)
 
 		service.WrkUpdate(code, category, desc, start, stop, args)
 

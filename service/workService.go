@@ -3,6 +3,7 @@ package service
 import (
 	. "github.com/martinlebeda/taskmaster/model"
 	"github.com/martinlebeda/taskmaster/termout"
+	"github.com/martinlebeda/taskmaster/tools"
 	"strconv"
 	"strings"
 	"time"
@@ -11,22 +12,22 @@ import (
 func WrkStop(before, timeOpt, dateOpt string) {
 	db := OpenDB()
 	stmt, err := db.Prepare("update work set stop = ? where stop is null")
-	CheckErr(err)
+	tools.CheckErr(err)
 	dateTime := getDateTime(before, timeOpt, dateOpt)
 	result, err := stmt.Exec(dateTime)
-	CheckErr(err)
+	tools.CheckErr(err)
 	count, err := result.RowsAffected()
-	CheckErr(err)
+	tools.CheckErr(err)
 	termout.Verbose("Count of stopped task: " + strconv.FormatInt(count, 10))
 }
 
 func getDateTime(before, timeOpt, dateOpt string) time.Time {
 	result, err := time.Parse("2006-01-02 15:04", dateOpt+" "+timeOpt)
-	CheckErr(err)
+	tools.CheckErr(err)
 
 	if before != "" {
 		duration, err := time.ParseDuration(before)
-		CheckErr(err)
+		tools.CheckErr(err)
 		result = result.Add(duration)
 	}
 
@@ -38,12 +39,12 @@ func WrkStart(taskName string, category, code, before, timeOpt, dateOpt string) 
 
 	db := OpenDB()
 	stmt, err := db.Prepare("insert into work (desc, start, category, code) values (?, ?, ?, ?)")
-	CheckErr(err)
+	tools.CheckErr(err)
 	dateTime := getDateTime(before, timeOpt, dateOpt)
 	result, err := stmt.Exec(taskName, dateTime, category, code)
-	CheckErr(err)
+	tools.CheckErr(err)
 	count, err := result.RowsAffected()
-	CheckErr(err)
+	tools.CheckErr(err)
 	termout.Verbose("Task inserted: " + strconv.FormatInt(count, 10))
 }
 
@@ -66,7 +67,7 @@ func WrkGetWork(timeFrom, timeTo time.Time, onlyOpen bool) []WorkList {
 	sql += " order by start "
 
 	rows, err := db.Query(sql, timeFrom, timeTo)
-	CheckErr(err)
+	tools.CheckErr(err)
 
 	var result []WorkList
 	for rows.Next() {
@@ -86,9 +87,9 @@ func WrkDel(args []string) {
 	// execute delete
 	db := OpenDB()
 	stmt, err := db.Prepare(sql)
-	CheckErr(err)
+	tools.CheckErr(err)
 	_, err = stmt.Exec()
-	CheckErr(err)
+	tools.CheckErr(err)
 	termout.Verbose("Worklog deleted: ", strings.Join(args, ","))
 }
 
@@ -126,9 +127,9 @@ func WrkUpdate(code, category, desc string, start, stop time.Time, ids []string)
 	// execute update
 	db := OpenDB()
 	stmt, err := db.Prepare(sql)
-	CheckErr(err)
+	tools.CheckErr(err)
 	_, err = stmt.Exec(argSql...)
-	CheckErr(err)
+	tools.CheckErr(err)
 	termout.Verbose("Worklog updated: ", strings.Join(ids, ","))
 }
 
@@ -144,7 +145,7 @@ func WrkGetWorkSum(timeFrom, timeTo time.Time, sumByField string) []WorkSum {
 	sql += " order by " + sumByField
 
 	rows, err := db.Query(sql, timeFrom, timeTo)
-	CheckErr(err)
+	tools.CheckErr(err)
 
 	var result []WorkSum
 	for rows.Next() {

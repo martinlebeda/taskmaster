@@ -24,6 +24,7 @@ import (
 	"github.com/jinzhu/now"
 	"github.com/martinlebeda/taskmaster/service"
 	"github.com/martinlebeda/taskmaster/termout"
+	"github.com/martinlebeda/taskmaster/tools"
 	"github.com/spf13/cobra"
 	"time"
 )
@@ -38,9 +39,9 @@ var wkListCmd = &cobra.Command{
 	//Long: ``, TODO Lebeda - add descroption
 	Run: func(cmd *cobra.Command, args []string) {
 		timeFrom, err := time.Parse("2006-01-02 15:04", wkListFromOpt)
-		service.CheckErr(err)
+		tools.CheckErr(err)
 		timeTo, err := time.Parse("2006-01-02 15:04", wkListToOpt)
-		service.CheckErr(err)
+		tools.CheckErr(err)
 		workList := service.WrkGetWork(timeFrom, timeTo, false)
 		termout.WrkListWork(workList)
 	},

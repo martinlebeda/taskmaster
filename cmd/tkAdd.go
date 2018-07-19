@@ -59,6 +59,7 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// tkAddCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	tkAddCmd.Flags().Int64VarP(&taskOpt.ParentId.Int64, "parent", "t", 0, "parent task id")
 	tkAddCmd.Flags().StringVarP(&taskOpt.Prio.String, "prio", "p", "", "task priority")
 	tkAddCmd.Flags().StringVarP(&taskOpt.Url.String, "url", "u", "", "url for this task (ie. sources on internet)")
 	tkAddCmd.Flags().StringVarP(&taskOpt.Note.String, "note", "n", "", "path to file with note")

@@ -21,18 +21,17 @@
 package cmd
 
 import (
+	"github.com/martinlebeda/taskmaster/model"
 	"github.com/martinlebeda/taskmaster/service"
 	"github.com/martinlebeda/taskmaster/tools"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
-	"time"
 )
 
-// tmEditCmd represents the tmEdit command
-var tmEditCmd = &cobra.Command{
-	Use:   "edit",
-	Short: "Edit timer items",
-	Args:  cobra.MinimumNArgs(1),
+// tkDoneCmd represents the tkDone command
+var tkMaybeCmd = &cobra.Command{
+	Use:     "maybe",
+	Aliases: []string{"mb", "nonworkable", "inactive"},
+	Short:   "A brief description of your command",
 	// TODO Lebeda - add long description
 	//Long: `A longer description that spans multiple lines and likely contains examples
 	//and usage of using your command. For example:
@@ -41,27 +40,13 @@ var tmEditCmd = &cobra.Command{
 	//This application is a tool to generate the needed files
 	//to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		note, err := cmd.Flags().GetString("note")
-		tools.CheckErr(err)
-
-		goalOpt, err := cmd.Flags().GetString("goal")
-		tools.CheckErr(err)
-		goal, err := time.Parse(service.BaseDateTimeFormat, goalOpt)
-		tools.CheckErr(err)
-
-		service.TmrUpdate(note, goal, args)
-		if tmlistAfterChange {
-			service.TmrListAfterChange()
-		}
-		if viper.GetString("afterchange") != "" {
-			service.SysAfterChange()
-		}
+		var tsk model.Task
+		tsk.Status = "M"
+		tsk.DateDone = tools.GetZeroTime()
+		service.TskUpdate(tsk, args)
 	},
 }
 
 func init() {
-	timerCmd.AddCommand(tmEditCmd)
-
-	tmEditCmd.Flags().String("note", "", "new note value")
-	tmEditCmd.Flags().String("goal", time.Time{}.Format(service.BaseDateTimeFormat), "new note value")
+	taskCmd.AddCommand(tkMaybeCmd)
 }

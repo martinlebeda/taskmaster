@@ -21,15 +21,15 @@
 package cmd
 
 import (
-	"fmt"
-
+	"github.com/martinlebeda/taskmaster/service"
 	"github.com/spf13/cobra"
 )
 
 // tkDeleteCmd represents the tkDelete command
 var tkDeleteCmd = &cobra.Command{
-	Use:   "delete",
-	Short: "A brief description of your command",
+	Use:     "delete",
+	Aliases: []string{"del"},
+	Short:   "A brief description of your command",
 	// TODO Lebeda - add long description
 	//Long: `A longer description that spans multiple lines and likely contains examples
 	//and usage of using your command. For example:
@@ -38,7 +38,7 @@ var tkDeleteCmd = &cobra.Command{
 	//This application is a tool to generate the needed files
 	//to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("tkDelete called")
+		service.TskDel(args)
 	},
 }
 

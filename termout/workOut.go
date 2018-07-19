@@ -23,6 +23,7 @@ package termout
 import (
 	"fmt"
 	"github.com/martinlebeda/taskmaster/model"
+	"github.com/martinlebeda/taskmaster/tools"
 	"os"
 	"strconv"
 	"text/tabwriter"
@@ -40,7 +41,7 @@ func WrkListWork(works []model.WorkList) {
 
 		stopFmt := ""
 		durationFmt := ""
-		if work.Stop.After(time.Date(0001, time.January, 1, 0, 0, 0, 0, time.UTC)) {
+		if work.Stop.After(tools.GetZeroTime()) {
 			stopFmt = work.Stop.Format(format)
 			durationFmt = duration.Round(time.Second).String()
 		}

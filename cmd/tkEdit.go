@@ -21,8 +21,7 @@
 package cmd
 
 import (
-	"fmt"
-
+	"github.com/martinlebeda/taskmaster/service"
 	"github.com/spf13/cobra"
 )
 
@@ -38,20 +37,17 @@ var tkEditCmd = &cobra.Command{
 	//This application is a tool to generate the needed files
 	//to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("tkEdit called")
+		service.TskUpdate(taskOpt, args)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(tkEditCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// tkEditCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// tkEditCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	tkEditCmd.Flags().Int64VarP(&taskOpt.ParentId.Int64, "parent", "t", 0, "parent task id")
+	tkEditCmd.Flags().StringVarP(&taskOpt.Prio.String, "prio", "p", "", "task priority")
+	tkEditCmd.Flags().StringVarP(&taskOpt.Url.String, "url", "u", "", "url for this task (ie. sources on internet)")
+	tkEditCmd.Flags().StringVarP(&taskOpt.Note.String, "note", "n", "", "path to file with note")
+	tkEditCmd.Flags().StringVarP(&taskOpt.Script.String, "script", "s", "", "path to file with script")
+	tkEditCmd.Flags().StringVarP(&taskOpt.Desc, "desc", "d", "", "task description")
 }

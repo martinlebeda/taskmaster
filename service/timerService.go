@@ -3,6 +3,7 @@ package service
 import (
 	. "github.com/martinlebeda/taskmaster/model"
 	"github.com/martinlebeda/taskmaster/termout"
+	"github.com/martinlebeda/taskmaster/tools"
 	"strconv"
 	"strings"
 	"time"
@@ -10,14 +11,14 @@ import (
 
 func TmrSet(replaceTag bool, tag, dateOpt, timeArg, title string) {
 	goal, err := time.Parse("2006-01-02 15:04", dateOpt+" "+timeArg)
-	CheckErr(err)
+	tools.CheckErr(err)
 
 	insertNewTimer(replaceTag, tag, title, goal)
 }
 
 func TmrAdd(replaceTag bool, tag, duration, title string) {
 	parseDuration, err := time.ParseDuration(duration)
-	CheckErr(err)
+	tools.CheckErr(err)
 
 	goal := time.Now().Add(parseDuration)
 
@@ -30,15 +31,15 @@ func insertNewTimer(replaceTag bool, tag, title string, goal time.Time) {
 
 	if tag != "" && replaceTag {
 		stmt, err := db.Prepare("delete from timer where tag = ?")
-		CheckErr(err)
+		tools.CheckErr(err)
 		_, err = stmt.Exec(tag)
-		CheckErr(err)
+		tools.CheckErr(err)
 	}
 
 	stmt, err := db.Prepare("INSERT INTO timer(note, goal, tag) values(?,?,?)")
-	CheckErr(err)
+	tools.CheckErr(err)
 	_, err = stmt.Exec(title, goal, tag)
-	CheckErr(err)
+	tools.CheckErr(err)
 	termout.Verbose("New timer inserted")
 }
 
@@ -56,9 +57,9 @@ func TmrDel(tmDeleteByName, tmDeleteByTag bool, args []string) {
 	// execute delete
 	db := OpenDB()
 	stmt, err := db.Prepare(sql)
-	CheckErr(err)
+	tools.CheckErr(err)
 	_, err = stmt.Exec()
-	CheckErr(err)
+	tools.CheckErr(err)
 	termout.Verbose("Timer deleted: ", strings.Join(args, ","))
 }
 
@@ -83,9 +84,9 @@ func TmrUpdate(note string, goal time.Time, ids []string) {
 	// execute update
 	db := OpenDB()
 	stmt, err := db.Prepare(sql)
-	CheckErr(err)
+	tools.CheckErr(err)
 	_, err = stmt.Exec(argSql...)
-	CheckErr(err)
+	tools.CheckErr(err)
 	termout.Verbose("Timer updated: ", strings.Join(ids, ","))
 }
 
@@ -111,7 +112,7 @@ func TmrGetDistance(pastOpt, nextOpt bool, tag string) []TimerDistance {
 	}
 
 	rows, err := db.Query(sql)
-	CheckErr(err)
+	tools.CheckErr(err)
 
 	var result []TimerDistance
 	for rows.Next() {
@@ -132,9 +133,9 @@ func TmrClean(deleteAll bool) {
 	}
 
 	result, err := db.Exec(sql)
-	CheckErr(err)
+	tools.CheckErr(err)
 	count, err := result.RowsAffected()
-	CheckErr(err)
+	tools.CheckErr(err)
 	termout.Verbose("Count of deleted timers: ", strconv.FormatInt(count, 10))
 }
 

@@ -24,6 +24,7 @@ import (
 	"database/sql"
 	"github.com/GuiaBolso/darwin"
 	"github.com/martinlebeda/taskmaster/termout"
+	"github.com/martinlebeda/taskmaster/tools"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/spf13/cast"
 	"github.com/spf13/viper"
@@ -85,7 +86,7 @@ script VARCHAR
 func OpenDB() *sql.DB {
 	dbFileName := viper.GetString("dbfile")
 	db, err := sql.Open("sqlite3", dbFileName)
-	CheckErr(err)
+	tools.CheckErr(err)
 
 	return db
 }
@@ -108,10 +109,10 @@ func DbUpgrade() {
 func getDbVersion(db *sql.DB) float32 {
 	var result float32
 	rows, err := db.Query("select max(version) from darwin_migrations")
-	CheckErr(err)
+	tools.CheckErr(err)
 	for rows.Next() {
 		err := rows.Scan(&result)
-		CheckErr(err)
+		tools.CheckErr(err)
 	}
 
 	rows.Close()
