@@ -113,3 +113,30 @@ func TskUpdate(task Task, ids []string) {
 	tools.CheckErr(err)
 	termout.Verbose("Task updated: ", strings.Join(ids, ","))
 }
+
+func TskGetList() []Task {
+	db := OpenDB()
+	sql := "select id, parent_id, prio, status, desc, date_in, date_done, url, note, script from task where 1=1 "
+
+	//if !timeFrom.IsZero() {
+	//	sql += " and start >= ? and start <= ? "
+	//}
+	//
+	//if onlyOpen {
+	//sql += " and stop is null "
+	//}
+
+	sql += " order by CASE WHEN prio IS NULL THEN 'ZZ' ELSE prio END, date_in"
+
+	rows, err := db.Query(sql)
+	tools.CheckErr(err)
+
+	var result []Task
+	for rows.Next() {
+		var task Task
+		rows.Scan(&task.Id, &task.ParentId, &task.Prio, &task.Status, &task.Desc, &task.DateIn, &task.DateDone, &task.Url, &task.Note, &task.Script)
+		result = append(result, task)
+	}
+
+	return result
+}

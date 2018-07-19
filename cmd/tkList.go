@@ -21,15 +21,16 @@
 package cmd
 
 import (
-	"fmt"
-
+	"github.com/martinlebeda/taskmaster/service"
+	"github.com/martinlebeda/taskmaster/termout"
 	"github.com/spf13/cobra"
 )
 
 // tkListCmd represents the tkList command
 var tkListCmd = &cobra.Command{
-	Use:   "tkList",
-	Short: "A brief description of your command",
+	Use:     "list",
+	Aliases: []string{"ls"},
+	Short:   "A brief description of your command",
 	// TODO Lebeda - add long description
 	//Long: `A longer description that spans multiple lines and likely contains examples
 	//and usage of using your command. For example:
@@ -38,7 +39,10 @@ var tkListCmd = &cobra.Command{
 	//This application is a tool to generate the needed files
 	//to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("tkList called")
+		// TODO Lebeda - prohledávání dle desc
+		tasks := service.TskGetList()
+		termout.TskListTasks(tasks)
+
 	},
 }
 
@@ -54,4 +58,9 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// tkListCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+
+	// TODO Lebeda - regex pro prohledávání
+	// TODO Lebeda - prio pro prohledávání, spec hodnoty -a -b -c -d
+	// TODO Lebeda - zahrnout maybe
+	// TODO Lebeda - zahrnout done
 }
