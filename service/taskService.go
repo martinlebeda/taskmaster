@@ -17,9 +17,9 @@ func TskAdd(task Task) {
 	fmt.Println(task)
 
 	db := OpenDB()
-	stmt, err := db.Prepare("insert into task (desc, status, date_in, prio, url, note, script) values (?, ?, ?, ?, ?, ?, ?)")
+	stmt, err := db.Prepare("insert into task (desc, status, date_in, prio, code, category, url, note, script) values (?, ?, ?, ?, ?, ?, ?, ?, ?)")
 	tools.CheckErr(err)
-	result, err := stmt.Exec(task.Desc, "N", time.Now(), task.Prio, task.Url, task.Note, task.Script)
+	result, err := stmt.Exec(task.Desc, "N", time.Now(), task.Prio, task.Code, task.Category, task.Url, task.Note, task.Script)
 	tools.CheckErr(err)
 	count, err := result.RowsAffected()
 	tools.CheckErr(err)
@@ -36,7 +36,8 @@ func TskAdd(task Task) {
 // set null values for empty string or int is 0
 func nullTask(task Task) Task {
 	task.Prio.Valid = task.Prio.String != ""
-	task.ParentId.Valid = task.ParentId.Int64 > 0
+	task.Code.Valid = task.Code.String != ""
+	task.Category.Valid = task.Category.String != ""
 	task.Url.Valid = task.Url.String != ""
 	task.Note.Valid = task.Note.String != ""
 	task.Script.Valid = task.Script.String != ""
@@ -65,13 +66,17 @@ func TskUpdate(task Task, ids []string) {
 	// add parameters
 	var setSql []string
 	var argSql []interface{}
-	if task.ParentId.Int64 > 0 {
-		setSql = append(setSql, "parent_id = ?")
-		argSql = append(argSql, task.ParentId.Int64)
-	}
 	if task.Prio.String != "" {
 		setSql = append(setSql, "prio = ?")
 		argSql = append(argSql, task.Prio.String)
+	}
+	if task.Category.String != "" {
+		setSql = append(setSql, "category = ?")
+		argSql = append(argSql, task.Category.String)
+	}
+	if task.Code.String != "" {
+		setSql = append(setSql, "code = ?")
+		argSql = append(argSql, task.Code.String)
 	}
 	if task.Status != "" {
 		setSql = append(setSql, "status = ?")
@@ -116,7 +121,7 @@ func TskUpdate(task Task, ids []string) {
 
 func TskGetList() []Task {
 	db := OpenDB()
-	sql := "select id, parent_id, prio, status, desc, date_in, date_done, url, note, script from task where 1=1 "
+	sql := "select id, prio, code, category, status, desc, date_in, date_done, url, note, script from task where 1=1 "
 
 	//if !timeFrom.IsZero() {
 	//	sql += " and start >= ? and start <= ? "
@@ -126,7 +131,7 @@ func TskGetList() []Task {
 	//sql += " and stop is null "
 	//}
 
-	sql += " order by CASE WHEN prio IS NULL THEN 'ZZ' ELSE prio END, date_in"
+	sql += " order by CASE WHEN prio IS NULL THEN 'W' ELSE prio END, category, code, date_in"
 
 	rows, err := db.Query(sql)
 	tools.CheckErr(err)
@@ -134,7 +139,7 @@ func TskGetList() []Task {
 	var result []Task
 	for rows.Next() {
 		var task Task
-		rows.Scan(&task.Id, &task.ParentId, &task.Prio, &task.Status, &task.Desc, &task.DateIn, &task.DateDone, &task.Url, &task.Note, &task.Script)
+		rows.Scan(&task.Id, &task.Prio, &task.Code, &task.Category, &task.Status, &task.Desc, &task.DateIn, &task.DateDone, &task.Url, &task.Note, &task.Script)
 		result = append(result, task)
 	}
 

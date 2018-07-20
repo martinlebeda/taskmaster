@@ -68,9 +68,10 @@ CREATE VIEW timer_distance AS SELECT rowid, strftime('%s', goal, 'localtime') - 
 			Description: "Create table task",
 			Script: `CREATE TABLE task (
 id INTEGER PRIMARY KEY AUTOINCREMENT, 
-parent_id INTEGER, 
 prio VARCHAR,
 status VARCHAR, 
+code VARCHAR,
+category VARCHAR,
 desc VARCHAR, 
 date_in DATETIME, 
 date_done DATETIME, 

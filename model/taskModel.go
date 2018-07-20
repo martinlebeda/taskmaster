@@ -7,8 +7,9 @@ import (
 
 type Task struct {
 	Id       int
-	ParentId sql.NullInt64
 	Prio     sql.NullString
+	Code     sql.NullString
+	Category sql.NullString
 	Status   string
 	Desc     string
 	DateIn   time.Time
