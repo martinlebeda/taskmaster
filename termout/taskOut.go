@@ -22,20 +22,58 @@ package termout
 
 import (
 	"fmt"
+	"github.com/fatih/color"
 	"github.com/martinlebeda/taskmaster/model"
-	"os"
-	"text/tabwriter"
+	"github.com/ryanuber/columnize"
+	"strconv"
+	"strings"
 )
 
 func TskListTasks(tasks []model.Task) {
 
-	w := tabwriter.NewWriter(os.Stdout, 5, 2, 1, ' ', 0)
+	d := color.New(color.Bold)   // TODO Lebeda - tools funkce
+	x := color.New(color.FgCyan) // TODO Lebeda - tools funkce
+
+	// build output
+	output := []string{}
 	for _, task := range tasks {
-		fmt.Fprintf(w, "%d\t  %s\t%s   \t%s\t %s\t %s\n",
-			task.Id, task.Prio.String, task.Desc, task.Url.String, task.Note.String, task.Script.String)
-		//}
+		statuFmt := "" + task.Status + ""
+		if statuFmt == "N" {
+			statuFmt = ""
+		}
+
+		prioFmt := "(" + task.Prio.String + ")"
+		if prioFmt == "()" {
+			prioFmt = ""
+		}
+
+		out := fmt.Sprintf("%s | %s | %s | %s | %s | %s | %s | %s | %s",
+			strconv.Itoa(task.Id),
+			statuFmt,
+			prioFmt,
+			task.Category.String,
+			task.Code.String,
+			task.Desc,
+			task.Url.String,
+			task.Note.String,
+			task.Script.String)
+		output = append(output, out)
+
 	}
-	w.Flush()
+
+	// columize
+	outFmt := strings.Split(columnize.SimpleFormat(output), "\n")
+
+	// printout
+	for i, task := range tasks {
+		if task.Prio.String == "A" || task.Prio.String == "B" {
+			d.Println(outFmt[i])
+		} else if task.Status == "X" {
+			x.Println(outFmt[i])
+		} else {
+			fmt.Println(outFmt[i])
+		}
+	}
 
 	if isVerbose() {
 		fmt.Println("\nCount of tasks: ", len(tasks))

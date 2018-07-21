@@ -64,7 +64,7 @@ func TmrDel(tmDeleteByName, tmDeleteByTag bool, args []string) {
 }
 
 func TmrUpdate(note string, goal time.Time, ids []string) {
-	sql := "update timer set"
+	sql := "update timer "
 
 	// add parameters
 	var setSql []string

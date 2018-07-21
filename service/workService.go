@@ -94,7 +94,7 @@ func WrkDel(args []string) {
 }
 
 func WrkUpdate(code, category, desc string, start, stop time.Time, ids []string) {
-	sql := "update work set"
+	sql := "update work "
 
 	// add parameters
 	var setSql []string

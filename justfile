@@ -25,6 +25,8 @@ dep:
   go get github.com/GuiaBolso/darwin
   go get github.com/dustin/go-humanize
   go get github.com/jinzhu/now
+  go get github.com/fatih/color
+  go get github.com/willf/pad
 
 #  go get github.com/gin-gonic/gin
 #  go get github.com/satori/go.uuid

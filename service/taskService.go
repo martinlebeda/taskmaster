@@ -61,7 +61,7 @@ func TskDel(ids []string) {
 
 // update task non empty values in pattern for ids
 func TskUpdate(task Task, ids []string) {
-	sql := "update task set"
+	sql := "update task "
 
 	// add parameters
 	var setSql []string
@@ -80,7 +80,7 @@ func TskUpdate(task Task, ids []string) {
 	}
 	if task.Status != "" {
 		setSql = append(setSql, "status = ?")
-		argSql = append(argSql, task.Prio.String)
+		argSql = append(argSql, task.Status)
 	}
 	if task.Desc != "" {
 		setSql = append(setSql, "desc = ?")
@@ -107,6 +107,8 @@ func TskUpdate(task Task, ids []string) {
 		argSql = append(argSql, task.Script.String)
 	}
 
+	// TODO Lebeda - check if setSql is not empty
+
 	sql += "set " + strings.Join(setSql, ", ")
 	sql += " where id in (" + strings.Join(ids, ",") + ")"
 
@@ -131,7 +133,7 @@ func TskGetList() []Task {
 	//sql += " and stop is null "
 	//}
 
-	sql += " order by CASE WHEN prio IS NULL THEN 'W' ELSE prio END, category, code, date_in"
+	sql += " order by CASE WHEN status = 'N' THEN 0 WHEN status = 'M' THEN 60 WHEN status = 'X' THEN 99 ELSE 80 END, CASE WHEN (prio IS NULL) OR (PRIO = '') THEN 'W' ELSE prio END, category, code, date_in"
 
 	rows, err := db.Query(sql)
 	tools.CheckErr(err)

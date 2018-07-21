@@ -22,16 +22,18 @@ package termout
 
 import (
 	"fmt"
+	"github.com/fatih/color"
 	"github.com/martinlebeda/taskmaster/model"
-	"os"
+	"github.com/willf/pad"
 	"strconv"
-	"text/tabwriter"
 	"time"
 )
 
 func TmrListDistance(distances []model.TimerDistance, cndOut bool) {
 
-	w := tabwriter.NewWriter(os.Stdout, 5, 2, 1, ' ', 0)
+	d := color.New(color.Bold)
+
+	//w := tabwriter.NewWriter(os.Stdout, 5, 2, 1, ' ', 0)
 	for _, distance := range distances {
 		duration, _ := time.ParseDuration(strconv.Itoa(distance.Distance) + "s")
 
@@ -46,12 +48,32 @@ func TmrListDistance(distances []model.TimerDistance, cndOut bool) {
 
 		// output
 		if cndOut {
-			fmt.Fprintf(w, "%s - %v - %s\n", duration.String(), distance.Goal.Format(format), distance.Note)
+			fmt.Println("%s - %v - %s\n", duration.String(), "-", distance.Goal.Format(format), "-", distance.Note)
 		} else {
-			fmt.Fprintf(w, "%d\t%s\t  %v\t %s\t %s\n", distance.Rowid, duration.String(), distance.Goal.Format(format), distance.Tag, distance.Note)
+			outline := fmt.Sprint(distance.Rowid,
+				pad.Right(duration.String(), 10, " "),
+				pad.Right(distance.Goal.Format(format), 10, " "),
+				pad.Right(distance.Tag, 10, " "),
+				distance.Note)
+
+			if duration < 0 {
+				d.Println(outline)
+			} else {
+				fmt.Println(outline)
+			}
+			//fmt.Fprintf(w, "%d | %s |   %v |  %s |  %s\n", distance.Rowid, duration.String(), distance.Goal.Format(format), distance.Tag, distance.Note)
 		}
 	}
-	w.Flush()
+	//w.Flush()
+
+	//config := columnize.DefaultConfig()
+	//config.Delim = "|"
+	//config.Glue = "  "
+	//config.Prefix = ""
+	//config.Empty = ""
+	//config.NoTrim = true
+	//result := columnize.SimpleFormat(output)
+	//fmt.Println(result)
 
 	if isVerbose() {
 		fmt.Println("\nCount of timers: ", len(distances))
