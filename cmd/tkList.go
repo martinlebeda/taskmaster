@@ -21,9 +21,12 @@
 package cmd
 
 import (
+	"github.com/jinzhu/now"
 	"github.com/martinlebeda/taskmaster/service"
 	"github.com/martinlebeda/taskmaster/termout"
+	"github.com/martinlebeda/taskmaster/tools"
 	"github.com/spf13/cobra"
+	"time"
 )
 
 // tkListCmd represents the tkList command
@@ -39,8 +42,24 @@ var tkListCmd = &cobra.Command{
 	//This application is a tool to generate the needed files
 	//to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// TODO Lebeda - prohledávání dle desc
-		tasks := service.TskGetList()
+		doneOpt, err := cmd.Flags().GetString("done-from")
+		tools.CheckErr(err)
+		tskDoneFrom, err := time.Parse("2006-01-02", doneOpt)
+		tools.CheckErr(err)
+
+		showMaybe, err := cmd.Flags().GetBool("maybe")
+		tools.CheckErr(err)
+
+		showPrio, err := cmd.Flags().GetStringArray("prio")
+		tools.CheckErr(err)
+
+		showCode, err := cmd.Flags().GetString("code")
+		tools.CheckErr(err)
+
+		showCategory, err := cmd.Flags().GetString("category")
+		tools.CheckErr(err)
+
+		tasks := service.TskGetList(tskDoneFrom, showMaybe, showPrio, showCode, showCategory, args)
 		termout.TskListTasks(tasks)
 
 	},
@@ -49,18 +68,14 @@ var tkListCmd = &cobra.Command{
 func init() {
 	taskCmd.AddCommand(tkListCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// tkListCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// tkListCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-
 	// TODO Lebeda - regex pro prohledávání
 	// TODO Lebeda - prio pro prohledávání, spec hodnoty -a -b -c -d
-	// TODO Lebeda - zahrnout maybe
-	// TODO Lebeda - zahrnout done
+	// TODO Lebeda - prio pro prohledávání arra jako výstup
+
+	tkListCmd.Flags().StringArrayP("prio", "p", []string{}, "show only priority")
+
+	tkListCmd.Flags().BoolP("maybe", "m", false, "show maybe tasks")
+	tkListCmd.Flags().String("done-from", now.BeginningOfDay().Format("2006-01-02"), "show done from day")
+	tkListCmd.Flags().String("code", "", "show tasks with code")
+	tkListCmd.Flags().String("category", "", "show tasks with category")
 }

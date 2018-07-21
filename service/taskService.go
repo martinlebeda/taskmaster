@@ -121,7 +121,7 @@ func TskUpdate(task Task, ids []string) {
 	termout.Verbose("Task updated: ", strings.Join(ids, ","))
 }
 
-func TskGetList() []Task {
+func TskGetList(doneFrom time.Time, showMaybe bool, showPrio []string, showCode, showCategory string, args []string) []Task {
 	db := OpenDB()
 	sql := "select id, prio, code, category, status, desc, date_in, date_done, url, note, script from task where 1=1 "
 
@@ -133,9 +133,35 @@ func TskGetList() []Task {
 	//sql += " and stop is null "
 	//}
 
+	sql += " and (status <> 'X' or date_done > ?) "
+	if !showMaybe {
+		sql += " and status <> 'M' "
+	}
+	if len(showPrio) > 0 {
+		sql += " and prio in ('" + strings.Join(showPrio, "','") + "') "
+	}
+	if showCode != "" {
+		sql += " and code = '" + showCode + "' "
+	}
+	if showCategory != "" {
+		sql += " and code = '" + showCategory + "' "
+	}
+
+	if len(args) > 0 {
+		sql += " and ( "
+
+		var descWhere []string
+		for _, val := range args {
+			descWhere = append(descWhere, "desc like '%"+val+"%'")
+		}
+		sql += strings.Join(descWhere, " or ")
+
+		sql += " ) "
+	}
+
 	sql += " order by CASE WHEN status = 'N' THEN 0 WHEN status = 'M' THEN 60 WHEN status = 'X' THEN 99 ELSE 80 END, CASE WHEN (prio IS NULL) OR (PRIO = '') THEN 'W' ELSE prio END, category, code, date_in"
 
-	rows, err := db.Query(sql)
+	rows, err := db.Query(sql, doneFrom)
 	tools.CheckErr(err)
 
 	var result []Task
