@@ -44,6 +44,9 @@ var tkAddCmd = &cobra.Command{
 		taskOpt.Desc = args[0]
 		service.TskAdd(taskOpt)
 
+		if listAfterChange {
+			service.TkListAfterChange()
+		}
 	},
 }
 

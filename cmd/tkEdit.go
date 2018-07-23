@@ -38,7 +38,11 @@ var tkEditCmd = &cobra.Command{
 	//This application is a tool to generate the needed files
 	//to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		service.TskUpdate(taskOpt, args)
+		service.TskUpdate(taskOpt, false, args)
+
+		if listAfterChange {
+			service.TkListAfterChange()
+		}
 	},
 }
 

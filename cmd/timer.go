@@ -24,7 +24,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var tmlistAfterChange bool
+var listAfterChange bool
 
 // TODO Lebeda - subcommand tag TAGNAME ID ID ID
 
@@ -46,7 +46,7 @@ func init() {
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	timerCmd.PersistentFlags().BoolVarP(&tmlistAfterChange, "list", "l", false, "List timers after change (add, set, clear, delete)")
+	timerCmd.PersistentFlags().BoolVarP(&listAfterChange, "list", "l", false, "List after change (add, set, clear, delete)")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:

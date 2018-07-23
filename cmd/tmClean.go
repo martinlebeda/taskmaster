@@ -35,7 +35,7 @@ var tmCleanCmd = &cobra.Command{
 	Long:  `Delete old timers from DB.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		service.TmrClean(tmrDeleteAll)
-		if tmlistAfterChange {
+		if listAfterChange {
 			service.TmrListAfterChange()
 		}
 		if viper.GetString("afterchange") != "" {

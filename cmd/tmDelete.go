@@ -37,7 +37,7 @@ var tmDeleteCmd = &cobra.Command{
 	Args:    cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		service.TmrDel(tmDeleteByName, tmDeleteByTag, args)
-		if tmlistAfterChange {
+		if listAfterChange {
 			service.TmrListAfterChange()
 		}
 		if viper.GetString("afterchange") != "" {

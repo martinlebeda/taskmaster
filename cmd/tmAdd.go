@@ -38,7 +38,7 @@ var tmAddCmd = &cobra.Command{
 	Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
 		service.TmrAdd(tmAddReplaceTagOpt, tmAddTagOpt, args[0], args[1])
-		if tmlistAfterChange {
+		if listAfterChange {
 			service.TmrListAfterChange()
 		}
 		if viper.GetString("afterchange") != "" {

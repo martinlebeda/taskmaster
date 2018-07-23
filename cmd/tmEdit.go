@@ -50,7 +50,7 @@ var tmEditCmd = &cobra.Command{
 		tools.CheckErr(err)
 
 		service.TmrUpdate(note, goal, args)
-		if tmlistAfterChange {
+		if listAfterChange {
 			service.TmrListAfterChange()
 		}
 		if viper.GetString("afterchange") != "" {

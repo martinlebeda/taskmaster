@@ -39,6 +39,9 @@ var tkDeleteCmd = &cobra.Command{
 	//to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		service.TskDel(args)
+		if listAfterChange {
+			service.TkListAfterChange()
+		}
 	},
 }
 

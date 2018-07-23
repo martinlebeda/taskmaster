@@ -80,7 +80,9 @@ func TskListTasks(tasks []model.Task) {
 func TskShowWork(task model.Task) {
 	prioFmt := formatPrio(task)
 
-	fmt.Println(task.Id, "-", strings.TrimSpace(prioFmt+task.Code.String+task.Desc))
+	trimSpace := strings.TrimSpace(prioFmt + " " + task.Code.String + " " + task.Desc)
+	replace := strings.Replace(trimSpace, "  ", " ", -1)
+	fmt.Println(task.Id, "-", replace)
 }
 
 func formatPrio(task model.Task) string {

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/jinzhu/now"
 	. "github.com/martinlebeda/taskmaster/model"
 	"github.com/martinlebeda/taskmaster/termout"
 	"github.com/martinlebeda/taskmaster/tools"
@@ -62,7 +63,7 @@ func TskDel(ids []string) {
 }
 
 // update task non empty values in pattern for ids
-func TskUpdate(task Task, ids []string) {
+func TskUpdate(task Task, forcePriority bool, ids []string) {
 	sql := "update task "
 
 	task = prepareTask(task)
@@ -70,7 +71,8 @@ func TskUpdate(task Task, ids []string) {
 	// add parameters
 	var setSql []string
 	var argSql []interface{}
-	if task.Prio.String != "" {
+
+	if task.Prio.String != "" || forcePriority {
 		setSql = append(setSql, "prio = ?")
 		argSql = append(argSql, task.Prio.String)
 	}
@@ -178,4 +180,10 @@ func TskGetList(doneFrom time.Time, showMaybe bool, showPrio []string, showCode,
 	}
 
 	return result
+}
+
+func TkListAfterChange() {
+	termout.EmptyLineOut()
+	tasks := TskGetList(now.BeginningOfDay(), false, []string{}, "", "", []string{})
+	termout.TskListTasks(tasks)
 }

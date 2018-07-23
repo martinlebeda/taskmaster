@@ -55,6 +55,7 @@ func init() {
 	// taskCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
 	// TODO Lebeda - list after change
+	taskCmd.PersistentFlags().BoolVarP(&listAfterChange, "list", "l", false, "List after change (add, set, clear, delete)")
 }
 
 // TODO Lebeda - work - change status and start worklog and timer

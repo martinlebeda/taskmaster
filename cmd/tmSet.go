@@ -39,7 +39,7 @@ var tmSetCmd = &cobra.Command{
 	Long:  `Set timer for concrete date and time.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		service.TmrSet(tmSetReplaceTagOpt, tmSetTagOpt, dateOpt, args[0], args[1])
-		if tmlistAfterChange {
+		if listAfterChange {
 			service.TmrListAfterChange()
 		}
 		if viper.GetString("afterchange") != "" {
