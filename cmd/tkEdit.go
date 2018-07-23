@@ -27,8 +27,9 @@ import (
 
 // tkEditCmd represents the tkEdit command
 var tkEditCmd = &cobra.Command{
-	Use:   "tkEdit",
-	Short: "A brief description of your command",
+	Use:     "edit",
+	Aliases: []string{"edt", "update", "upd"},
+	Short:   "A brief description of your command",
 	// TODO Lebeda - add long description
 	//Long: `A longer description that spans multiple lines and likely contains examples
 	//and usage of using your command. For example:
