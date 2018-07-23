@@ -21,61 +21,61 @@
 package termout
 
 import (
-	"fmt"
-	"github.com/fatih/color"
-	"github.com/martinlebeda/taskmaster/model"
-	"github.com/willf/pad"
-	"strconv"
-	"time"
+    "fmt"
+    "github.com/fatih/color"
+    "github.com/martinlebeda/taskmaster/model"
+    "strconv"
+    "time"
+    "strings"
+    "github.com/ryanuber/columnize"
 )
 
 func TmrListDistance(distances []model.TimerDistance, cndOut bool) {
 
-	d := color.New(color.Bold)
+    d := color.New(color.Bold)
 
-	//w := tabwriter.NewWriter(os.Stdout, 5, 2, 1, ' ', 0)
-	for _, distance := range distances {
-		duration, _ := time.ParseDuration(strconv.Itoa(distance.Distance) + "s")
+    // build output
+    output := []string{}
+    for _, distance := range distances {
+        duration, _ := time.ParseDuration(strconv.Itoa(distance.Distance) + "s")
 
-		// check for today and format by this
-		format := "2006-01-02 15:04"
-		t := time.Now()
-		roundedToday := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
-		roundedGoal := time.Date(distance.Goal.Year(), distance.Goal.Month(), distance.Goal.Day(), 0, 0, 0, 0, t.Location())
-		if roundedToday == roundedGoal {
-			format = "15:04"
-		}
+        // check for today and format by this
+        format := "2006-01-02 15:04"
+        t := time.Now()
+        roundedToday := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
+        roundedGoal := time.Date(distance.Goal.Year(), distance.Goal.Month(), distance.Goal.Day(), 0, 0, 0, 0, t.Location())
+        if roundedToday == roundedGoal {
+            format = "15:04"
+        }
 
-		// output
-		if cndOut {
-			fmt.Println("%s - %v - %s\n", duration.String(), "-", distance.Goal.Format(format), "-", distance.Note)
-		} else {
-			outline := fmt.Sprint(distance.Rowid,
-				pad.Right(duration.String(), 10, " "),
-				pad.Right(distance.Goal.Format(format), 10, " "),
-				pad.Right(distance.Tag, 10, " "),
-				distance.Note)
+        // output
+        if cndOut {
+            fmt.Println(duration.String(), "-", distance.Goal.Format(format), "-", distance.Note)
+        } else {
+            out := fmt.Sprintf("%d | %s | %s | %s | %s",
+                distance.Rowid,
+                duration.String(),
+                distance.Goal.Format(format),
+                distance.Tag,
+                distance.Note)
 
-			if duration < 0 {
-				d.Println(outline)
-			} else {
-				fmt.Println(outline)
-			}
-			//fmt.Fprintf(w, "%d | %s |   %v |  %s |  %s\n", distance.Rowid, duration.String(), distance.Goal.Format(format), distance.Tag, distance.Note)
-		}
-	}
-	//w.Flush()
+            output = append(output, out)
+        }
+    }
 
-	//config := columnize.DefaultConfig()
-	//config.Delim = "|"
-	//config.Glue = "  "
-	//config.Prefix = ""
-	//config.Empty = ""
-	//config.NoTrim = true
-	//result := columnize.SimpleFormat(output)
-	//fmt.Println(result)
+    // columize
+    outFmt := strings.Split(columnize.SimpleFormat(output), "\n")
 
-	if isVerbose() {
-		fmt.Println("\nCount of timers: ", len(distances))
-	}
+    // printout
+    for i, distance := range distances {
+        if distance.Distance < 0 {
+            d.Println(outFmt[i])
+        } else {
+            fmt.Println(outFmt[i])
+        }
+    }
+
+    if isVerbose() {
+        fmt.Println("\nCount of timers: ", len(distances))
+    }
 }

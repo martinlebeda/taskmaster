@@ -27,6 +27,7 @@ dep:
   go get github.com/jinzhu/now
   go get github.com/fatih/color
   go get github.com/willf/pad
+  go get github.com/ryanuber/columnize
 
 #  go get github.com/gin-gonic/gin
 #  go get github.com/satori/go.uuid
