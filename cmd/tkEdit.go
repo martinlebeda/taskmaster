@@ -42,7 +42,7 @@ var tkEditCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(tkEditCmd)
+	taskCmd.AddCommand(tkEditCmd)
 
 	tkEditCmd.Flags().StringVarP(&taskOpt.Prio.String, "prio", "p", "", "task priority")
 	tkEditCmd.Flags().StringVarP(&taskOpt.Code.String, "code", "c", "", "task code (project)")
