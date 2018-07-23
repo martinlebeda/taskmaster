@@ -42,10 +42,7 @@ func TskListTasks(tasks []model.Task) {
 			statuFmt = ""
 		}
 
-		prioFmt := "(" + task.Prio.String + ")"
-		if prioFmt == "()" {
-			prioFmt = ""
-		}
+		prioFmt := formatPrio(task)
 
 		out := fmt.Sprintf("%s | %s | %s | %s | %s | %s | %s | %s | %s",
 			strconv.Itoa(task.Id),
@@ -78,4 +75,18 @@ func TskListTasks(tasks []model.Task) {
 	if isVerbose() {
 		fmt.Println("\nCount of tasks: ", len(tasks))
 	}
+}
+
+func TskShowWork(task model.Task) {
+	prioFmt := formatPrio(task)
+
+	fmt.Println(task.Id, "-", strings.TrimSpace(prioFmt+task.Code.String+task.Desc))
+}
+
+func formatPrio(task model.Task) string {
+	prioFmt := "(" + task.Prio.String + ")"
+	if prioFmt == "()" {
+		prioFmt = ""
+	}
+	return prioFmt
 }
