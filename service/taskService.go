@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	. "github.com/martinlebeda/taskmaster/model"
 	"github.com/martinlebeda/taskmaster/termout"
 	"github.com/martinlebeda/taskmaster/tools"
@@ -13,8 +12,6 @@ import (
 func TskAdd(task Task) {
 
 	task = nullTask(task)
-
-	fmt.Println(task)
 
 	db := OpenDB()
 	stmt, err := db.Prepare("insert into task (desc, status, date_in, prio, code, category, url, note, script) values (?, ?, ?, ?, ?, ?, ?, ?, ?)")
