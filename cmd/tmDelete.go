@@ -31,7 +31,7 @@ var tmDeleteByTag, tmDeleteByName bool
 // tmDeleteCmd represents the tmDelete command
 var tmDeleteCmd = &cobra.Command{
 	Use:     "delete",
-	Aliases: []string{"del"},
+	Aliases: []string{"del", "stop"},
 	Short:   "delete timer",
 	Long:    `Delete timer records.`,
 	Args:    cobra.MinimumNArgs(1),
