@@ -46,7 +46,7 @@ var tmEditCmd = &cobra.Command{
 
 		goalOpt, err := cmd.Flags().GetString("goal")
 		tools.CheckErr(err)
-		goal, err := time.Parse(service.BaseDateTimeFormat, goalOpt)
+		goal, err := tools.ParseDateTimeMinutes(goalOpt)
 		tools.CheckErr(err)
 
 		service.TmrUpdate(note, goal, args)
@@ -63,5 +63,5 @@ func init() {
 	timerCmd.AddCommand(tmEditCmd)
 
 	tmEditCmd.Flags().String("note", "", "new note value")
-	tmEditCmd.Flags().String("goal", time.Time{}.Format(service.BaseDateTimeFormat), "new note value")
+	tmEditCmd.Flags().String("goal", time.Time{}.Format(tools.BaseDateTimeFormat), "new note value")
 }

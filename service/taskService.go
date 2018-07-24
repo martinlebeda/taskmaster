@@ -150,7 +150,7 @@ func TskGetList(doneFrom time.Time, showMaybe bool, showPrio []string, showCode,
 		sql += " and code = '" + showCode + "' "
 	}
 	if showCategory != "" {
-		sql += " and code = '" + showCategory + "' "
+		sql += " and category = '" + showCategory + "' "
 	}
 
 	if len(args) > 0 {

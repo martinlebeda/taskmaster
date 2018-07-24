@@ -10,7 +10,8 @@ import (
 )
 
 func TmrSet(replaceTag bool, tag, dateOpt, timeArg, title string) {
-	goal, err := time.Parse("2006-01-02 15:04", dateOpt+" "+timeArg)
+	goal, err := tools.ParseDateTimeMinutes(dateOpt + " " + timeArg)
+	//time.ParseInLocation("2006-01-02 15:04", dateOpt+" "+timeArg, time.Now().Location())
 	tools.CheckErr(err)
 
 	insertNewTimer(replaceTag, tag, title, goal)

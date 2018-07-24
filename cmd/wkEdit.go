@@ -53,12 +53,12 @@ var wkEditCmd = &cobra.Command{
 
 		startOpt, err := cmd.Flags().GetString("start")
 		tools.CheckErr(err)
-		start, err := time.Parse(service.BaseDateTimeFormat, startOpt)
+		start, err := tools.ParseDateTimeMinutes(startOpt)
 		tools.CheckErr(err)
 
 		stopOpt, err := cmd.Flags().GetString("stop")
 		tools.CheckErr(err)
-		stop, err := time.Parse(service.BaseDateTimeFormat, stopOpt)
+		stop, err := tools.ParseDateTimeMinutes(stopOpt)
 		tools.CheckErr(err)
 
 		service.WrkUpdate(code, category, desc, start, stop, args)
@@ -86,6 +86,6 @@ func init() {
 	tmEditCmd.Flags().String("category", "", "new category value")
 	tmEditCmd.Flags().String("desc", "", "new desc value")
 
-	tmEditCmd.Flags().String("start", time.Time{}.Format(service.BaseDateTimeFormat), "new start value")
-	tmEditCmd.Flags().String("stop", time.Time{}.Format(service.BaseDateTimeFormat), "new stop value")
+	tmEditCmd.Flags().String("start", time.Time{}.Format(tools.BaseDateTimeFormat), "new start value")
+	tmEditCmd.Flags().String("stop", time.Time{}.Format(tools.BaseDateTimeFormat), "new stop value")
 }

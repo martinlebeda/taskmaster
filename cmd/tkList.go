@@ -86,6 +86,6 @@ func init() {
 
 	tkListCmd.Flags().BoolP("maybe", "m", false, "show maybe tasks")
 	tkListCmd.Flags().String("done-from", now.BeginningOfDay().Format("2006-01-02"), "show done from day")
-	tkListCmd.Flags().String("code", "", "show tasks with code")
-	tkListCmd.Flags().String("category", "", "show tasks with category")
+	tkListCmd.Flags().StringP("code", "c", "", "show tasks with code")
+	tkListCmd.Flags().StringP("category", "g", "", "show tasks with category")
 }

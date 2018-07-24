@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	"github.com/martinlebeda/taskmaster/model"
+	"github.com/martinlebeda/taskmaster/tools"
 	"github.com/spf13/viper"
 	"log"
 	"os/exec"
@@ -11,10 +12,8 @@ import (
 	"time"
 )
 
-const BaseDateTimeFormat = "2006-01-02 15:04"
-
 func SysNotifyDistance(distance model.TimerDistance) {
-	format := BaseDateTimeFormat
+	format := tools.BaseDateTimeFormat
 	t := time.Now()
 	roundedToday := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
 	roundedGoal := time.Date(distance.Goal.Year(), distance.Goal.Month(), distance.Goal.Day(), 0, 0, 0, 0, t.Location())
