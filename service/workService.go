@@ -22,7 +22,7 @@ func WrkStop(before, timeOpt, dateOpt string) {
 }
 
 func getDateTime(before, timeOpt, dateOpt string) time.Time {
-	result, err := time.Parse("2006-01-02 15:04", dateOpt+" "+timeOpt)
+	result, err := tools.ParseDateTimeMinutes(dateOpt + " " + timeOpt)
 	tools.CheckErr(err)
 
 	if before != "" {
