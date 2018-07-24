@@ -42,7 +42,7 @@ var wkDeleteCmd = &cobra.Command{
 	//to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		service.WrkDel(args)
-		if wklistAfterChange {
+		if listAfterChange {
 			workList := service.WrkGetWork(now.BeginningOfDay(), now.EndOfDay(), false)
 			termout.WrkListWork(workList)
 		}

@@ -63,7 +63,7 @@ var wkEditCmd = &cobra.Command{
 
 		service.WrkUpdate(code, category, desc, start, stop, args)
 
-		if wklistAfterChange {
+		if listAfterChange {
 			workList := service.WrkGetWork(now.BeginningOfDay(), now.EndOfDay(), false)
 			termout.WrkListWork(workList)
 		}

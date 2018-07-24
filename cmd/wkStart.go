@@ -39,7 +39,7 @@ var wkStartCmd = &cobra.Command{
 	//Long: `A longer description that spans multiple lines and likely contains examples to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		service.WrkStart(args[0], wkCategoryOpt, wkCodeOpt, wkBeforeOpt, wkTimeOpt, wkDateOpt)
-		if wklistAfterChange {
+		if listAfterChange {
 			workList := service.WrkGetWork(now.BeginningOfDay(), now.EndOfDay(), false)
 			termout.WrkListWork(workList)
 		}

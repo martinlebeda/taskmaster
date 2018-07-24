@@ -35,7 +35,7 @@ var wkStopCmd = &cobra.Command{
 	//Long: ``, TODO Lebeda - add description
 	Run: func(cmd *cobra.Command, args []string) {
 		service.WrkStop(wkBeforeOpt, wkTimeOpt, wkDateOpt)
-		if wklistAfterChange {
+		if listAfterChange {
 			workList := service.WrkGetWork(now.BeginningOfDay(), now.EndOfDay(), false)
 			termout.WrkListWork(workList)
 		}

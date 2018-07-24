@@ -24,8 +24,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var wklistAfterChange bool
-
 // workCmd represents the work command
 var workCmd = &cobra.Command{
 	Use:     "work",
@@ -50,7 +48,7 @@ func init() {
 	// is called directly, e.g.:
 	// workCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
-	workCmd.PersistentFlags().BoolVarP(&wklistAfterChange, "list", "l", false, "List today work after change")
+	workCmd.PersistentFlags().BoolVarP(&listAfterChange, "list", "l", false, "List today work after change")
 }
 
 //TODO Lebeda - list za období, popř. za x dní zpět

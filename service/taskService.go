@@ -182,6 +182,29 @@ func TskGetList(doneFrom time.Time, showMaybe bool, showPrio []string, showCode,
 	return result
 }
 
+func TkGetById(id int) Task {
+	db := OpenDB()
+	sql := "select id, prio, code, category, status, desc, date_in, date_done, url, note, script from task where id = ?"
+
+	rows, err := db.Query(sql, id)
+	tools.CheckErr(err)
+
+	var result []Task
+	for rows.Next() {
+		var task Task
+		rows.Scan(&task.Id, &task.Prio, &task.Code, &task.Category, &task.Status, &task.Desc, &task.DateIn, &task.DateDone, &task.Url, &task.Note, &task.Script)
+		result = append(result, task)
+	}
+
+	return result[0]
+}
+
+// reset status work to normal for all records
+func TskResetWorkStatus() {
+	db := OpenDB()
+	db.Exec("update task set status = 'N' where status = 'W'")
+}
+
 func TkListAfterChange() {
 	termout.EmptyLineOut()
 	tasks := TskGetList(now.BeginningOfDay(), false, []string{}, "", "", []string{})
