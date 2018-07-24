@@ -50,7 +50,7 @@ func init() {
 	workCmd.AddCommand(wkStartCmd)
 
 	wkStartCmd.Flags().StringVarP(&wkCategoryOpt, "category", "g", "", "Category of record")
-	wkStartCmd.Flags().StringVarP(&wkCodeOpt, "code", "e", "", "External code of record")
+	wkStartCmd.Flags().StringVarP(&wkCodeOpt, "code", "c", "", "External code of record")
 
 	wkStartCmd.Flags().StringVarP(&wkBeforeOpt, "before", "b", "", "Time shift of record")
 

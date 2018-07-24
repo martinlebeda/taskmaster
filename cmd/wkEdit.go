@@ -82,9 +82,9 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// wkEditCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	tmEditCmd.Flags().String("code", "", "new code value")
-	tmEditCmd.Flags().String("category", "", "new category value")
-	tmEditCmd.Flags().String("desc", "", "new desc value")
+	tmEditCmd.Flags().StringP("code", "c", "", "new code value")
+	tmEditCmd.Flags().StringP("category", "g", "", "new category value")
+	tmEditCmd.Flags().StringP("desc", "d", "", "new desc value")
 
 	tmEditCmd.Flags().String("start", time.Time{}.Format(tools.BaseDateTimeFormat), "new start value")
 	tmEditCmd.Flags().String("stop", time.Time{}.Format(tools.BaseDateTimeFormat), "new stop value")
