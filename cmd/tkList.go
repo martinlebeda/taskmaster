@@ -76,7 +76,7 @@ var tkListCmd = &cobra.Command{
 func init() {
 	taskCmd.AddCommand(tkListCmd)
 
-	// TODO Lebeda - regex pro prohledávání
+	// TODO Lebeda - regex/glob pro prohledávání
 	// TODO Lebeda - prio pro prohledávání, spec hodnoty -a -b -c -d
 	// TODO Lebeda - prio pro prohledávání arra jako výstup
 

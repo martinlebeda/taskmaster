@@ -32,6 +32,7 @@ var tkDoneCmd = &cobra.Command{
 	Use:     "done",
 	Aliases: []string{"complete"},
 	Short:   "A brief description of your command",
+	Args:    cobra.MinimumNArgs(1),
 	// TODO Lebeda - add long description
 	//Long: `A longer description that spans multiple lines and likely contains examples
 	//and usage of using your command. For example:

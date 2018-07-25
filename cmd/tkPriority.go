@@ -21,18 +21,18 @@
 package cmd
 
 import (
-	"github.com/martinlebeda/taskmaster/model"
 	"github.com/martinlebeda/taskmaster/service"
-	"github.com/martinlebeda/taskmaster/tools"
 	"github.com/spf13/cobra"
 )
 
+var tkPrioCleanOpt bool
+
 // tkDoneCmd represents the tkDone command
-var tkMaybeCmd = &cobra.Command{
-	Use:     "maybe",
-	Aliases: []string{"mb", "nonworkable", "inactive"},
-	Short:   "A brief description of your command",
+var tkPriorityCmd = &cobra.Command{
+	Use:     "priority",
+	Aliases: []string{"prio", "p"},
 	Args:    cobra.MinimumNArgs(1),
+	Short:   "set (or unset) task priority",
 	// TODO Lebeda - add long description
 	//Long: `A longer description that spans multiple lines and likely contains examples
 	//and usage of using your command. For example:
@@ -41,10 +41,11 @@ var tkMaybeCmd = &cobra.Command{
 	//This application is a tool to generate the needed files
 	//to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		var tsk model.Task
-		tsk.Status = "M"
-		tsk.DateDone = tools.GetZeroTime()
-		service.TskUpdate(tsk, false, args)
+		if tkPrioCleanOpt {
+			taskOpt.Prio.String = ""
+		}
+
+		service.TskUpdate(taskOpt, tkPrioCleanOpt, args)
 
 		if listAfterChange {
 			service.TkListAfterChange()
@@ -53,5 +54,8 @@ var tkMaybeCmd = &cobra.Command{
 }
 
 func init() {
-	taskCmd.AddCommand(tkMaybeCmd)
+	taskCmd.AddCommand(tkPriorityCmd)
+
+	tkPriorityCmd.Flags().StringVarP(&taskOpt.Prio.String, "prio", "p", "", "task priority")
+	tkPriorityCmd.Flags().BoolVarP(&tkPrioCleanOpt, "clean-priority", "c", false, "clean task priority")
 }

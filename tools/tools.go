@@ -13,6 +13,7 @@ func GetZeroTime() time.Time {
 // check if exists error and throw panic
 func CheckErr(err error) {
 	if err != nil {
+		// TODO Lebeda - zajistit výpis volitelné uživatelské hlášky
 		panic(err)
 	}
 }

@@ -30,6 +30,7 @@ var tkEditCmd = &cobra.Command{
 	Use:     "edit",
 	Aliases: []string{"edt", "update", "upd"},
 	Short:   "A brief description of your command",
+	Args:    cobra.MinimumNArgs(1),
 	// TODO Lebeda - add long description
 	//Long: `A longer description that spans multiple lines and likely contains examples
 	//and usage of using your command. For example:
@@ -38,7 +39,7 @@ var tkEditCmd = &cobra.Command{
 	//This application is a tool to generate the needed files
 	//to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		service.TskUpdate(taskOpt, false, args)
+		service.TskUpdate(taskOpt, tkPrioCleanOpt, args)
 
 		if listAfterChange {
 			service.TkListAfterChange()
@@ -56,4 +57,6 @@ func init() {
 	tkEditCmd.Flags().StringVarP(&taskOpt.Note.String, "note", "n", "", "path to file with note")
 	tkEditCmd.Flags().StringVarP(&taskOpt.Script.String, "script", "s", "", "path to file with script")
 	tkEditCmd.Flags().StringVarP(&taskOpt.Desc, "desc", "d", "", "task description")
+
+	tkPriorityCmd.Flags().BoolVar(&tkPrioCleanOpt, "clean-priority", false, "force task priority (clean if set empty)")
 }
