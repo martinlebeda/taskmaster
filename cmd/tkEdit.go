@@ -58,5 +58,5 @@ func init() {
 	tkEditCmd.Flags().StringVarP(&taskOpt.Script.String, "script", "s", "", "path to file with script")
 	tkEditCmd.Flags().StringVarP(&taskOpt.Desc, "desc", "d", "", "task description")
 
-	tkPriorityCmd.Flags().BoolVar(&tkPrioCleanOpt, "clean-priority", false, "force task priority (clean if set empty)")
+	tkEditCmd.Flags().BoolVar(&tkPrioCleanOpt, "clean-priority", false, "force task priority (clean if set empty)")
 }
