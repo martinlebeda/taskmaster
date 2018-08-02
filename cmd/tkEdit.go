@@ -55,6 +55,7 @@ func init() {
 	tkEditCmd.Flags().StringVarP(&taskOpt.Prio.String, "prio", "p", "", "task priority")
 	tkEditCmd.Flags().StringVarP(&taskOpt.Code.String, "code", "c", "", "task code (project)")
 	tkEditCmd.Flags().StringVarP(&taskOpt.Category.String, "category", "g", "", "task category (list)")
+	tkEditCmd.Flags().StringVarP(&taskOpt.Estimate.String, "estimate", "e", "", "estimate time for task")
 	tkEditCmd.Flags().StringVarP(&taskOpt.Url.String, "url", "u", "", "url for this task (ie. sources on internet)")
 	tkEditCmd.Flags().StringVarP(&taskOpt.Note.String, "note", "n", "", "path to file with note")
 	tkEditCmd.Flags().StringVarP(&taskOpt.Script.String, "script", "s", "", "path to file with script")

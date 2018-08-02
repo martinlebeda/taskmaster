@@ -86,6 +86,11 @@ script VARCHAR
 			Script: `DROP VIEW IF EXISTS timer_distance;
             CREATE VIEW timer_distance AS SELECT rowid, strftime('%s', goal, localtime) - strftime('%s', 'now', 'localtime') as distance, goal, tag, note FROM timer ORDER BY distance;`,
 		},
+		{
+			Version:     8,
+			Description: "Add estimate to task",
+			Script:      `ALTER TABLE task ADD COLUMN estimate VARCHAR;`,
+		},
 	}
 )
 

@@ -47,9 +47,6 @@ var tkWorkCmd = &cobra.Command{
 	//to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		timerDuration, err := cmd.Flags().GetString("timer")
-		tools.CheckErr(err)
-
 		startWorkLog, err := cmd.Flags().GetBool("worklog")
 		tools.CheckErr(err)
 
@@ -63,6 +60,17 @@ var tkWorkCmd = &cobra.Command{
 		id, err := strconv.Atoi(args[0])
 		tools.CheckErr(err)
 		task := service.TkGetById(id)
+
+		fromEstimate, err := cmd.Flags().GetBool("estimate")
+		tools.CheckErr(err)
+
+		timerDuration := ""
+		if fromEstimate {
+			timerDuration = task.Estimate.String
+		}
+
+		timerDuration, err = cmd.Flags().GetString("timer")
+		tools.CheckErr(err)
 
 		if startWorkLog {
 			service.WrkStart(task.Desc, task.Category.String, task.Code.String, worklogBefore, worklogTime, worklogDate)
@@ -99,7 +107,8 @@ func init() {
 
 	// TODO Lebeda - add functions for worklog and timer
 	tkWorkCmd.Flags().BoolP("worklog", "w", false, "automatic start worklog with group, code and description from task")
-	tkWorkCmd.Flags().StringP("timer", "t", "", "add new timer with desc from task")
+	tkWorkCmd.Flags().StringP("timer", "t", "", "add new timer with desc from task (owerride -T)")
+	tkWorkCmd.Flags().BoolP("estimate", "T", false, "add new timer with desc from task estimate")
 	// TODO Lebeda - text worklog and timer
 
 	// options for worklog

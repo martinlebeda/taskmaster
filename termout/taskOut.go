@@ -35,7 +35,7 @@ func TskListTasks(tasks []model.Task) {
 	x := color.New(color.FgCyan) // TODO Lebeda - tools funkce
 
 	// build output
-	output := []string{}
+	var output []string
 	for _, task := range tasks {
 		statuFmt := "" + task.Status + ""
 		if statuFmt == "N" {
@@ -44,9 +44,10 @@ func TskListTasks(tasks []model.Task) {
 
 		prioFmt := formatPrio(task)
 
-		out := fmt.Sprintf("%s | %s | %s | %s | %s | %s | %s | %s | %s",
+		out := fmt.Sprintf("%s | %s | %s | %s | %s | %s | %s | %s | %s | %s",
 			strconv.Itoa(task.Id),
 			statuFmt,
+			task.Estimate.String,
 			prioFmt,
 			task.Category.String,
 			task.Code.String,

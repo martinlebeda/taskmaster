@@ -15,9 +15,9 @@ func TskAdd(task Task) {
 	task = prepareTask(task)
 
 	db := OpenDB()
-	stmt, err := db.Prepare("insert into task (desc, status, date_in, prio, code, category, url, note, script) values (?, ?, ?, ?, ?, ?, ?, ?, ?)")
+	stmt, err := db.Prepare("insert into task (desc, status, date_in, prio, code, category, url, note, script, estimate) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
 	tools.CheckErr(err)
-	result, err := stmt.Exec(task.Desc, "N", time.Now(), task.Prio, task.Code, task.Category, task.Url, task.Note, task.Script)
+	result, err := stmt.Exec(task.Desc, "N", time.Now(), task.Prio, task.Code, task.Category, task.Url, task.Note, task.Script, task.Estimate)
 	tools.CheckErr(err)
 	count, err := result.RowsAffected()
 	tools.CheckErr(err)
@@ -39,6 +39,7 @@ func prepareTask(task Task) Task {
 	task.Url.Valid = task.Url.String != ""
 	task.Note.Valid = task.Note.String != ""
 	task.Script.Valid = task.Script.String != ""
+	task.Estimate.Valid = task.Estimate.String != ""
 
 	// TODO Lebeda - FIX: check PRIO only 1 character
 	if task.Prio.Valid {
@@ -83,6 +84,10 @@ func TskUpdate(task Task, forcePriority bool, selectByCategory, selectByCode boo
 	if task.Code.String != "" {
 		setSql = append(setSql, "code = ?")
 		argSql = append(argSql, task.Code.String)
+	}
+	if task.Estimate.String != "" {
+		setSql = append(setSql, "estimate = ?")
+		argSql = append(argSql, task.Estimate.String)
 	}
 	if task.Status != "" {
 		setSql = append(setSql, "status = ?")
@@ -140,7 +145,8 @@ func TskUpdate(task Task, forcePriority bool, selectByCategory, selectByCode boo
 
 func TskGetList(doneFrom time.Time, showMaybe bool, showPrio []string, showCode, showCategory string, args []string) []Task {
 	db := OpenDB()
-	sql := "select id, prio, code, category, status, desc, date_in, date_done, url, note, script from task where 1=1 "
+	sql := "select id, prio, code, category, status, desc, date_in, date_done, url, note, estimate, script from task where 1=1 "
+	//sql := "select id, prio, code, category, status, desc, date_in, CASE WHEN date_done IS NULL THEN datetime('now') ELSE date_done END , url, note, estimate, script from task where 1=1 "
 
 	//if !timeFrom.IsZero() {
 	//	sql += " and start >= ? and start <= ? "
@@ -186,16 +192,32 @@ func TskGetList(doneFrom time.Time, showMaybe bool, showPrio []string, showCode,
 	var result []Task
 	for rows.Next() {
 		var task Task
-		rows.Scan(&task.Id, &task.Prio, &task.Code, &task.Category, &task.Status, &task.Desc, &task.DateIn, &task.DateDone, &task.Url, &task.Note, &task.Script)
+		err := rows.Scan(&task.Id, &task.Prio, &task.Code, &task.Category, &task.Status, &task.Desc, &task.DateIn, &task.DateDoneRaw, &task.Url, &task.Note, &task.Estimate, &task.Script)
+		tools.CheckErr(err)
+
+		// null value
+		if task.DateDoneRaw.Valid {
+			task.DateDone, err = time.Parse("2006-01-02T15:04:05.999999-07:00", task.DateDoneRaw.String)
+			tools.CheckErr(err)
+		}
+
 		result = append(result, task)
 	}
+
+	//for _, row := range rows {
+	//    column1 = row.Str(0)
+	//    column2 = row.Int(1)
+	//    column3 = row.Bool(2)
+	//    column4 = row.Date(3)
+	//    // etc...
+	//}
 
 	return result
 }
 
 func TkGetById(id int) Task {
 	db := OpenDB()
-	sql := "select id, prio, code, category, status, desc, date_in, date_done, url, note, script from task where id = ?"
+	sql := "select id, prio, code, category, status, desc, date_in, date_done, url, note, script, estimate from task where id = ?"
 
 	rows, err := db.Query(sql, id)
 	tools.CheckErr(err)
@@ -203,7 +225,15 @@ func TkGetById(id int) Task {
 	var result []Task
 	for rows.Next() {
 		var task Task
-		rows.Scan(&task.Id, &task.Prio, &task.Code, &task.Category, &task.Status, &task.Desc, &task.DateIn, &task.DateDone, &task.Url, &task.Note, &task.Script)
+		err := rows.Scan(&task.Id, &task.Prio, &task.Code, &task.Category, &task.Status, &task.Desc, &task.DateIn, &task.DateDoneRaw, &task.Url, &task.Note, &task.Script, &task.Estimate)
+		tools.CheckErr(err)
+
+		// null value
+		if task.DateDoneRaw.Valid {
+			task.DateDone, err = time.Parse("2006-01-02T15:04:05.999999-07:00", task.DateDoneRaw.String)
+			tools.CheckErr(err)
+		}
+
 		result = append(result, task)
 	}
 
