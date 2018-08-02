@@ -86,7 +86,7 @@ var tkWorkCmd = &cobra.Command{
 		tsk.Status = "W"
 		tsk.DateDone = tools.GetZeroTime()
 		service.TskResetWorkStatus()
-		service.TskUpdate(tsk, false, args)
+		service.TskUpdate(tsk, false, false, false, args)
 
 		if listAfterChange {
 			service.TkListAfterChange() // TODO Lebeda - whow only work task
@@ -109,4 +109,6 @@ func init() {
 	tkWorkCmd.Flags().String("worklog-time", curDate.Format("15:04"), "Time of begin worklog")
 	tkWorkCmd.Flags().String("worklog-date", curDate.Format("2006-01-02"), "Time of begin worklog")
 
+	tkWorkCmd.Flags().BoolVar(&selectByCategory, "by-category", false, "arguments are groups instead ID")
+	tkWorkCmd.Flags().BoolVar(&selectByCode, "by-code", false, "arguments are codes instead ID")
 }

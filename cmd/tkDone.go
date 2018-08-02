@@ -46,7 +46,7 @@ var tkDoneCmd = &cobra.Command{
 		//tsk.DateDone = tools.GetZeroTime()
 		tsk.Status = "X"
 		tsk.DateDone = time.Now()
-		service.TskUpdate(tsk, true, args)
+		service.TskUpdate(tsk, true, selectByCategory, selectByCode, args)
 
 		if listAfterChange {
 			service.TkListAfterChange()
@@ -57,13 +57,6 @@ var tkDoneCmd = &cobra.Command{
 func init() {
 	taskCmd.AddCommand(tkDoneCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// tkDoneCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	//tkDoneCmd.Flags().BoolP("undone", "u", false, "undone task")
+	tkDoneCmd.Flags().BoolVar(&selectByCategory, "by-category", false, "arguments are groups instead ID")
+	tkDoneCmd.Flags().BoolVar(&selectByCode, "by-code", false, "arguments are codes instead ID")
 }

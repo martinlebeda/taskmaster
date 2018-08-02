@@ -45,7 +45,7 @@ var tkPriorityCmd = &cobra.Command{
 			taskOpt.Prio.String = ""
 		}
 
-		service.TskUpdate(taskOpt, tkPrioCleanOpt, args)
+		service.TskUpdate(taskOpt, tkPrioCleanOpt, selectByCategory, selectByCode, args)
 
 		if listAfterChange {
 			service.TkListAfterChange()
@@ -58,4 +58,7 @@ func init() {
 
 	tkPriorityCmd.Flags().StringVarP(&taskOpt.Prio.String, "prio", "p", "", "task priority")
 	tkPriorityCmd.Flags().BoolVarP(&tkPrioCleanOpt, "clean-priority", "c", false, "clean task priority")
+
+	tkPriorityCmd.Flags().BoolVar(&selectByCategory, "by-category", false, "arguments are groups instead ID")
+	tkPriorityCmd.Flags().BoolVar(&selectByCode, "by-code", false, "arguments are codes instead ID")
 }

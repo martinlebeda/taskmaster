@@ -63,7 +63,7 @@ func TskDel(ids []string) {
 }
 
 // update task non empty values in pattern for ids
-func TskUpdate(task Task, forcePriority bool, ids []string) {
+func TskUpdate(task Task, forcePriority bool, selectByCategory, selectByCode bool, ids []string) {
 	sql := "update task "
 
 	task = prepareTask(task)
@@ -116,7 +116,18 @@ func TskUpdate(task Task, forcePriority bool, ids []string) {
 	// TODO Lebeda - check if setSql is not empty
 
 	sql += "set " + strings.Join(setSql, ", ")
-	sql += " where id in (" + strings.Join(ids, ",") + ")"
+	sql += " where 1=1 "
+
+	if selectByCategory {
+		sql += " and category in ('" + strings.Join(ids, "','") + "')"
+	} else if selectByCode {
+		sql += " and code in ('" + strings.Join(ids, "','") + "')"
+	} else {
+		sql += " and id in (" + strings.Join(ids, ",") + ")"
+	}
+
+	// TODO Lebeda - debug for write sql
+	//fmt.Println(sql)
 
 	// execute update
 	db := OpenDB()

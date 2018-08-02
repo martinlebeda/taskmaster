@@ -44,7 +44,7 @@ var tkMaybeCmd = &cobra.Command{
 		var tsk model.Task
 		tsk.Status = "M"
 		tsk.DateDone = tools.GetZeroTime()
-		service.TskUpdate(tsk, false, args)
+		service.TskUpdate(tsk, false, selectByCategory, selectByCode, args)
 
 		if listAfterChange {
 			service.TkListAfterChange()
@@ -54,4 +54,7 @@ var tkMaybeCmd = &cobra.Command{
 
 func init() {
 	taskCmd.AddCommand(tkMaybeCmd)
+
+	tkMaybeCmd.Flags().BoolVar(&selectByCategory, "by-category", false, "arguments are groups instead ID")
+	tkMaybeCmd.Flags().BoolVar(&selectByCode, "by-code", false, "arguments are codes instead ID")
 }

@@ -25,6 +25,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var selectByCategory, selectByCode bool
+
 // tkEditCmd represents the tkEdit command
 var tkEditCmd = &cobra.Command{
 	Use:     "edit",
@@ -39,7 +41,7 @@ var tkEditCmd = &cobra.Command{
 	//This application is a tool to generate the needed files
 	//to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		service.TskUpdate(taskOpt, tkPrioCleanOpt, args)
+		service.TskUpdate(taskOpt, tkPrioCleanOpt, selectByCategory, selectByCode, args)
 
 		if listAfterChange {
 			service.TkListAfterChange()
@@ -59,4 +61,8 @@ func init() {
 	tkEditCmd.Flags().StringVarP(&taskOpt.Desc, "desc", "d", "", "task description")
 
 	tkEditCmd.Flags().BoolVar(&tkPrioCleanOpt, "clean-priority", false, "force task priority (clean if set empty)")
+
+	// TODO Lebeda - addFlagsSelectBy method for add flags on one place
+	tkEditCmd.Flags().BoolVar(&selectByCategory, "by-category", false, "arguments are groups instead ID")
+	tkEditCmd.Flags().BoolVar(&selectByCode, "by-code", false, "arguments are codes instead ID")
 }
