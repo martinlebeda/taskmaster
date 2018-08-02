@@ -112,6 +112,8 @@ func TmrGetDistance(pastOpt, nextOpt bool, tag string) []TimerDistance {
 		sql += " limit 1 "
 	}
 
+	//fmt.Println(sql)
+
 	rows, err := db.Query(sql)
 	tools.CheckErr(err)
 
