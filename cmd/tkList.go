@@ -89,7 +89,10 @@ var tkListCmd = &cobra.Command{
 		showCategory, err := cmd.Flags().GetString("category")
 		tools.CheckErr(err)
 
-		tasks := service.TskGetList(tskDoneFrom, showMaybe, showPrio, showCode, showCategory, args)
+		showStatus, err := cmd.Flags().GetString("status")
+		tools.CheckErr(err)
+
+		tasks := service.TskGetList(tskDoneFrom, showMaybe, showPrio, showCode, showCategory, showStatus, args)
 
 		if showNext {
 			termout.TskShowWork(tasks[0])
@@ -117,6 +120,7 @@ func init() {
 	tkListCmd.Flags().String("done-from", now.BeginningOfDay().Format("2006-01-02"), "show done from day")
 	tkListCmd.Flags().StringP("code", "c", "", "show tasks with code")
 	tkListCmd.Flags().StringP("category", "g", "", "show tasks with category")
+	tkListCmd.Flags().StringP("status", "s", "", "show tasks with status")
 }
 
 // get all priority
