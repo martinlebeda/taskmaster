@@ -32,7 +32,7 @@ var tkNormalCmd = &cobra.Command{
 	Use:     "normal",
 	Aliases: []string{"nrm", "workable", "active"},
 	Args:    cobra.MinimumNArgs(1),
-	Short:   "A brief description of your command",
+	Short:   "A brief description of your command", // TODO Lebeda - add brief description
 	// TODO Lebeda - add long description
 	//Long: `A longer description that spans multiple lines and likely contains examples
 	//and usage of using your command. For example:

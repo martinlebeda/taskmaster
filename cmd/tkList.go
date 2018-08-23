@@ -35,7 +35,7 @@ import (
 var tkListCmd = &cobra.Command{
 	Use:     "list",
 	Aliases: []string{"ls"},
-	Short:   "A brief description of your command",
+	Short:   "A brief description of your command", // TODO Lebeda - add brief description
 	// TODO Lebeda - add long description
 	//Long: `A longer description that spans multiple lines and likely contains examples
 	//and usage of using your command. For example:

@@ -58,6 +58,4 @@ func init() {
 	taskCmd.PersistentFlags().BoolVarP(&listAfterChange, "list", "l", false, "List after change (add, set, clear, delete)")
 }
 
-// TODO Lebeda - work - change status and start worklog and timer
-// TODO Lebeda - maybe - change status
 // TODO Lebeda - context - add or remove context from task

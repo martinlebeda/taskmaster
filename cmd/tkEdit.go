@@ -31,7 +31,7 @@ var selectByCategory, selectByCode bool
 var tkEditCmd = &cobra.Command{
 	Use:     "edit",
 	Aliases: []string{"edt", "update", "upd"},
-	Short:   "A brief description of your command",
+	Short:   "A brief description of your command", // TODO Lebeda - add brief description
 	Args:    cobra.MinimumNArgs(1),
 	// TODO Lebeda - add long description
 	//Long: `A longer description that spans multiple lines and likely contains examples

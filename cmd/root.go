@@ -91,4 +91,7 @@ func initConfig() {
 	if err := viper.ReadInConfig(); err == nil {
 		termout.Verbose("Using config file:", viper.ConfigFileUsed())
 	}
+
+	// TODO Lebeda - add global list after change - list all modules
+
 }
