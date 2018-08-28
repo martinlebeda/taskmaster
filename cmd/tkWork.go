@@ -72,8 +72,9 @@ var tkWorkCmd = &cobra.Command{
 		timerDuration, err = cmd.Flags().GetString("timer")
 		tools.CheckErr(err)
 
+		taskDesc := service.RemovePrioFromDesc(task.Desc)
 		if startWorkLog {
-			service.WrkStart(task.Desc, worklogBefore, worklogTime, worklogDate)
+			service.WrkStart(taskDesc, worklogBefore, worklogTime, worklogDate)
 			if listAfterChange {
 				workList := service.WrkGetWork(now.BeginningOfDay(), now.EndOfDay(), false)
 				termout.WrkListWork(workList)
@@ -81,7 +82,7 @@ var tkWorkCmd = &cobra.Command{
 		}
 
 		if timerDuration != "" {
-			service.TmrAdd(false, "", timerDuration, task.Desc)
+			service.TmrAdd(false, "", timerDuration, taskDesc)
 			if listAfterChange {
 				service.TmrListAfterChange()
 			}

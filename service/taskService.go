@@ -5,6 +5,7 @@ import (
 	. "github.com/martinlebeda/taskmaster/model"
 	"github.com/martinlebeda/taskmaster/termout"
 	"github.com/martinlebeda/taskmaster/tools"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -229,4 +230,10 @@ func TkListAfterChange() {
 	termout.EmptyLineOut()
 	tasks := TskGetList(now.BeginningOfDay(), false, []string{}, "", "", "", []string{})
 	termout.TskListTasks(tasks)
+}
+
+func RemovePrioFromDesc(desc string) string {
+	rp := regexp.MustCompile("^\\([A-Z]\\) ")
+	s := rp.ReplaceAllString(desc, "")
+	return s
 }
