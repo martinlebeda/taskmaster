@@ -25,23 +25,23 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var selectByCategory, selectByCode bool
+// tkAppendCmd represents the tkAppend command
+var tkAppendCmd = &cobra.Command{
+	Use:     "append", // TODO Lebeda - alias
+	Aliases: []string{"project", "context"},
+	Args:    cobra.MinimumNArgs(2),
+	Short:   "A brief description of your command", // TODO Lebeda - description
+	Long: `A longer description that spans multiple lines and likely contains examples
+and usage of using your command. For example:
 
-// tkUpdateCmd represents the tkEdit command
-var tkUpdateCmd = &cobra.Command{
-	Use:     "update",
-	Aliases: []string{"edt", "edit", "upd"},
-	Short:   "A brief description of your command", // TODO Lebeda - add brief description
-	Args:    cobra.MinimumNArgs(1),
-	// TODO Lebeda - add long description
-	//Long: `A longer description that spans multiple lines and likely contains examples
-	//and usage of using your command. For example:
-	//
-	//Cobra is a CLI library for Go that empowers applications.
-	//This application is a tool to generate the needed files
-	//to quickly create a Cobra application.`,
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		service.TskUpdate(taskOpt, args)
+		part := args[0]
+		taskIds := args[1:]
+
+		service.TskAppend(part, taskIds)
 
 		if listAfterChange {
 			service.TkListAfterChange()
@@ -50,14 +50,15 @@ var tkUpdateCmd = &cobra.Command{
 }
 
 func init() {
-	taskCmd.AddCommand(tkUpdateCmd)
+	taskCmd.AddCommand(tkAppendCmd)
 
-	tkUpdateCmd.Flags().StringVarP(&taskOpt.Estimate.String, "estimate", "e", "", "estimate time for task")
-	tkUpdateCmd.Flags().StringVarP(&taskOpt.Desc, "desc", "d", "", "task description")
+	// Here you will define your flags and configuration settings.
 
-	// TODO Lebeda - domyslet tkUpdateCmd.Flags().BoolVar(&tkPrioCleanOpt, "clean-priority", false, "force task priority (clean if set empty)")
+	// Cobra supports Persistent Flags which will work for this command
+	// and all subcommands, e.g.:
+	// tkAppendCmd.PersistentFlags().String("foo", "", "A help for foo")
 
-	// TODO Lebeda - addFlagsSelectBy method for add flags on one place
-	tkUpdateCmd.Flags().BoolVar(&selectByCategory, "by-category", false, "arguments are groups instead ID")
-	tkUpdateCmd.Flags().BoolVar(&selectByCode, "by-code", false, "arguments are codes instead ID")
+	// Cobra supports local flags which will only run when this command
+	// is called directly, e.g.:
+	// tkAppendCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

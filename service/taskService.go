@@ -131,6 +131,34 @@ func TskPrio(priority string, ids []string) {
 	termout.Verbose("Task priority updated: ", strings.Join(ids, ","))
 }
 
+func TskAppend(part string, ids []string) {
+	db := OpenDB()
+
+	// add new part
+	if part != "" {
+		sql := "update task set desc = desc || ' " + part + "' where id in (" + strings.Join(ids, ",") + ") and not desc like '% " + part + "%'"
+		stmt, err := db.Prepare(sql)
+		tools.CheckErr(err)
+		_, err = stmt.Exec()
+		tools.CheckErr(err)
+	}
+
+	termout.Verbose("Task updated: ", strings.Join(ids, ","))
+}
+
+func TskRemove(part string, ids []string) {
+	db := OpenDB()
+
+	// remove old part
+	sql := "update task set desc = trim(replace(desc, ' " + part + "', '')) where id in (" + strings.Join(ids, ",") + ") and desc like '% " + part + "%'"
+	stmt, err := db.Prepare(sql)
+	tools.CheckErr(err)
+	_, err = stmt.Exec()
+	tools.CheckErr(err)
+
+	termout.Verbose("Task updated: ", strings.Join(ids, ","))
+}
+
 func TskGetList(doneFrom time.Time, showMaybe bool, showPrio []string, showCode, showCategory, showStatus string, args []string) []Task {
 	db := OpenDB()
 	sql := "select id, status, desc, date_in, date_done, estimate from task where 1=1 "
