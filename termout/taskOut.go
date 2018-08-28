@@ -56,7 +56,7 @@ func TskListTasks(tasks []model.Task) {
 
 	// printout
 	for i, task := range tasks {
-		if strings.HasPrefix(task.Desc, "(A)") || strings.HasPrefix(task.Desc, "(B)") {
+		if (task.Status == "N") && (strings.HasPrefix(task.Desc, "(A)") || strings.HasPrefix(task.Desc, "(B)")) {
 			d.Println(outFmt[i])
 		} else if task.Status == "X" {
 			x.Println(outFmt[i])
