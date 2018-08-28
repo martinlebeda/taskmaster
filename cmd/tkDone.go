@@ -48,6 +48,9 @@ var tkDoneCmd = &cobra.Command{
 		tsk.DateDone = time.Now()
 		service.TskUpdate(tsk, args)
 
+		// remove priority
+		service.TskPrio("", args)
+
 		if listAfterChange {
 			service.TkListAfterChange()
 		}

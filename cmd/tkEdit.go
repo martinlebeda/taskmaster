@@ -55,7 +55,7 @@ func init() {
 	tkEditCmd.Flags().StringVarP(&taskOpt.Estimate.String, "estimate", "e", "", "estimate time for task")
 	tkEditCmd.Flags().StringVarP(&taskOpt.Desc, "desc", "d", "", "task description")
 
-	tkEditCmd.Flags().BoolVar(&tkPrioCleanOpt, "clean-priority", false, "force task priority (clean if set empty)")
+	// TODO Lebeda - domyslet tkEditCmd.Flags().BoolVar(&tkPrioCleanOpt, "clean-priority", false, "force task priority (clean if set empty)")
 
 	// TODO Lebeda - addFlagsSelectBy method for add flags on one place
 	tkEditCmd.Flags().BoolVar(&selectByCategory, "by-category", false, "arguments are groups instead ID")

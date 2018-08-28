@@ -22,10 +22,9 @@ package cmd
 
 import (
 	"github.com/martinlebeda/taskmaster/service"
+	"github.com/martinlebeda/taskmaster/tools"
 	"github.com/spf13/cobra"
 )
-
-var tkPrioCleanOpt bool
 
 // tkDoneCmd represents the tkDone command
 var tkPriorityCmd = &cobra.Command{
@@ -41,11 +40,23 @@ var tkPriorityCmd = &cobra.Command{
 	//This application is a tool to generate the needed files
 	//to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if tkPrioCleanOpt {
-			//taskOpt.Prio.String = ""
+		cleanPrio, err := cmd.Flags().GetBool("clean-priority")
+		tools.CheckErr(err)
+
+		var taskIds []string
+		var prio string
+
+		if cleanPrio {
+			taskIds = args
+			prio = ""
+		} else {
+			taskIds = args[1:]
+			prio = args[0]
 		}
 
-		service.TskUpdate(taskOpt, args)
+		// TODO Lebeda - kontrolovat neprázdné taskIds
+
+		service.TskPrio(prio, taskIds)
 
 		if listAfterChange {
 			service.TkListAfterChange()
@@ -57,9 +68,9 @@ func init() {
 	taskCmd.AddCommand(tkPriorityCmd)
 
 	// TODO Lebeda - zajistit přidání/odebrání/změnu priority
-	//tkPriorityCmd.Flags().StringVarP(&taskOpt.Prio.String, "prio", "p", "", "task priority")
-	tkPriorityCmd.Flags().BoolVarP(&tkPrioCleanOpt, "clean-priority", "c", false, "clean task priority")
+	tkPriorityCmd.Flags().BoolP("clean-priority", "c", false, "clean task priority")
 
+	// TODO Lebeda - by-* query instead by-*
 	tkPriorityCmd.Flags().BoolVar(&selectByCategory, "by-category", false, "arguments are groups instead ID")
 	tkPriorityCmd.Flags().BoolVar(&selectByCode, "by-code", false, "arguments are codes instead ID")
 }
