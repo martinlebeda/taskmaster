@@ -25,14 +25,17 @@ import (
 	"github.com/fatih/color"
 	"github.com/martinlebeda/taskmaster/model"
 	"github.com/ryanuber/columnize"
+	"regexp"
 	"strconv"
 	"strings"
 )
 
 func TskListTasks(tasks []model.Task) {
 
-	d := color.New(color.Bold)   // TODO Lebeda - tools funkce
-	x := color.New(color.FgCyan) // TODO Lebeda - tools funkce
+	colorInterestingLine := color.New(color.Bold)          // TODO Lebeda - tools funkce
+	colorDoneLine := color.New(color.FgCyan)               // TODO Lebeda - tools funkce
+	colorContext := color.New(color.FgYellow).SprintFunc() // TODO Lebeda - konfigurace
+	colorProject := color.New(color.FgGreen).SprintFunc()  // TODO Lebeda - konfigurace
 
 	// build output
 	var output []string
@@ -56,13 +59,21 @@ func TskListTasks(tasks []model.Task) {
 
 	// printout
 	for i, task := range tasks {
+		outline := outFmt[i]
+
+		rpContext := regexp.MustCompile(` (@[^ ]*)`)
+		outline = rpContext.ReplaceAllString(outline, " "+colorContext("$1"))
+
+		rpProject := regexp.MustCompile(` ([+][^ ]*)`)
+		outline = rpProject.ReplaceAllString(outline, " "+colorProject("$1"))
+
 		// TODO Lebeda - zajistit konstanty na stavy a prefixy
 		if ((task.Status == "N") && (strings.HasPrefix(task.Desc, "(A) ") || strings.HasPrefix(task.Desc, "(B) "))) || (task.Status == "W") {
-			d.Println(outFmt[i])
+			colorInterestingLine.Println(outline)
 		} else if task.Status == "X" {
-			x.Println(outFmt[i])
+			colorDoneLine.Println(outline)
 		} else {
-			fmt.Println(outFmt[i])
+			fmt.Println(outline)
 		}
 	}
 
