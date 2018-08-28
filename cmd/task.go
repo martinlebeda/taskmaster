@@ -54,7 +54,6 @@ func init() {
 	// is called directly, e.g.:
 	// taskCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
-	// TODO Lebeda - list after change
 	taskCmd.PersistentFlags().BoolVarP(&listAfterChange, "list", "l", false, "List after change (add, set, clear, delete)")
 }
 

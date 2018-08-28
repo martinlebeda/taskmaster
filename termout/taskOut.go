@@ -42,19 +42,11 @@ func TskListTasks(tasks []model.Task) {
 			statuFmt = ""
 		}
 
-		prioFmt := formatPrio(task)
-
-		out := fmt.Sprintf("%s | %s | %s | %s | %s | %s | %s | %s | %s | %s",
+		out := fmt.Sprintf("%s | %s | %s | %s",
 			strconv.Itoa(task.Id),
 			statuFmt,
 			task.Estimate.String,
-			prioFmt,
-			task.Category.String,
-			task.Code.String,
-			task.Desc,
-			task.Url.String,
-			task.Note.String,
-			task.Script.String)
+			task.Desc)
 		output = append(output, out)
 
 	}
@@ -64,7 +56,7 @@ func TskListTasks(tasks []model.Task) {
 
 	// printout
 	for i, task := range tasks {
-		if task.Prio.String == "A" || task.Prio.String == "B" {
+		if strings.HasPrefix(task.Desc, "(A)") || strings.HasPrefix(task.Desc, "(B)") {
 			d.Println(outFmt[i])
 		} else if task.Status == "X" {
 			x.Println(outFmt[i])
@@ -79,17 +71,7 @@ func TskListTasks(tasks []model.Task) {
 }
 
 func TskShowWork(task model.Task) {
-	prioFmt := formatPrio(task)
-
-	trimSpace := strings.TrimSpace(prioFmt + " " + task.Code.String + " " + task.Desc)
+	trimSpace := strings.TrimSpace(task.Desc)
 	replace := strings.Replace(trimSpace, "  ", " ", -1)
 	fmt.Println(task.Id, "-", replace)
-}
-
-func formatPrio(task model.Task) string {
-	prioFmt := "(" + task.Prio.String + ")"
-	if prioFmt == "()" {
-		prioFmt = ""
-	}
-	return prioFmt
 }

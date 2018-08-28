@@ -46,9 +46,8 @@ func WrkListWork(works []model.WorkList) {
 			durationFmt = duration.Round(time.Second).String()
 		}
 
-		fmt.Fprintf(w, "%d\t%s\t - %s  \t%s   \t%s\t %s\t %s\n", work.Rowid,
-			work.Start.Format(format), stopFmt, durationFmt,
-			work.Category, work.Code, work.Desc)
+		fmt.Fprintf(w, "%d\t%s\t - %s  \t%s  \t %s\n",
+			work.Id, work.Start.Format(format), stopFmt, durationFmt, work.Desc)
 		//}
 	}
 	w.Flush()

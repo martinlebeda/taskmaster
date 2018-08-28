@@ -74,11 +74,5 @@ func processLines(scanner *bufio.Scanner) {
 func init() {
 	taskCmd.AddCommand(tkBatchCmd)
 
-	tkBatchCmd.Flags().StringVarP(&taskOpt.Prio.String, "prio", "p", "", "task priority")
-	tkBatchCmd.Flags().StringVarP(&taskOpt.Code.String, "code", "c", "", "task code (project)")
-	tkBatchCmd.Flags().StringVarP(&taskOpt.Category.String, "category", "g", "", "task category (list)")
 	tkBatchCmd.Flags().StringVarP(&taskOpt.Estimate.String, "estimate", "e", "", "estimate time for task")
-	tkBatchCmd.Flags().StringVarP(&taskOpt.Url.String, "url", "u", "", "url for this task (ie. sources on internet)")
-	tkBatchCmd.Flags().StringVarP(&taskOpt.Note.String, "note", "n", "", "path to file with note")
-	tkBatchCmd.Flags().StringVarP(&taskOpt.Script.String, "script", "s", "", "path to file with script")
 }

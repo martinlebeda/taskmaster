@@ -44,7 +44,7 @@ var tkMaybeCmd = &cobra.Command{
 		var tsk model.Task
 		tsk.Status = "M"
 		tsk.DateDone = tools.GetZeroTime()
-		service.TskUpdate(tsk, false, selectByCategory, selectByCode, args)
+		service.TskUpdate(tsk, args)
 
 		if listAfterChange {
 			service.TkListAfterChange()

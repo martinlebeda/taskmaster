@@ -42,12 +42,6 @@ var wkEditCmd = &cobra.Command{
 	//This application is a tool to generate the needed files
 	//to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		code, err := cmd.Flags().GetString("code")
-		tools.CheckErr(err)
-
-		category, err := cmd.Flags().GetString("category")
-		tools.CheckErr(err)
-
 		desc, err := cmd.Flags().GetString("desc")
 		tools.CheckErr(err)
 
@@ -61,7 +55,7 @@ var wkEditCmd = &cobra.Command{
 		stop, err := tools.ParseDateTimeMinutes(stopOpt)
 		tools.CheckErr(err)
 
-		service.WrkUpdate(code, category, desc, start, stop, args)
+		service.WrkUpdate(desc, start, stop, args)
 
 		if listAfterChange {
 			workList := service.WrkGetWork(now.BeginningOfDay(), now.EndOfDay(), false)
@@ -82,8 +76,6 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// wkEditCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	tmEditCmd.Flags().StringP("code", "c", "", "new code value")
-	tmEditCmd.Flags().StringP("category", "g", "", "new category value")
 	tmEditCmd.Flags().StringP("desc", "d", "", "new desc value")
 
 	tmEditCmd.Flags().String("start", time.Time{}.Format(tools.BaseDateTimeFormat), "new start value")

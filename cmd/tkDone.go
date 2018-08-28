@@ -46,7 +46,7 @@ var tkDoneCmd = &cobra.Command{
 		//tsk.DateDone = tools.GetZeroTime()
 		tsk.Status = "X"
 		tsk.DateDone = time.Now()
-		service.TskUpdate(tsk, true, selectByCategory, selectByCode, args)
+		service.TskUpdate(tsk, args)
 
 		if listAfterChange {
 			service.TkListAfterChange()

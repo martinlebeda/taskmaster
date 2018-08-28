@@ -91,6 +91,28 @@ script VARCHAR
 			Description: "Add estimate to task",
 			Script:      `ALTER TABLE task ADD COLUMN estimate VARCHAR;`,
 		},
+		{
+			Version:     9,
+			Description: "big simplify task and work",
+			Script: `DROP TABLE IF EXISTS workNew;
+				CREATE TABLE workNew (id INTEGER PRIMARY KEY AUTOINCREMENT, desc VARCHAR, start DATETIME, stop DATETIME);
+				insert into workNew (id, desc, start, stop) select rowid, CASE WHEN code is not NULL and code <> '' THEN code || " - " ELSE "" END || desc || 
+						CASE WHEN category is not NULL and category <> '' THEN " +" || category ELSE "" END, start, stop from work;
+				drop table work;
+				ALTER TABLE workNew RENAME TO work;
+
+                DROP TABLE IF EXISTS taskNew; 
+				CREATE TABLE taskNew (id INTEGER PRIMARY KEY AUTOINCREMENT, status VARCHAR, desc VARCHAR, date_in DATETIME, date_done DATETIME, estimate VARCHAR);
+                insert into taskNew (id, status, desc, date_in, date_done, estimate) 
+                select id, status,
+                        CASE WHEN prio is not NULL and prio <> '' THEN "(" || prio || ") " ELSE "" END ||
+                        CASE WHEN code is not NULL and code <> '' THEN code || " - " ELSE "" END || desc || 
+                        CASE WHEN category is not NULL and category <> '' THEN " +" || category ELSE "" END ||
+                        CASE WHEN url is not NULL and url <> '' THEN " " || url ELSE "" END,
+                        date_in, date_done, estimate from task;
+				drop table task;
+				ALTER TABLE taskNew RENAME TO task;`,
+		},
 	}
 )
 

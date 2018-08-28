@@ -15,9 +15,9 @@ func TskAdd(task Task) {
 	task = prepareTask(task)
 
 	db := OpenDB()
-	stmt, err := db.Prepare("insert into task (desc, status, date_in, prio, code, category, url, note, script, estimate) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+	stmt, err := db.Prepare("insert into task (desc, status, date_in, estimate) values (?, ?, ?, ?)")
 	tools.CheckErr(err)
-	result, err := stmt.Exec(task.Desc, "N", time.Now(), task.Prio, task.Code, task.Category, task.Url, task.Note, task.Script, task.Estimate)
+	result, err := stmt.Exec(task.Desc, "N", time.Now(), task.Estimate)
 	tools.CheckErr(err)
 	count, err := result.RowsAffected()
 	tools.CheckErr(err)
@@ -33,18 +33,7 @@ func TskAdd(task Task) {
 
 // set null values for empty string or int is 0
 func prepareTask(task Task) Task {
-	task.Prio.Valid = task.Prio.String != ""
-	task.Code.Valid = task.Code.String != ""
-	task.Category.Valid = task.Category.String != ""
-	task.Url.Valid = task.Url.String != ""
-	task.Note.Valid = task.Note.String != ""
-	task.Script.Valid = task.Script.String != ""
 	task.Estimate.Valid = task.Estimate.String != ""
-
-	// TODO Lebeda - FIX: check PRIO only 1 character
-	if task.Prio.Valid {
-		task.Prio.String = strings.ToUpper(task.Prio.String)
-	}
 
 	return task
 }
@@ -64,7 +53,7 @@ func TskDel(ids []string) {
 }
 
 // update task non empty values in pattern for ids
-func TskUpdate(task Task, forcePriority bool, selectByCategory, selectByCode bool, ids []string) {
+func TskUpdate(task Task, ids []string) {
 	sql := "update task "
 
 	task = prepareTask(task)
@@ -73,18 +62,6 @@ func TskUpdate(task Task, forcePriority bool, selectByCategory, selectByCode boo
 	var setSql []string
 	var argSql []interface{}
 
-	if task.Prio.String != "" || forcePriority {
-		setSql = append(setSql, "prio = ?")
-		argSql = append(argSql, task.Prio.String)
-	}
-	if task.Category.String != "" {
-		setSql = append(setSql, "category = ?")
-		argSql = append(argSql, task.Category.String)
-	}
-	if task.Code.String != "" {
-		setSql = append(setSql, "code = ?")
-		argSql = append(argSql, task.Code.String)
-	}
 	if task.Estimate.String != "" {
 		setSql = append(setSql, "estimate = ?")
 		argSql = append(argSql, task.Estimate.String)
@@ -105,31 +82,19 @@ func TskUpdate(task Task, forcePriority bool, selectByCategory, selectByCode boo
 		setSql = append(setSql, "date_done = ?")
 		argSql = append(argSql, nil)
 	}
-	if task.Url.String != "" {
-		setSql = append(setSql, "url = ?")
-		argSql = append(argSql, task.Url.String)
-	}
-	if task.Note.String != "" {
-		setSql = append(setSql, "note = ?")
-		argSql = append(argSql, task.Note.String)
-	}
-	if task.Script.String != "" {
-		setSql = append(setSql, "script = ?")
-		argSql = append(argSql, task.Script.String)
-	}
-
 	// TODO Lebeda - check if setSql is not empty
 
 	sql += "set " + strings.Join(setSql, ", ")
 	sql += " where 1=1 "
 
-	if selectByCategory {
-		sql += " and category in ('" + strings.Join(ids, "','") + "')"
-	} else if selectByCode {
-		sql += " and code in ('" + strings.Join(ids, "','") + "')"
-	} else {
-		sql += " and id in (" + strings.Join(ids, ",") + ")"
-	}
+	// TODO Lebeda - select by query
+	//if selectByCategory {
+	//	sql += " and category in ('" + strings.Join(ids, "','") + "')"
+	//} else if selectByCode {
+	//	sql += " and code in ('" + strings.Join(ids, "','") + "')"
+	//} else {
+	sql += " and id in (" + strings.Join(ids, ",") + ")"
+	//}
 
 	// TODO Lebeda - debug for write sql
 	//fmt.Println(sql)
@@ -145,7 +110,7 @@ func TskUpdate(task Task, forcePriority bool, selectByCategory, selectByCode boo
 
 func TskGetList(doneFrom time.Time, showMaybe bool, showPrio []string, showCode, showCategory, showStatus string, args []string) []Task {
 	db := OpenDB()
-	sql := "select id, prio, code, category, status, desc, date_in, date_done, url, note, estimate, script from task where 1=1 "
+	sql := "select id, status, desc, date_in, date_done, estimate from task where 1=1 "
 	//sql := "select id, prio, code, category, status, desc, date_in, CASE WHEN date_done IS NULL THEN datetime('now') ELSE date_done END , url, note, estimate, script from task where 1=1 "
 
 	//if !timeFrom.IsZero() {
@@ -159,15 +124,6 @@ func TskGetList(doneFrom time.Time, showMaybe bool, showPrio []string, showCode,
 	sql += " and (status <> 'X' or date_done > ?) "
 	if !showMaybe {
 		sql += " and status <> 'M' "
-	}
-	if len(showPrio) > 0 {
-		sql += " and prio in ('" + strings.Join(showPrio, "','") + "') "
-	}
-	if showCode != "" {
-		sql += " and code = '" + showCode + "' "
-	}
-	if showCategory != "" {
-		sql += " and category = '" + showCategory + "' "
 	}
 	if showStatus != "" {
 		sql += " and status = '" + showStatus + "' "
@@ -185,9 +141,7 @@ func TskGetList(doneFrom time.Time, showMaybe bool, showPrio []string, showCode,
 		sql += " ) "
 	}
 
-	sql += " order by CASE WHEN status = 'W' THEN 1 WHEN status = 'N' THEN 10 WHEN status = 'M' THEN 60 WHEN status = 'X' THEN 99 ELSE 80 END, " +
-		" CASE WHEN (prio IS NULL) OR (PRIO = '') THEN 'W' ELSE prio END, " +
-		" category, code, date_in"
+	sql += " order by CASE WHEN status = 'W' THEN 1 WHEN status = 'N' THEN 10 WHEN status = 'M' THEN 60 WHEN status = 'X' THEN 99 ELSE 80 END, desc, date_in"
 
 	rows, err := db.Query(sql, doneFrom)
 	tools.CheckErr(err)
@@ -195,7 +149,7 @@ func TskGetList(doneFrom time.Time, showMaybe bool, showPrio []string, showCode,
 	var result []Task
 	for rows.Next() {
 		var task Task
-		err := rows.Scan(&task.Id, &task.Prio, &task.Code, &task.Category, &task.Status, &task.Desc, &task.DateIn, &task.DateDoneRaw, &task.Url, &task.Note, &task.Estimate, &task.Script)
+		err := rows.Scan(&task.Id, &task.Status, &task.Desc, &task.DateIn, &task.DateDoneRaw, &task.Estimate)
 		tools.CheckErr(err)
 
 		// null value
@@ -220,7 +174,7 @@ func TskGetList(doneFrom time.Time, showMaybe bool, showPrio []string, showCode,
 
 func TkGetById(id int) Task {
 	db := OpenDB()
-	sql := "select id, prio, code, category, status, desc, date_in, date_done, url, note, script, estimate from task where id = ?"
+	sql := "select id, status, desc, date_in, date_done, estimate from task where id = ?"
 
 	rows, err := db.Query(sql, id)
 	tools.CheckErr(err)
@@ -228,7 +182,7 @@ func TkGetById(id int) Task {
 	var result []Task
 	for rows.Next() {
 		var task Task
-		err := rows.Scan(&task.Id, &task.Prio, &task.Code, &task.Category, &task.Status, &task.Desc, &task.DateIn, &task.DateDoneRaw, &task.Url, &task.Note, &task.Script, &task.Estimate)
+		err := rows.Scan(&task.Id, &task.Status, &task.Desc, &task.DateIn, &task.DateDoneRaw, &task.Estimate)
 		tools.CheckErr(err)
 
 		// null value

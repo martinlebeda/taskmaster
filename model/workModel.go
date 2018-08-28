@@ -3,12 +3,10 @@ package model
 import "time"
 
 type WorkList struct {
-	Rowid    int
-	Category string
-	Code     string
-	Desc     string
-	Start    time.Time
-	Stop     time.Time
+	Id    int
+	Desc  string
+	Start time.Time
+	Stop  time.Time
 }
 
 type WorkSum struct {

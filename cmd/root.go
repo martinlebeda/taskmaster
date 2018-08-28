@@ -65,7 +65,18 @@ func init() {
 
 	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "Verbose output")
 	viper.BindPFlag("verbose", rootCmd.PersistentFlags().Lookup("verbose"))
+
+	rootCmd.PersistentFlags().BoolP("list-after-change", "L", false, "list all modules after any change")
+	viper.BindPFlag("listafterchange", rootCmd.PersistentFlags().Lookup("list-after-change"))
+	// TODO Lebeda - list-after-change
 }
+
+// TODO Lebeda - REMOVE extra column code and category (and priority??)
+
+// TODO Lebeda - subcommand webserver/web - run server if need on port
+// TODO Lebeda - subcommand gui - run server if need on port and open browser gui
+// TODO Lebeda - subcommand termui/tui - run fzf
+// TODO Lebeda - subcommand edit/ed ID - run editor for yaml generated and reimport id back (old edit command rename to update/upd)
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
@@ -91,7 +102,4 @@ func initConfig() {
 	if err := viper.ReadInConfig(); err == nil {
 		termout.Verbose("Using config file:", viper.ConfigFileUsed())
 	}
-
-	// TODO Lebeda - add global list after change - list all modules
-
 }

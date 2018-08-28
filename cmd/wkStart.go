@@ -28,7 +28,7 @@ import (
 	"time"
 )
 
-var wkCategoryOpt, wkCodeOpt, wkBeforeOpt, wkTimeOpt, wkDateOpt string
+var wkBeforeOpt, wkTimeOpt, wkDateOpt string
 
 // wkStartCmd represents the wkStart command
 var wkStartCmd = &cobra.Command{
@@ -38,7 +38,7 @@ var wkStartCmd = &cobra.Command{
 	//Long: ``, TODO Lebeda - add description
 	//Long: `A longer description that spans multiple lines and likely contains examples to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		service.WrkStart(args[0], wkCategoryOpt, wkCodeOpt, wkBeforeOpt, wkTimeOpt, wkDateOpt)
+		service.WrkStart(args[0], wkBeforeOpt, wkTimeOpt, wkDateOpt)
 		if listAfterChange {
 			workList := service.WrkGetWork(now.BeginningOfDay(), now.EndOfDay(), false)
 			termout.WrkListWork(workList)
@@ -48,9 +48,6 @@ var wkStartCmd = &cobra.Command{
 
 func init() {
 	workCmd.AddCommand(wkStartCmd)
-
-	wkStartCmd.Flags().StringVarP(&wkCategoryOpt, "category", "g", "", "Category of record")
-	wkStartCmd.Flags().StringVarP(&wkCodeOpt, "code", "c", "", "External code of record")
 
 	wkStartCmd.Flags().StringVarP(&wkBeforeOpt, "before", "b", "", "Time shift of record")
 

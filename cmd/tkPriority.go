@@ -42,10 +42,10 @@ var tkPriorityCmd = &cobra.Command{
 	//to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if tkPrioCleanOpt {
-			taskOpt.Prio.String = ""
+			//taskOpt.Prio.String = ""
 		}
 
-		service.TskUpdate(taskOpt, tkPrioCleanOpt, selectByCategory, selectByCode, args)
+		service.TskUpdate(taskOpt, args)
 
 		if listAfterChange {
 			service.TkListAfterChange()
@@ -56,7 +56,8 @@ var tkPriorityCmd = &cobra.Command{
 func init() {
 	taskCmd.AddCommand(tkPriorityCmd)
 
-	tkPriorityCmd.Flags().StringVarP(&taskOpt.Prio.String, "prio", "p", "", "task priority")
+	// TODO Lebeda - zajistit přidání/odebrání/změnu priority
+	//tkPriorityCmd.Flags().StringVarP(&taskOpt.Prio.String, "prio", "p", "", "task priority")
 	tkPriorityCmd.Flags().BoolVarP(&tkPrioCleanOpt, "clean-priority", "c", false, "clean task priority")
 
 	tkPriorityCmd.Flags().BoolVar(&selectByCategory, "by-category", false, "arguments are groups instead ID")

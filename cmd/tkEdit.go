@@ -41,7 +41,7 @@ var tkEditCmd = &cobra.Command{
 	//This application is a tool to generate the needed files
 	//to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		service.TskUpdate(taskOpt, tkPrioCleanOpt, selectByCategory, selectByCode, args)
+		service.TskUpdate(taskOpt, args)
 
 		if listAfterChange {
 			service.TkListAfterChange()
@@ -52,13 +52,7 @@ var tkEditCmd = &cobra.Command{
 func init() {
 	taskCmd.AddCommand(tkEditCmd)
 
-	tkEditCmd.Flags().StringVarP(&taskOpt.Prio.String, "prio", "p", "", "task priority")
-	tkEditCmd.Flags().StringVarP(&taskOpt.Code.String, "code", "c", "", "task code (project)")
-	tkEditCmd.Flags().StringVarP(&taskOpt.Category.String, "category", "g", "", "task category (list)")
 	tkEditCmd.Flags().StringVarP(&taskOpt.Estimate.String, "estimate", "e", "", "estimate time for task")
-	tkEditCmd.Flags().StringVarP(&taskOpt.Url.String, "url", "u", "", "url for this task (ie. sources on internet)")
-	tkEditCmd.Flags().StringVarP(&taskOpt.Note.String, "note", "n", "", "path to file with note")
-	tkEditCmd.Flags().StringVarP(&taskOpt.Script.String, "script", "s", "", "path to file with script")
 	tkEditCmd.Flags().StringVarP(&taskOpt.Desc, "desc", "d", "", "task description")
 
 	tkEditCmd.Flags().BoolVar(&tkPrioCleanOpt, "clean-priority", false, "force task priority (clean if set empty)")

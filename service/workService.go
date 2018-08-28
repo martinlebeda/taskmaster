@@ -34,14 +34,14 @@ func getDateTime(before, timeOpt, dateOpt string) time.Time {
 	return result
 }
 
-func WrkStart(taskName string, category, code, before, timeOpt, dateOpt string) {
+func WrkStart(taskName string, before, timeOpt, dateOpt string) {
 	WrkStop(before, timeOpt, dateOpt)
 
 	db := OpenDB()
-	stmt, err := db.Prepare("insert into work (desc, start, category, code) values (?, ?, ?, ?)")
+	stmt, err := db.Prepare("insert into work (desc, start) values (?, ?)")
 	tools.CheckErr(err)
 	dateTime := getDateTime(before, timeOpt, dateOpt)
-	result, err := stmt.Exec(taskName, dateTime, category, code)
+	result, err := stmt.Exec(taskName, dateTime)
 	tools.CheckErr(err)
 	count, err := result.RowsAffected()
 	tools.CheckErr(err)
@@ -50,9 +50,7 @@ func WrkStart(taskName string, category, code, before, timeOpt, dateOpt string) 
 
 func WrkGetWork(timeFrom, timeTo time.Time, onlyOpen bool) []WorkList {
 	db := OpenDB()
-	sql := "select rowid, " +
-		" CASE WHEN category IS NULL THEN '' ELSE category END," +
-		" CASE WHEN code IS NULL THEN '' ELSE code END," +
+	sql := "select id, " +
 		" CASE WHEN desc IS NULL THEN '' ELSE desc END," +
 		" start, stop from work where 1=1 "
 
@@ -72,7 +70,7 @@ func WrkGetWork(timeFrom, timeTo time.Time, onlyOpen bool) []WorkList {
 	var result []WorkList
 	for rows.Next() {
 		var workList WorkList
-		rows.Scan(&workList.Rowid, &workList.Category, &workList.Code, &workList.Desc, &workList.Start, &workList.Stop)
+		rows.Scan(&workList.Id, &workList.Desc, &workList.Start, &workList.Stop)
 		result = append(result, workList)
 	}
 
@@ -82,7 +80,7 @@ func WrkGetWork(timeFrom, timeTo time.Time, onlyOpen bool) []WorkList {
 func WrkDel(args []string) {
 	// sql by field
 	sql := ""
-	sql = "delete from work where rowid in (" + strings.Join(args, ",") + ")"
+	sql = "delete from work where id in (" + strings.Join(args, ",") + ")"
 
 	// execute delete
 	db := OpenDB()
@@ -93,20 +91,12 @@ func WrkDel(args []string) {
 	termout.Verbose("Worklog deleted: ", strings.Join(args, ","))
 }
 
-func WrkUpdate(code, category, desc string, start, stop time.Time, ids []string) {
+func WrkUpdate(desc string, start, stop time.Time, ids []string) {
 	sql := "update work "
 
 	// add parameters
 	var setSql []string
 	var argSql []interface{}
-	if code != "" {
-		setSql = append(setSql, "code = ?")
-		argSql = append(argSql, code)
-	}
-	if category != "" {
-		setSql = append(setSql, "category = ?")
-		argSql = append(argSql, category)
-	}
 	if desc != "" {
 		setSql = append(setSql, "desc = ?")
 		argSql = append(argSql, desc)
@@ -122,7 +112,7 @@ func WrkUpdate(code, category, desc string, start, stop time.Time, ids []string)
 	}
 
 	sql += "set " + strings.Join(setSql, ", ")
-	sql += " where rowid in (" + strings.Join(ids, ",") + ")"
+	sql += " where id in (" + strings.Join(ids, ",") + ")"
 
 	// execute update
 	db := OpenDB()
@@ -134,6 +124,7 @@ func WrkUpdate(code, category, desc string, start, stop time.Time, ids []string)
 }
 
 func WrkGetWorkSum(timeFrom, timeTo time.Time, sumByField string) []WorkSum {
+	// TODO Lebeda - REFAKTOR - sumfield as description
 	db := OpenDB()
 	sql := "select " + "CASE WHEN " + sumByField + " IS NULL THEN '' ELSE " + sumByField + " END," +
 		" sum(strftime('%s', CASE WHEN stop IS NULL THEN 'now' ELSE stop END, 'localtime') - strftime('%s', start, 'localtime')) as distance " +

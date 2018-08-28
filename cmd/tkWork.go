@@ -73,7 +73,7 @@ var tkWorkCmd = &cobra.Command{
 		tools.CheckErr(err)
 
 		if startWorkLog {
-			service.WrkStart(task.Desc, task.Category.String, task.Code.String, worklogBefore, worklogTime, worklogDate)
+			service.WrkStart(task.Desc, worklogBefore, worklogTime, worklogDate)
 			if listAfterChange {
 				workList := service.WrkGetWork(now.BeginningOfDay(), now.EndOfDay(), false)
 				termout.WrkListWork(workList)
@@ -94,7 +94,7 @@ var tkWorkCmd = &cobra.Command{
 		tsk.Status = "W"
 		tsk.DateDone = tools.GetZeroTime()
 		service.TskResetWorkStatus()
-		service.TskUpdate(tsk, false, false, false, args)
+		service.TskUpdate(tsk, args)
 
 		if listAfterChange {
 			service.TkListAfterChange() // TODO Lebeda - whow only work task
@@ -117,7 +117,6 @@ func init() {
 	curDate := time.Now()
 	tkWorkCmd.Flags().String("worklog-time", curDate.Format("15:04"), "Time of begin worklog")
 	tkWorkCmd.Flags().String("worklog-date", curDate.Format("2006-01-02"), "Time of begin worklog")
+	// TODO Lebeda - tag a replace tag pro timer
 
-	tkWorkCmd.Flags().BoolVar(&selectByCategory, "by-category", false, "arguments are groups instead ID")
-	tkWorkCmd.Flags().BoolVar(&selectByCode, "by-code", false, "arguments are codes instead ID")
 }
