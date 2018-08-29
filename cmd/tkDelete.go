@@ -29,15 +29,12 @@ import (
 var tkDeleteCmd = &cobra.Command{
 	Use:     "delete",
 	Aliases: []string{"del"},
-	Short:   "A brief description of your command", // TODO Lebeda - add brief description
+	Short:   "delete task",
 	Args:    cobra.MinimumNArgs(1),
-	// TODO Lebeda - add long description
-	//Long: `A longer description that spans multiple lines and likely contains examples
-	//and usage of using your command. For example:
-	//
-	//Cobra is a CLI library for Go that empowers applications.
-	//This application is a tool to generate the needed files
-	//to quickly create a Cobra application.`,
+	// TODO Lebeda - projít všechny Long description aby obsahovali usage
+	Long: `Delete tasks by ID.
+	
+	usage: tm tk del ID [ID ID ID ...]`,
 	Run: func(cmd *cobra.Command, args []string) {
 		service.TskDel(args)
 		if listAfterChange {
@@ -48,14 +45,4 @@ var tkDeleteCmd = &cobra.Command{
 
 func init() {
 	taskCmd.AddCommand(tkDeleteCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// tkDeleteCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// tkDeleteCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

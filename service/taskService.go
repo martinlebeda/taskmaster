@@ -1,3 +1,23 @@
+// Copyright © 2018 Martin Lebeda <martin.lebeda@gmail.com>
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
 package service
 
 import (
@@ -159,7 +179,7 @@ func TskRemove(part string, ids []string) {
 	termout.Verbose("Task updated: ", strings.Join(ids, ","))
 }
 
-func TskGetList(doneFrom time.Time, showMaybe bool, showPrio []string, showCode, showCategory, showStatus string, args []string) []Task {
+func TskGetList(doneFrom time.Time, showMaybe bool, showStatus string, showPrio []string, args []string) []Task {
 	db := OpenDB()
 	sql := "select id, status, desc, date_in, date_done, estimate from task where 1=1 "
 	//sql := "select id, prio, code, category, status, desc, date_in, CASE WHEN date_done IS NULL THEN datetime('now') ELSE date_done END , url, note, estimate, script from task where 1=1 "
@@ -171,6 +191,8 @@ func TskGetList(doneFrom time.Time, showMaybe bool, showPrio []string, showCode,
 	//if onlyOpen {
 	//sql += " and stop is null "
 	//}
+
+	// TODO Lebeda - implement usage showPrio
 
 	sql += " and (status <> 'X' or date_done > ?) "
 	if !showMaybe {
@@ -256,7 +278,7 @@ func TskResetWorkStatus() {
 
 func TkListAfterChange() {
 	termout.EmptyLineOut()
-	tasks := TskGetList(now.BeginningOfDay(), false, []string{}, "", "", "", []string{})
+	tasks := TskGetList(now.BeginningOfDay(), false, "", []string{}, []string{})
 	termout.TskListTasks(tasks)
 }
 

@@ -31,16 +31,10 @@ import (
 
 // wkEditCmd represents the wkEdit command
 var wkEditCmd = &cobra.Command{
-	Use:   "edit",
-	Short: "Edit worklog items",
+	Use:   "edit", // TODO Lebeda - rename edit to update
+	Short: "update worklog items",
 	Args:  cobra.MinimumNArgs(1),
-	// TODO Lebeda - add long description
-	//	Long: `A longer description that spans multiple lines and likely contains examples
-	//and usage of using your command. For example:
-	//
-	//Cobra is a CLI library for Go that empowers applications.
-	//This application is a tool to generate the needed files
-	//to quickly create a Cobra application.`,
+	Long:  `usage: tm wk update [--start 'datetime'] [--stop 'datetime'] [-d 'desc'] ID [ID ID ID ...]`,
 	Run: func(cmd *cobra.Command, args []string) {
 		desc, err := cmd.Flags().GetString("desc")
 		tools.CheckErr(err)
@@ -66,18 +60,7 @@ var wkEditCmd = &cobra.Command{
 
 func init() {
 	workCmd.AddCommand(wkEditCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// wkEditCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// wkEditCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	tmEditCmd.Flags().StringP("desc", "d", "", "new desc value")
-
 	tmEditCmd.Flags().String("start", time.Time{}.Format(tools.BaseDateTimeFormat), "new start value")
 	tmEditCmd.Flags().String("stop", time.Time{}.Format(tools.BaseDateTimeFormat), "new stop value")
 }

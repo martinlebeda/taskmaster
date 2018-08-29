@@ -32,13 +32,8 @@ var tkPriorityCmd = &cobra.Command{
 	Aliases: []string{"prio", "p"},
 	Args:    cobra.MinimumNArgs(1),
 	Short:   "set (or unset) task priority",
-	// TODO Lebeda - add long description
-	//Long: `A longer description that spans multiple lines and likely contains examples
-	//and usage of using your command. For example:
-	//
-	//Cobra is a CLI library for Go that empowers applications.
-	//This application is a tool to generate the needed files
-	//to quickly create a Cobra application.`,
+	Long: `usage: tm tk prio A ID [ID ID ID ...]
+       tm tk prio -c ID [ID ID ID ...]`,
 	Run: func(cmd *cobra.Command, args []string) {
 		cleanPrio, err := cmd.Flags().GetBool("clean-priority")
 		tools.CheckErr(err)
@@ -52,9 +47,8 @@ var tkPriorityCmd = &cobra.Command{
 		} else {
 			taskIds = args[1:]
 			prio = args[0]
+			// TODO Lebeda - kontrolovat neprázdné taskIds
 		}
-
-		// TODO Lebeda - kontrolovat neprázdné taskIds
 
 		service.TskPrio(prio, taskIds)
 

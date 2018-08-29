@@ -27,16 +27,13 @@ import (
 
 // tkAppendCmd represents the tkAppend command
 var tkAppendCmd = &cobra.Command{
-	Use:     "append", // TODO Lebeda - alias
+	Use:     "append",
 	Aliases: []string{"project", "context"},
 	Args:    cobra.MinimumNArgs(2),
-	Short:   "A brief description of your command", // TODO Lebeda - description
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short:   "append project or context to task description",
+	Long: `usage: tm tk append '@context' ID [ID ID ID ...]
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+For appended text use todo.txt syntax ie @context or +project or any string you want.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		part := args[0]
 		taskIds := args[1:]
@@ -51,14 +48,4 @@ to quickly create a Cobra application.`,
 
 func init() {
 	taskCmd.AddCommand(tkAppendCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// tkAppendCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// tkAppendCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

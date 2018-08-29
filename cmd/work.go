@@ -30,25 +30,13 @@ var workCmd = &cobra.Command{
 	Aliases: []string{"wk", "wrk"},
 	Short:   "work accounting",
 	Long:    `Work accounting for reporting.`,
-	//Run: func(cmd *cobra.Command, args []string) {
-	//	fmt.Println("work called")
-	//},
 }
 
 func init() {
 	rootCmd.AddCommand(workCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// workCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// workCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-
 	workCmd.PersistentFlags().BoolVarP(&listAfterChange, "list", "l", false, "List today work after change")
 }
 
 //TODO Lebeda - list za období, popř. za x dní zpět
+//TODO Lebeda - restart command - start with desc by another log

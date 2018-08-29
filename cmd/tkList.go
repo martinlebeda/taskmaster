@@ -35,14 +35,11 @@ import (
 var tkListCmd = &cobra.Command{
 	Use:     "list",
 	Aliases: []string{"ls"},
-	Short:   "A brief description of your command", // TODO Lebeda - add brief description
-	// TODO Lebeda - add long description
-	//Long: `A longer description that spans multiple lines and likely contains examples
-	//and usage of using your command. For example:
-	//
-	//Cobra is a CLI library for Go that empowers applications.
-	//This application is a tool to generate the needed files
-	//to quickly create a Cobra application.`,
+	Short:   "list tasks",
+	Long: `usage: tm tk ls [flags...] [patterns...]
+	
+	Pattern is string for search in description.
+	If empty, list all tasks. Between more patterns is use OR operator.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		doneOpt, err := cmd.Flags().GetString("done-from")
 		tools.CheckErr(err)
@@ -83,16 +80,10 @@ var tkListCmd = &cobra.Command{
 			showPrio = append(showPrio, getAllPrioTo('Z')...)
 		}
 
-		showCode, err := cmd.Flags().GetString("code")
-		tools.CheckErr(err)
-
-		showCategory, err := cmd.Flags().GetString("category")
-		tools.CheckErr(err)
-
 		showStatus, err := cmd.Flags().GetString("status")
 		tools.CheckErr(err)
 
-		tasks := service.TskGetList(tskDoneFrom, showMaybe, showPrio, showCode, showCategory, showStatus, args)
+		tasks := service.TskGetList(tskDoneFrom, showMaybe, showStatus, showPrio, args)
 
 		if showNext {
 			termout.TskShowWork(tasks[0])
@@ -118,8 +109,6 @@ func init() {
 
 	tkListCmd.Flags().BoolP("maybe", "m", false, "show maybe tasks")
 	tkListCmd.Flags().String("done-from", now.BeginningOfDay().Format("2006-01-02"), "show done from day")
-	tkListCmd.Flags().StringP("code", "c", "", "show tasks with code")
-	tkListCmd.Flags().StringP("category", "g", "", "show tasks with category")
 	tkListCmd.Flags().StringP("status", "s", "", "show tasks with status")
 }
 

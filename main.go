@@ -25,6 +25,3 @@ import "github.com/martinlebeda/taskmaster/cmd"
 func main() {
 	cmd.Execute()
 }
-
-// TODO Lebeda - cmd for list category and code ower whole DB
-// TODO Lebeda - add licence preambule to all sources

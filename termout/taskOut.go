@@ -32,10 +32,10 @@ import (
 
 func TskListTasks(tasks []model.Task) {
 
-	colorInterestingLine := color.New(color.Bold)          // TODO Lebeda - tools funkce
-	colorDoneLine := color.New(color.FgCyan)               // TODO Lebeda - tools funkce
-	colorContext := color.New(color.FgYellow).SprintFunc() // TODO Lebeda - konfigurace
-	colorProject := color.New(color.FgGreen).SprintFunc()  // TODO Lebeda - konfigurace
+	colorInterestingLine := color.New(color.Bold)
+	colorDoneLine := color.New(color.FgCyan)
+	colorContext := color.New(color.FgYellow).SprintFunc()
+	colorProject := color.New(color.FgGreen).SprintFunc()
 
 	// build output
 	var output []string

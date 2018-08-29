@@ -34,13 +34,8 @@ var tkBatchCmd = &cobra.Command{
 	//Args:  cobra.ExactArgs(1),
 	Aliases: []string{"feed"},
 	Short:   "batch add multiple task with the same metadata",
-	// TODO Lebeda - add long description
-	//Long: `A longer description that spans multiple lines and likely contains examples
-	//and usage of using your command. For example:
-	//
-	//Cobra is a CLI library for Go that empowers applications.
-	//This application is a tool to generate the needed files
-	//to quickly create a Cobra application.`,
+	Long: `usage: tm tk batch [-e estimate_per_each] [FILE ...]
+	If not any file on command line, stdin is used.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		//taskOpt.Desc = args[0]
 		if len(args) > 0 {

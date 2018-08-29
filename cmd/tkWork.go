@@ -38,13 +38,9 @@ var tkWorkCmd = &cobra.Command{
 	Aliases: []string{"wrk", "wk", "w"},
 	Args:    cobra.ExactArgs(1),
 	Short:   "set status as work",
-	// TODO Lebeda - add long description
-	//Long: `A longer description that spans multiple lines and likely contains examples
-	//and usage of using your command. For example:
-	//
-	//Cobra is a CLI library for Go that empowers applications.
-	//This application is a tool to generate the needed files
-	//to quickly create a Cobra application.`,
+	Long: `usage: tm tk work [flags] ID
+	
+	Only one task should be in status work. Other task in work status, will be reset to status normal.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		startWorkLog, err := cmd.Flags().GetBool("worklog")
@@ -98,7 +94,7 @@ var tkWorkCmd = &cobra.Command{
 		service.TskUpdate(tsk, args)
 
 		if listAfterChange {
-			service.TkListAfterChange() // TODO Lebeda - whow only work task
+			service.TkListAfterChange()
 		}
 	},
 }
@@ -106,11 +102,9 @@ var tkWorkCmd = &cobra.Command{
 func init() {
 	taskCmd.AddCommand(tkWorkCmd)
 
-	// TODO Lebeda - add functions for worklog and timer
 	tkWorkCmd.Flags().BoolP("worklog", "w", false, "automatic start worklog with group, code and description from task")
 	tkWorkCmd.Flags().StringP("timer", "t", "", "add new timer with desc from task (owerride -T)")
 	tkWorkCmd.Flags().BoolP("estimate", "T", false, "add new timer with desc from task estimate")
-	// TODO Lebeda - text worklog and timer
 
 	// options for worklog
 	tkWorkCmd.Flags().StringP("worklog-before", "b", "", "Time shift worklog")

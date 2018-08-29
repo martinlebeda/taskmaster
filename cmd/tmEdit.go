@@ -30,16 +30,10 @@ import (
 
 // tmEditCmd represents the tmEdit command
 var tmEditCmd = &cobra.Command{
-	Use:   "edit",
+	Use:   "edit", // TODO Lebeda - rename edit to update
 	Short: "Edit timer items",
 	Args:  cobra.MinimumNArgs(1),
-	// TODO Lebeda - add long description
-	//Long: `A longer description that spans multiple lines and likely contains examples
-	//and usage of using your command. For example:
-	//
-	//Cobra is a CLI library for Go that empowers applications.
-	//This application is a tool to generate the needed files
-	//to quickly create a Cobra application.`,
+	Long:  `usage: tm tm update [--note 'note'] [--goal '--goal'] ID [ID ID ID ...]`,
 	Run: func(cmd *cobra.Command, args []string) {
 		note, err := cmd.Flags().GetString("note")
 		tools.CheckErr(err)

@@ -33,13 +33,7 @@ var wkDeleteCmd = &cobra.Command{
 	Aliases: []string{"del"},
 	Args:    cobra.MinimumNArgs(1),
 	Short:   "delete worklog item",
-	// TODO Lebeda - add long description
-	//Long: `A longer description that spans multiple lines and likely contains examples
-	//and usage of using your command. For example:
-	//
-	//Cobra is a CLI library for Go that empowers applications.
-	//This application is a tool to generate the needed files
-	//to quickly create a Cobra application.`,
+	Long:    `usage: tm wk del ID [ID ID ID ...]`,
 	Run: func(cmd *cobra.Command, args []string) {
 		service.WrkDel(args)
 		if listAfterChange {

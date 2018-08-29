@@ -31,15 +31,12 @@ var selectByCategory, selectByCode bool
 var tkUpdateCmd = &cobra.Command{
 	Use:     "update",
 	Aliases: []string{"edt", "edit", "upd"},
-	Short:   "A brief description of your command", // TODO Lebeda - add brief description
+	Short:   "update values of task",
 	Args:    cobra.MinimumNArgs(1),
-	// TODO Lebeda - add long description
-	//Long: `A longer description that spans multiple lines and likely contains examples
-	//and usage of using your command. For example:
-	//
-	//Cobra is a CLI library for Go that empowers applications.
-	//This application is a tool to generate the needed files
-	//to quickly create a Cobra application.`,
+	Long: `usage: tm tk update [-e duration] [-d description] ID [ID ID ID ...]
+	
+	In task description can use priority, project and contexts in todo.txt format.
+	Duration and description will be set for all IDs`,
 	Run: func(cmd *cobra.Command, args []string) {
 		service.TskUpdate(taskOpt, args)
 
@@ -52,7 +49,8 @@ var tkUpdateCmd = &cobra.Command{
 func init() {
 	taskCmd.AddCommand(tkUpdateCmd)
 
-	tkUpdateCmd.Flags().StringVarP(&taskOpt.Estimate.String, "estimate", "e", "", "estimate time for task")
+	// TODO Lebeda - zajistit jednotné nápovědy pomocí konstant
+	tkUpdateCmd.Flags().StringVarP(&taskOpt.Estimate.String, "estimate", "e", "", "estimate time for task in duration format, ie: 2h")
 	tkUpdateCmd.Flags().StringVarP(&taskOpt.Desc, "desc", "d", "", "task description")
 
 	// TODO Lebeda - domyslet tkUpdateCmd.Flags().BoolVar(&tkPrioCleanOpt, "clean-priority", false, "force task priority (clean if set empty)")
