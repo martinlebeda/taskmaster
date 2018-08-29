@@ -40,6 +40,10 @@ dep:
 # test: resources
 #  go test
 
+# watch changes and run compile
+watch:
+  watchexec -e go -r just build
+
 # copy release binary to ~/bin directory
 install: build
   cp -v bin/tm ~/bin/
