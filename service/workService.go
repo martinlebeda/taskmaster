@@ -68,6 +68,25 @@ func WrkStart(taskName string, before, timeOpt, dateOpt string) {
 	termout.Verbose("Task inserted: " + strconv.FormatInt(count, 10))
 }
 
+func WrkGetWorkById(id int) WorkList {
+	db := OpenDB()
+	sql := "select id, " +
+		" CASE WHEN desc IS NULL THEN '' ELSE desc END," +
+		" start, stop from work where id=? "
+
+	rows, err := db.Query(sql, id)
+	tools.CheckErr(err)
+
+	var result []WorkList
+	for rows.Next() {
+		var workList WorkList
+		rows.Scan(&workList.Id, &workList.Desc, &workList.Start, &workList.Stop)
+		result = append(result, workList)
+	}
+
+	return result[0]
+}
+
 func WrkGetWork(timeFrom, timeTo time.Time, onlyOpen bool) []WorkList {
 	db := OpenDB()
 	sql := "select id, " +

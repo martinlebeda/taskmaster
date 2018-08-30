@@ -39,10 +39,14 @@ var wkStartCmd = &cobra.Command{
 	Args:  cobra.ExactArgs(1),
 	Long: `usage: tm wk start 'description'
      tm wk start -T ID_TASK
+     tm wk start -h ID_WORK
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		byTask, err := cmd.Flags().GetBool("by-task")
+		tools.CheckErr(err)
+
+		byHistory, err := cmd.Flags().GetBool("by-history")
 		tools.CheckErr(err)
 
 		desc := args[0]
@@ -52,6 +56,13 @@ var wkStartCmd = &cobra.Command{
 
 			task := service.TkGetById(id)
 			desc = service.RemovePrioFromDesc(task.Desc)
+		}
+		if byHistory {
+			id, err := strconv.Atoi(args[0])
+			tools.CheckErr(err)
+
+			workList := service.WrkGetWorkById(id)
+			desc = workList.Desc
 		}
 
 		service.WrkStart(desc, wkBeforeOpt, wkTimeOpt, wkDateOpt)
@@ -73,4 +84,5 @@ func init() {
 	wkStartCmd.Flags().StringVar(&wkDateOpt, "date", curDate.Format("2006-01-02"), "Time of begin record")
 
 	wkStartCmd.Flags().BoolP("by-task", "T", false, "argument is ID of task and description used from task")
+	wkStartCmd.Flags().BoolP("by-history", "H", false, "argument is ID of log and description used from this log")
 }
