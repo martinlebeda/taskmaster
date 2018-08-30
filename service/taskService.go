@@ -245,6 +245,7 @@ func TskGetList(doneFrom time.Time, showMaybe bool, showStatus string, showPrio 
 	return result
 }
 
+// TODO Lebeda - sjednotit prefix Tk na Tsk
 func TkGetById(id int) Task {
 	db := OpenDB()
 	sql := "select id, status, desc, date_in, date_done, estimate from task where id = ?"

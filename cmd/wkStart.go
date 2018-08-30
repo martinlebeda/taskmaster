@@ -24,7 +24,9 @@ import (
 	"github.com/jinzhu/now"
 	"github.com/martinlebeda/taskmaster/service"
 	"github.com/martinlebeda/taskmaster/termout"
+	"github.com/martinlebeda/taskmaster/tools"
 	"github.com/spf13/cobra"
+	"strconv"
 	"time"
 )
 
@@ -35,10 +37,25 @@ var wkStartCmd = &cobra.Command{
 	Use:   "start",
 	Short: "record start of task",
 	Args:  cobra.ExactArgs(1),
-	//Long: ``, TODO Lebeda - add description
-	//Long: `A longer description that spans multiple lines and likely contains examples to quickly create a Cobra application.`,
+	Long: `usage: tm wk start 'description'
+     tm wk start -T ID_TASK
+`,
 	Run: func(cmd *cobra.Command, args []string) {
-		service.WrkStart(args[0], wkBeforeOpt, wkTimeOpt, wkDateOpt)
+
+		byTask, err := cmd.Flags().GetBool("by-task")
+		tools.CheckErr(err)
+
+		desc := args[0]
+		if byTask {
+			id, err := strconv.Atoi(args[0])
+			tools.CheckErr(err)
+
+			task := service.TkGetById(id)
+			desc = service.RemovePrioFromDesc(task.Desc)
+		}
+
+		service.WrkStart(desc, wkBeforeOpt, wkTimeOpt, wkDateOpt)
+
 		if listAfterChange {
 			workList := service.WrkGetWork(now.BeginningOfDay(), now.EndOfDay(), false)
 			termout.WrkListWork(workList)
@@ -54,4 +71,6 @@ func init() {
 	curDate := time.Now()
 	wkStartCmd.Flags().StringVarP(&wkTimeOpt, "time", "t", curDate.Format("15:04"), "Time of begin record")
 	wkStartCmd.Flags().StringVar(&wkDateOpt, "date", curDate.Format("2006-01-02"), "Time of begin record")
+
+	wkStartCmd.Flags().BoolP("by-task", "T", false, "argument is ID of task and description used from task")
 }
