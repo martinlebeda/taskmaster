@@ -78,7 +78,7 @@ var tkWorkCmd = &cobra.Command{
 		}
 
 		if timerDuration != "" {
-			service.TmrAdd(false, "", timerDuration, taskDesc)
+			service.TmrAdd(viper.GetBool("timer-replace-tag"), viper.GetString("timer-tag"), timerDuration, taskDesc)
 			if listAfterChange {
 				service.TmrListAfterChange()
 			}
@@ -108,10 +108,14 @@ func init() {
 
 	// options for worklog
 	tkWorkCmd.Flags().StringP("worklog-before", "b", "", "Time shift worklog")
-
 	curDate := time.Now()
 	tkWorkCmd.Flags().String("worklog-time", curDate.Format("15:04"), "Time of begin worklog")
 	tkWorkCmd.Flags().String("worklog-date", curDate.Format("2006-01-02"), "Time of begin worklog")
-	// TODO Lebeda - tag a replace tag pro timer
 
+	// options for timer
+	tkWorkCmd.Flags().String("timer-tag", "", "Timer tag for create timer from task")
+	viper.BindPFlag("timer-tag", tkWorkCmd.Flags().Lookup("timer-tag"))
+
+	tkWorkCmd.Flags().Bool("timer-replace-tag", false, "Replace other timers with tag when create timer from task")
+	viper.BindPFlag("timer-replace-tag", tkWorkCmd.Flags().Lookup("timer-replace-tag"))
 }
