@@ -36,7 +36,7 @@ func TskAdd(task Task) {
 	task = prepareTask(task)
 
 	db := OpenDB()
-	stmt, err := db.Prepare("insert into task (desc, status, date_in) values (?, ?, ?, ?)")
+	stmt, err := db.Prepare("insert into task (desc, status, date_in) values (?, ?, ?)")
 	tools.CheckErr(err)
 	result, err := stmt.Exec(task.Desc, "N", time.Now())
 	tools.CheckErr(err)
