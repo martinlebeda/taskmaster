@@ -57,15 +57,7 @@ var tkWorkCmd = &cobra.Command{
 		tools.CheckErr(err)
 		task := service.TkGetById(id)
 
-		fromEstimate, err := cmd.Flags().GetBool("estimate")
-		tools.CheckErr(err)
-
-		timerDuration := ""
-		if fromEstimate {
-			timerDuration = task.Estimate.String
-		}
-
-		timerDuration, err = cmd.Flags().GetString("timer")
+		timerDuration, err := cmd.Flags().GetString("timer")
 		tools.CheckErr(err)
 
 		taskDesc := service.RemovePrioFromDesc(task.Desc)
@@ -103,8 +95,7 @@ func init() {
 	taskCmd.AddCommand(tkWorkCmd)
 
 	tkWorkCmd.Flags().BoolP("worklog", "w", false, "automatic start worklog with group, code and description from task")
-	tkWorkCmd.Flags().StringP("timer", "t", "", "add new timer with desc from task (owerride -T)")
-	tkWorkCmd.Flags().BoolP("estimate", "T", false, "add new timer with desc from task estimate")
+	tkWorkCmd.Flags().StringP("timer", "t", "", "add new timer with desc from task")
 
 	// options for worklog
 	tkWorkCmd.Flags().StringP("worklog-before", "b", "", "Time shift worklog")

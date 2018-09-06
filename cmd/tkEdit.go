@@ -32,8 +32,8 @@ var tkUpdateCmd = &cobra.Command{
 	Use:     "update",
 	Aliases: []string{"edt", "edit", "upd"},
 	Short:   "update values of task",
-	Args:    cobra.MinimumNArgs(1),
-	Long: `usage: tm tk update [-e duration] [-d description] ID [ID ID ID ...]
+	Args:    cobra.MinimumNArgs(1), // TODO Lebeda - nemá smysl pro více ID
+	Long: `usage: tm tk update [-d description] ID [ID ID ID ...]
 	
 	In task description can use priority, project and contexts in todo.txt format.
 	Duration and description will be set for all IDs`,
@@ -50,7 +50,6 @@ func init() {
 	taskCmd.AddCommand(tkUpdateCmd)
 
 	// TODO Lebeda - zajistit jednotné nápovědy pomocí konstant
-	tkUpdateCmd.Flags().StringVarP(&taskOpt.Estimate.String, "estimate", "e", "", "estimate time for task in duration format, ie: 2h")
 	tkUpdateCmd.Flags().StringVarP(&taskOpt.Desc, "desc", "d", "", "task description")
 
 	// TODO Lebeda - domyslet tkUpdateCmd.Flags().BoolVar(&tkPrioCleanOpt, "clean-priority", false, "force task priority (clean if set empty)")

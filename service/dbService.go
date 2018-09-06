@@ -113,6 +113,16 @@ script VARCHAR
 				drop table task;
 				ALTER TABLE taskNew RENAME TO task;`,
 		},
+		{
+			Version:     10,
+			Description: "drop estimate from task",
+			Script: `DROP TABLE IF EXISTS taskNew; 
+				CREATE TABLE taskNew (id INTEGER PRIMARY KEY AUTOINCREMENT, status VARCHAR, desc VARCHAR, date_in DATETIME, date_done DATETIME);
+                insert into taskNew (id, status, desc, date_in, date_done) 
+                select id, status, desc, date_in, date_done from task;
+				drop table task;
+				ALTER TABLE taskNew RENAME TO task;`,
+		},
 	}
 )
 

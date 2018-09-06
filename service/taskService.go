@@ -36,9 +36,9 @@ func TskAdd(task Task) {
 	task = prepareTask(task)
 
 	db := OpenDB()
-	stmt, err := db.Prepare("insert into task (desc, status, date_in, estimate) values (?, ?, ?, ?)")
+	stmt, err := db.Prepare("insert into task (desc, status, date_in) values (?, ?, ?, ?)")
 	tools.CheckErr(err)
-	result, err := stmt.Exec(task.Desc, "N", time.Now(), task.Estimate)
+	result, err := stmt.Exec(task.Desc, "N", time.Now())
 	tools.CheckErr(err)
 	count, err := result.RowsAffected()
 	tools.CheckErr(err)
@@ -54,7 +54,7 @@ func TskAdd(task Task) {
 
 // set null values for empty string or int is 0
 func prepareTask(task Task) Task {
-	task.Estimate.Valid = task.Estimate.String != ""
+	//task.Estimate.Valid = task.Estimate.String != ""
 
 	return task
 }
@@ -83,10 +83,6 @@ func TskUpdate(task Task, ids []string) {
 	var setSql []string
 	var argSql []interface{}
 
-	if task.Estimate.String != "" {
-		setSql = append(setSql, "estimate = ?")
-		argSql = append(argSql, task.Estimate.String)
-	}
 	if task.Status != "" {
 		setSql = append(setSql, "status = ?")
 		argSql = append(argSql, task.Status)
@@ -181,7 +177,7 @@ func TskRemove(part string, ids []string) {
 
 func TskGetList(doneFrom time.Time, showMaybe bool, showStatus string, showPrio []string, args []string) []Task {
 	db := OpenDB()
-	sql := "select id, status, desc, date_in, date_done, estimate from task where 1=1 "
+	sql := "select id, status, desc, date_in, date_done from task where 1=1 "
 	//sql := "select id, prio, code, category, status, desc, date_in, CASE WHEN date_done IS NULL THEN datetime('now') ELSE date_done END , url, note, estimate, script from task where 1=1 "
 
 	//if !timeFrom.IsZero() {
@@ -222,7 +218,7 @@ func TskGetList(doneFrom time.Time, showMaybe bool, showStatus string, showPrio 
 	var result []Task
 	for rows.Next() {
 		var task Task
-		err := rows.Scan(&task.Id, &task.Status, &task.Desc, &task.DateIn, &task.DateDoneRaw, &task.Estimate)
+		err := rows.Scan(&task.Id, &task.Status, &task.Desc, &task.DateIn, &task.DateDoneRaw)
 		tools.CheckErr(err)
 
 		// null value
@@ -248,7 +244,7 @@ func TskGetList(doneFrom time.Time, showMaybe bool, showStatus string, showPrio 
 // TODO Lebeda - sjednotit prefix Tk na Tsk
 func TkGetById(id int) Task {
 	db := OpenDB()
-	sql := "select id, status, desc, date_in, date_done, estimate from task where id = ?"
+	sql := "select id, status, desc, date_in, date_done from task where id = ?"
 
 	rows, err := db.Query(sql, id)
 	tools.CheckErr(err)
@@ -256,7 +252,7 @@ func TkGetById(id int) Task {
 	var result []Task
 	for rows.Next() {
 		var task Task
-		err := rows.Scan(&task.Id, &task.Status, &task.Desc, &task.DateIn, &task.DateDoneRaw, &task.Estimate)
+		err := rows.Scan(&task.Id, &task.Status, &task.Desc, &task.DateIn, &task.DateDoneRaw)
 		tools.CheckErr(err)
 
 		// null value

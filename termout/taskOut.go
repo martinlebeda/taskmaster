@@ -45,10 +45,9 @@ func TskListTasks(tasks []model.Task) {
 			statuFmt = ""
 		}
 
-		out := fmt.Sprintf("%s | %s | %s | %s",
+		out := fmt.Sprintf("%s | %s | %s",
 			strconv.Itoa(task.Id),
 			statuFmt,
-			task.Estimate.String,
 			task.Desc)
 		output = append(output, out)
 

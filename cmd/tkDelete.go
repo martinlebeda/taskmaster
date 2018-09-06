@@ -31,7 +31,6 @@ var tkDeleteCmd = &cobra.Command{
 	Aliases: []string{"del"},
 	Short:   "delete task",
 	Args:    cobra.MinimumNArgs(1),
-	// TODO Lebeda - projít všechny Long description aby obsahovali usage
 	Long: `Delete tasks by ID.
 	
 	usage: tm tk del ID [ID ID ID ...]`,

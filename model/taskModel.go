@@ -32,5 +32,4 @@ type Task struct {
 	DateIn      time.Time
 	DateDoneRaw sql.NullString
 	DateDone    time.Time
-	Estimate    sql.NullString
 }

@@ -34,7 +34,7 @@ var tkBatchCmd = &cobra.Command{
 	//Args:  cobra.ExactArgs(1),
 	Aliases: []string{"feed"},
 	Short:   "batch add multiple task with the same metadata",
-	Long: `usage: tm tk batch [-e estimate_per_each] [FILE ...]
+	Long: `usage: tm tk batch [FILE ...]
 	If not any file on command line, stdin is used.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		//taskOpt.Desc = args[0]
@@ -69,5 +69,4 @@ func processLines(scanner *bufio.Scanner) {
 func init() {
 	taskCmd.AddCommand(tkBatchCmd)
 
-	tkBatchCmd.Flags().StringVarP(&taskOpt.Estimate.String, "estimate", "e", "", "estimate time for task")
 }

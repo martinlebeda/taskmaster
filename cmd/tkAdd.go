@@ -33,7 +33,7 @@ var tkAddCmd = &cobra.Command{
 	Use:   "add",
 	Args:  cobra.ExactArgs(1),
 	Short: "add new task",
-	Long: `usage: tm tk add [-e duration] 'task description'
+	Long: `usage: tm tk add 'task description'
 	
 	In task description can use priority, project and contexts in todo.txt format.`,
 	Run: func(cmd *cobra.Command, args []string) {
@@ -48,8 +48,6 @@ var tkAddCmd = &cobra.Command{
 
 func init() {
 	taskCmd.AddCommand(tkAddCmd)
-
-	tkAddCmd.Flags().StringVarP(&taskOpt.Estimate.String, "estimate", "e", "", "estimate time for task in duration format, ie: 2h")
 }
 
 // TODO Lebeda - add if not exists
