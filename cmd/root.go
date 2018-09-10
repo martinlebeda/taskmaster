@@ -66,6 +66,9 @@ func init() {
 	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "Verbose output")
 	viper.BindPFlag("verbose", rootCmd.PersistentFlags().Lookup("verbose"))
 
+	rootCmd.PersistentFlags().BoolP("color", "C", false, "Force color output output")
+	viper.BindPFlag("color", rootCmd.PersistentFlags().Lookup("color"))
+
 	rootCmd.PersistentFlags().BoolP("list-after-change", "L", false, "list all modules after any change")
 	viper.BindPFlag("listafterchange", rootCmd.PersistentFlags().Lookup("list-after-change"))
 	// TODO Lebeda - list-after-change

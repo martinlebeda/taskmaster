@@ -25,6 +25,7 @@ import (
 	"github.com/fatih/color"
 	"github.com/martinlebeda/taskmaster/model"
 	"github.com/ryanuber/columnize"
+	"github.com/spf13/viper"
 	"regexp"
 	"strconv"
 	"strings"
@@ -36,6 +37,9 @@ func TskListTasks(tasks []model.Task) {
 	colorDoneLine := color.New(color.FgCyan)
 	colorContext := color.New(color.FgYellow).SprintFunc()
 	colorProject := color.New(color.FgGreen).SprintFunc()
+	if viper.GetBool("color") {
+		color.NoColor = false // disables colorized output
+	}
 
 	// build output
 	var output []string
