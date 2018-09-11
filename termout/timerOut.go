@@ -54,7 +54,7 @@ func TmrListDistance(distances []model.TimerDistance, cndOut bool) {
 
 		// output
 		if cndOut {
-			fmt.Println(duration.String(), "-", distance.Goal.Format(format), "-", distance.Note)
+			fmt.Printf("%.55s", duration.String()+" - "+distance.Goal.Format(format)+" - "+distance.Note)
 		} else {
 			out := fmt.Sprintf("%d | %s | %s | %s | %s",
 				distance.Rowid,
