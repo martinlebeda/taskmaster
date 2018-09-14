@@ -53,7 +53,7 @@ var tkPriorityCmd = &cobra.Command{
 		service.TskPrio(prio, taskIds)
 
 		if listAfterChange {
-			service.TkListAfterChange()
+			service.TskListAfterChange()
 		}
 	},
 }

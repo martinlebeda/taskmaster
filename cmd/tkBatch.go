@@ -52,7 +52,7 @@ var tkBatchCmd = &cobra.Command{
 		}
 
 		if listAfterChange {
-			service.TkListAfterChange()
+			service.TskListAfterChange()
 		}
 	},
 }

@@ -40,7 +40,7 @@ Remove any text from description ie @context or +project or any string you want.
 		service.TskRemove(part, taskIds)
 
 		if listAfterChange {
-			service.TkListAfterChange()
+			service.TskListAfterChange()
 		}
 	},
 }

@@ -41,7 +41,7 @@ var tkMaybeCmd = &cobra.Command{
 		service.TskUpdate(tsk, args)
 
 		if listAfterChange {
-			service.TkListAfterChange()
+			service.TskListAfterChange()
 		}
 	},
 }

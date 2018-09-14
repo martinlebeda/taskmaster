@@ -21,10 +21,8 @@
 package cmd
 
 import (
-	"github.com/martinlebeda/taskmaster/model"
 	"github.com/martinlebeda/taskmaster/service"
 	"github.com/spf13/cobra"
-	"time"
 )
 
 // tkDoneCmd represents the tkDone command
@@ -37,18 +35,10 @@ var tkDoneCmd = &cobra.Command{
 	
 	When task is mark as done remove any priority.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		var tsk model.Task
-		//tsk.Status = "N"
-		//tsk.DateDone = tools.GetZeroTime()
-		tsk.Status = "X"
-		tsk.DateDone = time.Now()
-		service.TskUpdate(tsk, args)
-
-		// remove priority
-		service.TskPrio("", args)
+		service.TskDone(args)
 
 		if listAfterChange {
-			service.TkListAfterChange()
+			service.TskListAfterChange()
 		}
 	},
 }

@@ -241,12 +241,36 @@ func TskGetList(doneFrom time.Time, showMaybe bool, showStatus string, showPrio 
 	return result
 }
 
-// TODO Lebeda - sjednotit prefix Tk na Tsk
-func TkGetById(id int) Task {
+func TskGetById(id int) Task {
 	db := OpenDB()
 	sql := "select id, status, desc, date_in, date_done from task where id = ?"
 
 	rows, err := db.Query(sql, id)
+	tools.CheckErr(err)
+
+	var result []Task
+	for rows.Next() {
+		var task Task
+		err := rows.Scan(&task.Id, &task.Status, &task.Desc, &task.DateIn, &task.DateDoneRaw)
+		tools.CheckErr(err)
+
+		// null value
+		if task.DateDoneRaw.Valid {
+			task.DateDone, err = time.Parse("2006-01-02T15:04:05.999999-07:00", task.DateDoneRaw.String)
+			tools.CheckErr(err)
+		}
+
+		result = append(result, task)
+	}
+
+	return result[0]
+}
+
+func TskGetWork() Task {
+	db := OpenDB()
+	sql := "select id, status, desc, date_in, date_done from task where status = 'W'"
+
+	rows, err := db.Query(sql)
 	tools.CheckErr(err)
 
 	var result []Task
@@ -273,7 +297,7 @@ func TskResetWorkStatus() {
 	db.Exec("update task set status = 'N' where status = 'W'")
 }
 
-func TkListAfterChange() {
+func TskListAfterChange() {
 	termout.EmptyLineOut()
 	tasks := TskGetList(now.BeginningOfDay(), false, "", []string{}, []string{})
 	termout.TskListTasks(tasks)
@@ -283,4 +307,14 @@ func RemovePrioFromDesc(desc string) string {
 	rp := regexp.MustCompile("^\\([A-Z]\\) ")
 	s := rp.ReplaceAllString(desc, "")
 	return s
+}
+func TskDone(args []string) {
+	var tsk Task
+	//tsk.Status = "N"
+	//tsk.DateDone = tools.GetZeroTime()
+	tsk.Status = "X"
+	tsk.DateDone = time.Now()
+	TskUpdate(tsk, args)
+	// remove priority
+	TskPrio("", args)
 }

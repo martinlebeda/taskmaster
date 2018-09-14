@@ -41,7 +41,7 @@ For appended text use todo.txt syntax ie @context or +project or any string you 
 		service.TskAppend(part, taskIds)
 
 		if listAfterChange {
-			service.TkListAfterChange()
+			service.TskListAfterChange()
 		}
 	},
 }

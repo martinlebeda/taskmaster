@@ -54,7 +54,7 @@ var wkStartCmd = &cobra.Command{
 			id, err := strconv.Atoi(args[0])
 			tools.CheckErr(err)
 
-			task := service.TkGetById(id)
+			task := service.TskGetById(id)
 			desc = service.RemovePrioFromDesc(task.Desc)
 		}
 		if byHistory {

@@ -46,6 +46,14 @@ var tkWorkCmd = &cobra.Command{
 		startWorkLog, err := cmd.Flags().GetBool("worklog")
 		tools.CheckErr(err)
 
+		currentDone, err := cmd.Flags().GetBool("current-done")
+		tools.CheckErr(err)
+
+		if currentDone {
+			task := service.TskGetWork()
+			service.TskDone([]string{strconv.Itoa(task.Id)})
+		}
+
 		worklogBefore, err := cmd.Flags().GetString("worklog-before")
 		tools.CheckErr(err)
 		worklogDate, err := cmd.Flags().GetString("worklog-date")
@@ -55,7 +63,7 @@ var tkWorkCmd = &cobra.Command{
 
 		id, err := strconv.Atoi(args[0])
 		tools.CheckErr(err)
-		task := service.TkGetById(id)
+		task := service.TskGetById(id)
 
 		timerDuration, err := cmd.Flags().GetString("timer")
 		tools.CheckErr(err)
@@ -86,7 +94,7 @@ var tkWorkCmd = &cobra.Command{
 		service.TskUpdate(tsk, args)
 
 		if listAfterChange {
-			service.TkListAfterChange()
+			service.TskListAfterChange()
 		}
 	},
 }
@@ -94,7 +102,9 @@ var tkWorkCmd = &cobra.Command{
 func init() {
 	taskCmd.AddCommand(tkWorkCmd)
 
-	tkWorkCmd.Flags().BoolP("worklog", "w", false, "automatic start worklog with group, code and description from task")
+	tkWorkCmd.Flags().BoolP("current-done", "d", false, "mark current opened task as done")
+
+	tkWorkCmd.Flags().BoolP("worklog", "w", false, "automatic start worklog with description from task")
 	tkWorkCmd.Flags().StringP("timer", "t", "", "add new timer with desc from task")
 
 	// options for worklog
