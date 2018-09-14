@@ -188,7 +188,14 @@ func TskGetList(doneFrom time.Time, showMaybe bool, showStatus string, showPrio 
 	//sql += " and stop is null "
 	//}
 
-	// TODO Lebeda - implement usage showPrio
+	// usage showPrio
+	if len(showPrio) > 0 {
+		sql += " and ( "
+		for _, prio := range showPrio {
+			sql += "( desc like '(" + prio + ") %' ) or "
+		}
+		sql += " (1=0) ) "
+	}
 
 	sql += " and (status <> 'X' or date_done > ?) "
 	if !showMaybe {
