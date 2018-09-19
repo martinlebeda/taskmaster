@@ -20,26 +20,26 @@ import (
 )
 
 // tkExportCmd represents the tkExport command
-var tkExportCmd = &cobra.Command{
-	Use: "export",
+var tkImportCmd = &cobra.Command{
+	Use: "import",
 	// TODO Lebeda - check 1 argument
-	Short: "export tasks in todo.txt format",
-	Long:  `usage: tm task export [file]`,
+	Short: "import tasks in todo.txt format",
+	Long:  `usage: tm task import [file]`,
 	Run: func(cmd *cobra.Command, args []string) {
-		service.TskExportTasks(args[0])
+		service.TskImportTasks(args[0])
 	},
 }
 
 func init() {
-	taskCmd.AddCommand(tkExportCmd)
+	taskCmd.AddCommand(tkImportCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// tkExportCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// tkImportCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// tkExportCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// tkImportCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

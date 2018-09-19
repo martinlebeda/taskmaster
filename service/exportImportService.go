@@ -21,22 +21,105 @@
 package service
 
 import (
-	"fmt"
+	"bufio"
 	"github.com/martinlebeda/taskmaster/model"
 	"github.com/martinlebeda/taskmaster/tools"
+	"log"
 	"os"
+	"regexp"
 	"strconv"
+	"strings"
+	"time"
 )
 
-func TskExport(tasks []model.Task, exportfileName string) {
+func TskExportTasks(filename string) {
+	tasks := TskGetList(time.Now().Add(24*time.Hour), false, "", []string{}, []string{})
+	TskExportOutput(tasks, filename)
+}
+
+func TskImportTasks(filename string) {
+	tasks := TskParseImport(filename)
+	TskDoImport(tasks)
+}
+
+func TskExportOutput(tasks []model.Task, exportfileName string) {
 	f, err := os.Create(exportfileName)
 	tools.CheckErr(err)
 
 	defer f.Close()
 
 	for _, task := range tasks {
-		fmt.Println(task.Desc + " id:" + strconv.Itoa(task.Id))
+		// fmt.Println(task.Desc + " id:" + strconv.Itoa(task.Id)) TODO Lebeda - when verbose
 		f.WriteString(task.Desc + " id:" + strconv.Itoa(task.Id) + "\n")
 		tools.CheckErr(err)
 	}
+	// TODO Lebeda - on verbose counting
+}
+
+func TskParseImport(importFile string) []model.Task {
+	file, err := os.Open(importFile)
+	tools.CheckErr(err)
+	defer file.Close()
+
+	var result []model.Task
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		text := scanner.Text()
+
+		task := parseTask(text)
+
+		result = append(result, task)
+	}
+
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
+
+	return result
+}
+
+func TskDoImport(tasks []model.Task) {
+	for _, task := range tasks {
+		if task.Id == 0 {
+			TskAdd(task)
+		} else {
+			TskUpdate(task, []string{strconv.Itoa(task.Id)})
+		}
+	}
+	TskRepairDoneDate()
+	// TODO Lebeda - on verbose counting
+}
+
+func parseTask(text string) model.Task {
+	var task model.Task
+
+	// status
+	if strings.HasPrefix(text, "x ") {
+		task.Status = "X"
+	} else {
+		task.Status = "N"
+	}
+
+	// id
+	re := regexp.MustCompile(" id:\\d+")
+	findString := re.FindString(text)
+	trimSpace := strings.TrimSpace(findString)
+	idString := strings.Replace(trimSpace, "id:", "", 1)
+	//fmt.Println(idString)
+	if idString != "" {
+		id, err := strconv.Atoi(idString)
+		task.Id = id
+		tools.CheckErr(err)
+	}
+
+	// desc
+	desc := re.ReplaceAllString(text, "")
+	if strings.HasPrefix(text, "x ") {
+		reDone := regexp.MustCompile("^x \\d{4}-\\d{2}-\\d{2} ")
+		desc = reDone.ReplaceAllString(desc, "")
+	}
+	task.Desc = strings.TrimSpace(desc)
+	//fmt.Println(text)
+	return task
 }

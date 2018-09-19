@@ -38,7 +38,13 @@ func TskAdd(task Task) {
 	db := OpenDB()
 	stmt, err := db.Prepare("insert into task (desc, status, date_in) values (?, ?, ?)")
 	tools.CheckErr(err)
-	result, err := stmt.Exec(task.Desc, "N", time.Now())
+
+	status := "N"
+	if task.Status != "" {
+		status = task.Status
+	}
+
+	result, err := stmt.Exec(task.Desc, status, time.Now())
 	tools.CheckErr(err)
 	count, err := result.RowsAffected()
 	tools.CheckErr(err)
@@ -302,6 +308,11 @@ func TskGetWork() Task {
 func TskResetWorkStatus() {
 	db := OpenDB()
 	db.Exec("update task set status = 'N' where status = 'W'")
+}
+
+func TskRepairDoneDate() {
+	db := OpenDB()
+	db.Exec("update task set date_done = ? where status = 'X' and date_done is null", time.Now())
 }
 
 func TskListAfterChange() {
