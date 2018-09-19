@@ -23,6 +23,7 @@ package cmd
 import (
 	"github.com/martinlebeda/taskmaster/service"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // tkAppendCmd represents the tkAppend command
@@ -42,6 +43,9 @@ For appended text use todo.txt syntax ie @context or +project or any string you 
 
 		if listAfterChange {
 			service.TskListAfterChange()
+		}
+		if viper.GetString("exportafterchange") != "" {
+			service.TskExportTasks(viper.GetString("exportafterchange"))
 		}
 	},
 }

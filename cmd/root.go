@@ -63,6 +63,9 @@ func init() {
 	rootCmd.PersistentFlags().String("afterchange", "", "command for run after change (ie. some refresh in external app)")
 	viper.BindPFlag("afterchange", rootCmd.PersistentFlags().Lookup("afterchange"))
 
+	rootCmd.PersistentFlags().String("export-after-change", "", "file for export tasks after change (ie. for sync to mobile)")
+	viper.BindPFlag("exportafterchange", rootCmd.PersistentFlags().Lookup("export-after-change"))
+
 	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "Verbose output")
 	viper.BindPFlag("verbose", rootCmd.PersistentFlags().Lookup("verbose"))
 

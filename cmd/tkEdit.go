@@ -23,6 +23,7 @@ package cmd
 import (
 	"github.com/martinlebeda/taskmaster/service"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var selectByCategory, selectByCode bool
@@ -42,6 +43,9 @@ var tkUpdateCmd = &cobra.Command{
 
 		if listAfterChange {
 			service.TskListAfterChange()
+		}
+		if viper.GetString("exportafterchange") != "" {
+			service.TskExportTasks(viper.GetString("exportafterchange"))
 		}
 	},
 }

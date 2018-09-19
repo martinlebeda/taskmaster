@@ -23,6 +23,7 @@ package cmd
 import (
 	"github.com/martinlebeda/taskmaster/service"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // tkRemoveCmd represents the tkRemove command
@@ -41,6 +42,9 @@ Remove any text from description ie @context or +project or any string you want.
 
 		if listAfterChange {
 			service.TskListAfterChange()
+		}
+		if viper.GetString("exportafterchange") != "" {
+			service.TskExportTasks(viper.GetString("exportafterchange"))
 		}
 	},
 }

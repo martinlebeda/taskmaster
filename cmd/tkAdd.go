@@ -24,6 +24,7 @@ import (
 	"github.com/martinlebeda/taskmaster/model"
 	"github.com/martinlebeda/taskmaster/service"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var taskOpt model.Task
@@ -42,6 +43,10 @@ var tkAddCmd = &cobra.Command{
 
 		if listAfterChange {
 			service.TskListAfterChange()
+		}
+
+		if viper.GetString("exportafterchange") != "" {
+			service.TskExportTasks(viper.GetString("exportafterchange"))
 		}
 	},
 }

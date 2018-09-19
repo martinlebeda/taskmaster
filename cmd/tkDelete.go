@@ -23,6 +23,7 @@ package cmd
 import (
 	"github.com/martinlebeda/taskmaster/service"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // tkDeleteCmd represents the tkDelete command
@@ -38,6 +39,9 @@ var tkDeleteCmd = &cobra.Command{
 		service.TskDel(args)
 		if listAfterChange {
 			service.TskListAfterChange()
+		}
+		if viper.GetString("exportafterchange") != "" {
+			service.TskExportTasks(viper.GetString("exportafterchange"))
 		}
 	},
 }
