@@ -43,6 +43,9 @@ Remove any text from description ie @context or +project or any string you want.
 		if listAfterChange {
 			service.TskListAfterChange()
 		}
+		if viper.GetString("afterchange") != "" {
+			service.SysAfterChange()
+		}
 		if viper.GetString("exportafterchange") != "" {
 			service.TskExportTasks(viper.GetString("exportafterchange"))
 		}

@@ -17,6 +17,7 @@ package cmd
 import (
 	"github.com/martinlebeda/taskmaster/service"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // tkExportCmd represents the tkExport command
@@ -27,6 +28,9 @@ var tkImportCmd = &cobra.Command{
 	Long:  `usage: tm task import [file]`,
 	Run: func(cmd *cobra.Command, args []string) {
 		service.TskImportTasks(args[0])
+		if viper.GetString("afterchange") != "" {
+			service.SysAfterChange()
+		}
 	},
 }
 

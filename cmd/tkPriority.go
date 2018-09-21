@@ -56,6 +56,9 @@ var tkPriorityCmd = &cobra.Command{
 		if listAfterChange {
 			service.TskListAfterChange()
 		}
+		if viper.GetString("afterchange") != "" {
+			service.SysAfterChange()
+		}
 		if viper.GetString("exportafterchange") != "" {
 			service.TskExportTasks(viper.GetString("exportafterchange"))
 		}

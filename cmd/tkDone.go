@@ -44,6 +44,9 @@ var tkDoneCmd = &cobra.Command{
 		if viper.GetString("exportafterchange") != "" {
 			service.TskExportTasks(viper.GetString("exportafterchange"))
 		}
+		if viper.GetString("afterchange") != "" {
+			service.SysAfterChange()
+		}
 	},
 }
 
