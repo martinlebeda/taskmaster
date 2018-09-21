@@ -81,6 +81,9 @@ func TskParseImport(importFile string) []model.Task {
 
 func TskDoImport(tasks []model.Task) {
 	for _, task := range tasks {
+		if task.Status != "X" {
+			task.Status = ""
+		}
 		if task.Id == 0 {
 			TskAdd(task)
 		} else {
