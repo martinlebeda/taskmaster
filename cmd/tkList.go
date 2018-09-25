@@ -52,6 +52,9 @@ var tkListCmd = &cobra.Command{
 		showNext, err := cmd.Flags().GetBool("next")
 		tools.CheckErr(err)
 
+		onlyId, err := cmd.Flags().GetBool("only-id")
+		tools.CheckErr(err)
+
 		showPrio, err := cmd.Flags().GetStringArray("prio")
 		tools.CheckErr(err)
 
@@ -86,9 +89,9 @@ var tkListCmd = &cobra.Command{
 		tasks := service.TskGetList(tskDoneFrom, showMaybe, showStatus, showPrio, args)
 
 		if showNext {
-			termout.TskShowWork(tasks[0])
+			termout.TskShowWork(onlyId, tasks[0])
 		} else {
-			termout.TskListTasks(tasks)
+			termout.TskListTasks(onlyId, tasks)
 		}
 
 	},
@@ -100,6 +103,7 @@ func init() {
 	// TODO Lebeda - regex/glob pro prohledávání
 
 	tkListCmd.Flags().BoolP("next", "x", false, "show only work or next task")
+	tkListCmd.Flags().Bool("only-id", false, "show only id of tasks")
 
 	tkListCmd.Flags().StringArrayP("prio", "p", []string{}, "show only priority")
 	tkListCmd.Flags().BoolP("prio-a", "a", false, "show only priority A")

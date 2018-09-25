@@ -318,7 +318,7 @@ func TskRepairDoneDate() {
 func TskListAfterChange() {
 	termout.EmptyLineOut()
 	tasks := TskGetList(now.BeginningOfDay(), false, "", []string{}, []string{})
-	termout.TskListTasks(tasks)
+	termout.TskListTasks(false, tasks)
 }
 
 func RemovePrioFromDesc(desc string) string {

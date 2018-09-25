@@ -31,62 +31,71 @@ import (
 	"strings"
 )
 
-func TskListTasks(tasks []model.Task) {
-
-	colorInterestingLine := color.New(color.Bold)
-	colorDoneLine := color.New(color.FgCyan)
-	colorContext := color.New(color.FgYellow).SprintFunc()
-	colorProject := color.New(color.FgGreen).SprintFunc()
-	if viper.GetBool("color") {
-		color.NoColor = false // disables colorized output
-	}
-
-	// build output
-	var output []string
-	for _, task := range tasks {
-		statuFmt := "" + task.Status + ""
-		if statuFmt == "N" {
-			statuFmt = ""
+func TskListTasks(onlyId bool, tasks []model.Task) {
+	if onlyId {
+		for _, task := range tasks {
+			fmt.Println(task.Id)
+		}
+	} else {
+		colorInterestingLine := color.New(color.Bold)
+		colorDoneLine := color.New(color.FgCyan)
+		colorContext := color.New(color.FgYellow).SprintFunc()
+		colorProject := color.New(color.FgGreen).SprintFunc()
+		if viper.GetBool("color") {
+			color.NoColor = false // disables colorized output
 		}
 
-		out := fmt.Sprintf("%s | %s | %s",
-			strconv.Itoa(task.Id),
-			statuFmt,
-			task.Desc)
-		output = append(output, out)
+		// build output
+		var output []string
+		for _, task := range tasks {
+			statuFmt := "" + task.Status + ""
+			if statuFmt == "N" {
+				statuFmt = ""
+			}
 
-	}
+			out := fmt.Sprintf("%s | %s | %s",
+				strconv.Itoa(task.Id),
+				statuFmt,
+				task.Desc)
+			output = append(output, out)
 
-	// columize
-	outFmt := strings.Split(columnize.SimpleFormat(output), "\n")
-
-	// printout
-	for i, task := range tasks {
-		outline := outFmt[i]
-
-		rpContext := regexp.MustCompile(` (@[^ ]*)`)
-		outline = rpContext.ReplaceAllString(outline, " "+colorContext("$1"))
-
-		rpProject := regexp.MustCompile(` ([+][^ ]*)`)
-		outline = rpProject.ReplaceAllString(outline, " "+colorProject("$1"))
-
-		// TODO Lebeda - zajistit konstanty na stavy a prefixy
-		if ((task.Status == "N") && (strings.HasPrefix(task.Desc, "(A) ") || strings.HasPrefix(task.Desc, "(B) "))) || (task.Status == "W") {
-			colorInterestingLine.Println(outline)
-		} else if task.Status == "X" {
-			colorDoneLine.Println(outline)
-		} else {
-			fmt.Println(outline)
 		}
-	}
 
-	if isVerbose() {
-		fmt.Println("\nCount of tasks: ", len(tasks))
+		// columize
+		outFmt := strings.Split(columnize.SimpleFormat(output), "\n")
+
+		// printout
+		for i, task := range tasks {
+			outline := outFmt[i]
+
+			rpContext := regexp.MustCompile(` (@[^ ]*)`)
+			outline = rpContext.ReplaceAllString(outline, " "+colorContext("$1"))
+
+			rpProject := regexp.MustCompile(` ([+][^ ]*)`)
+			outline = rpProject.ReplaceAllString(outline, " "+colorProject("$1"))
+
+			// TODO Lebeda - zajistit konstanty na stavy a prefixy
+			if ((task.Status == "N") && (strings.HasPrefix(task.Desc, "(A) ") || strings.HasPrefix(task.Desc, "(B) "))) || (task.Status == "W") {
+				colorInterestingLine.Println(outline)
+			} else if task.Status == "X" {
+				colorDoneLine.Println(outline)
+			} else {
+				fmt.Println(outline)
+			}
+		}
+
+		if isVerbose() {
+			fmt.Println("\nCount of tasks: ", len(tasks))
+		}
 	}
 }
 
-func TskShowWork(task model.Task) {
-	trimSpace := strings.TrimSpace(task.Desc)
-	replace := strings.Replace(trimSpace, "  ", " ", -1)
-	fmt.Println(task.Id, "-", replace)
+func TskShowWork(onlyId bool, task model.Task) {
+	if onlyId {
+		fmt.Println(task.Id)
+	} else {
+		trimSpace := strings.TrimSpace(task.Desc)
+		replace := strings.Replace(trimSpace, "  ", " ", -1)
+		fmt.Println(task.Id, "-", replace)
+	}
 }
