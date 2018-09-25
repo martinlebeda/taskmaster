@@ -21,60 +21,48 @@
 package cmd
 
 import (
-	"bufio"
+	"github.com/martinlebeda/taskmaster/model"
 	"github.com/martinlebeda/taskmaster/service"
 	"github.com/martinlebeda/taskmaster/tools"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"os"
 )
 
-// tkBatchCmd represents the tkAdd command
-var tkBatchCmd = &cobra.Command{
-	Use: "batch",
-	// TODO Lebeda - join with import command
-	//Args:  cobra.ExactArgs(1),
-	Aliases: []string{"feed"},
-	Short:   "batch add multiple task",
-	Long: `usage: tm tk batch [FILE ...]
-	If not any file on command line, stdin is used.`,
+// tkDoneCmd represents the tkDone command
+var tkDeferCmd = &cobra.Command{
+	Use:     "defer",
+	Aliases: []string{"asdone", "shelve", "pass"},
+	Args:    cobra.MinimumNArgs(1),
+	Short:   "unset task priority and set state as normal and optionaly append context",
+	Long:    `usage: tm tk defer ID [ID ID ID ...]`,
 	Run: func(cmd *cobra.Command, args []string) {
-		//taskOpt.Desc = args[0]
-		if len(args) > 0 {
-			for _, arg := range args {
-				// open the file filepath
-				f, err := os.Open(arg)
-				tools.CheckErr(err)
-				fs := bufio.NewScanner(f)
-				processLines(fs)
-			}
-		} else {
-			fs := bufio.NewScanner(os.Stdin)
-			processLines(fs)
+		service.TskPrio("", args)
+
+		var tsk model.Task
+		tsk.Status = "N"
+		tsk.DateDone = tools.GetZeroTime()
+		service.TskUpdate(tsk, args)
+
+		part, err := cmd.Flags().GetString("context")
+		tools.CheckErr(err)
+		if part != "" {
+			service.TskAppend(part, args)
 		}
 
 		if listAfterChange {
 			service.TskListAfterChange()
 		}
-		if viper.GetString("exportafterchange") != "" {
-			service.TskExportTasks(viper.GetString("exportafterchange"))
-		}
 		if viper.GetString("afterchange") != "" {
 			service.SysAfterChange()
+		}
+		if viper.GetString("exportafterchange") != "" {
+			service.TskExportTasks(viper.GetString("exportafterchange"))
 		}
 	},
 }
 
-func processLines(scanner *bufio.Scanner) {
-	scanner.Split(bufio.ScanLines)
-	for scanner.Scan() {
-		taskOpt.Desc = scanner.Text()
-		//fmt.Println(taskOpt)
-		service.TskAdd(taskOpt)
-	}
-}
-
 func init() {
-	taskCmd.AddCommand(tkBatchCmd)
+	taskCmd.AddCommand(tkDeferCmd)
 
+	tkDeferCmd.Flags().StringP("context", "o", "", "context (or any string) for append to task")
 }
