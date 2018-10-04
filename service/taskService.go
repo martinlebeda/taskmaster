@@ -181,7 +181,7 @@ func TskRemove(part string, ids []string) {
 	termout.Verbose("Task updated: ", strings.Join(ids, ","))
 }
 
-func TskGetList(doneFrom time.Time, showMaybe bool, showStatus string, showPrio []string, args []string) []Task {
+func TskGetList(doneFrom time.Time, showMaybe bool, showStatus string, showPrio []string, args []string, ids []string) []Task {
 	db := OpenDB()
 	sql := "select id, status, desc, date_in, date_done from task where 1=1 "
 	//sql := "select id, prio, code, category, status, desc, date_in, CASE WHEN date_done IS NULL THEN datetime('now') ELSE date_done END , url, note, estimate, script from task where 1=1 "
@@ -221,6 +221,10 @@ func TskGetList(doneFrom time.Time, showMaybe bool, showStatus string, showPrio 
 		sql += strings.Join(descWhere, " or ")
 
 		sql += " ) "
+	}
+
+	if len(ids) > 0 {
+		sql += " and ( id in (" + strings.Join(ids, ",") + ") ) "
 	}
 
 	sql += " order by CASE WHEN status = 'W' THEN 1 WHEN status = 'N' THEN 10 WHEN status = 'M' THEN 60 WHEN status = 'X' THEN 99 ELSE 80 END, desc, date_in"
@@ -317,7 +321,7 @@ func TskRepairDoneDate() {
 
 func TskListAfterChange() {
 	termout.EmptyLineOut()
-	tasks := TskGetList(now.BeginningOfDay(), false, "", []string{}, []string{})
+	tasks := TskGetList(now.BeginningOfDay(), false, "", []string{}, []string{}, []string{})
 	termout.TskListTasks(false, tasks)
 }
 

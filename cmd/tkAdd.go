@@ -49,7 +49,7 @@ var tkAddCmd = &cobra.Command{
 		}
 
 		if viper.GetString("exportafterchange") != "" {
-			service.TskExportTasks(viper.GetString("exportafterchange"))
+			service.TskExportTasks(viper.GetString("exportafterchange"), []string{})
 		}
 	},
 }

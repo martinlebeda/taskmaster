@@ -31,7 +31,7 @@ Do import next export with file.
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		service.TskImportTasks(args[0])
-		service.TskExportTasks(args[0])
+		service.TskExportTasks(args[0], []string{})
 		if viper.GetString("afterchange") != "" {
 			service.SysAfterChange()
 		}

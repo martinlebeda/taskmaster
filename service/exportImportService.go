@@ -32,8 +32,8 @@ import (
 	"time"
 )
 
-func TskExportTasks(filename string) {
-	tasks := TskGetList(time.Now().Add(24*time.Hour), false, "", []string{}, []string{})
+func TskExportTasks(filename string, ids []string) {
+	tasks := TskGetList(time.Now().Add(24*time.Hour), false, "", []string{}, []string{}, ids)
 	TskExportOutput(tasks, filename)
 }
 

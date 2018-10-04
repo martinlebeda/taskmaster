@@ -26,7 +26,7 @@ var tkExportCmd = &cobra.Command{
 	Short: "export tasks in todo.txt format",
 	Long:  `usage: tm task export [file]`,
 	Run: func(cmd *cobra.Command, args []string) {
-		service.TskExportTasks(args[0])
+		service.TskExportTasks(args[0], args[1:])
 	},
 }
 

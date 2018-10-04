@@ -56,7 +56,7 @@ var tkDeferCmd = &cobra.Command{
 			service.SysAfterChange()
 		}
 		if viper.GetString("exportafterchange") != "" {
-			service.TskExportTasks(viper.GetString("exportafterchange"))
+			service.TskExportTasks(viper.GetString("exportafterchange"), []string{})
 		}
 	},
 }

@@ -86,7 +86,7 @@ var tkListCmd = &cobra.Command{
 		showStatus, err := cmd.Flags().GetString("status")
 		tools.CheckErr(err)
 
-		tasks := service.TskGetList(tskDoneFrom, showMaybe, showStatus, showPrio, args)
+		tasks := service.TskGetList(tskDoneFrom, showMaybe, showStatus, showPrio, args, []string{})
 
 		if showNext {
 			termout.TskShowWork(onlyId, tasks[0])

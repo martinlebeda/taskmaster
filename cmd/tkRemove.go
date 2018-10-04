@@ -47,7 +47,7 @@ Remove any text from description ie @context or +project or any string you want.
 			service.SysAfterChange()
 		}
 		if viper.GetString("exportafterchange") != "" {
-			service.TskExportTasks(viper.GetString("exportafterchange"))
+			service.TskExportTasks(viper.GetString("exportafterchange"), []string{})
 		}
 	},
 }

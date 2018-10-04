@@ -45,7 +45,7 @@ For appended text use todo.txt syntax ie @context or +project or any string you 
 			service.TskListAfterChange()
 		}
 		if viper.GetString("exportafterchange") != "" {
-			service.TskExportTasks(viper.GetString("exportafterchange"))
+			service.TskExportTasks(viper.GetString("exportafterchange"), []string{})
 		}
 		if viper.GetString("afterchange") != "" {
 			service.SysAfterChange()
