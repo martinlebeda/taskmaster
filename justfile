@@ -28,6 +28,8 @@ dep:
   go get github.com/fatih/color
   go get github.com/willf/pad
   go get github.com/ryanuber/columnize
+  go get golang.org/x/text/unicode/norm
+  go get golang.org/x/text/transform
 
 #  go get github.com/gin-gonic/gin
 #  go get github.com/satori/go.uuid
