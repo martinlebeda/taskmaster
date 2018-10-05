@@ -40,44 +40,46 @@ var tkTaskNameCmd = &cobra.Command{
 		fs, err := cmd.Flags().GetBool("fs")
 		tools.CheckErr(err)
 
-		id, err := strconv.Atoi(args[0])
-		tools.CheckErr(err)
-		task := service.TskGetById(id)
-		name := task.Desc
+		for _, arg := range args {
+			id, err := strconv.Atoi(arg)
+			tools.CheckErr(err)
+			task := service.TskGetById(id)
+			name := task.Desc
 
-		name = regexp.MustCompile(`^\(.\) `).ReplaceAllString(name, "")
-		name = regexp.MustCompile(` \+[^ ]*`).ReplaceAllString(name, "")
-		name = regexp.MustCompile(` @[^ ]*`).ReplaceAllString(name, "")
-		name = regexp.MustCompile(` http://[^ ]*`).ReplaceAllString(name, "")
-		name = regexp.MustCompile(` https://[^ ]*`).ReplaceAllString(name, "")
+			name = regexp.MustCompile(`^\(.\) `).ReplaceAllString(name, "")
+			name = regexp.MustCompile(` \+[^ ]*`).ReplaceAllString(name, "")
+			name = regexp.MustCompile(` @[^ ]*`).ReplaceAllString(name, "")
+			name = regexp.MustCompile(` http://[^ ]*`).ReplaceAllString(name, "")
+			name = regexp.MustCompile(` https://[^ ]*`).ReplaceAllString(name, "")
 
-		if normalize {
-			isMn := func(r rune) bool {
-				return unicode.Is(unicode.Mn, r) // Mn: nonspacing marks
+			if normalize {
+				isMn := func(r rune) bool {
+					return unicode.Is(unicode.Mn, r) // Mn: nonspacing marks
+				}
+				t := transform.Chain(norm.NFD, transform.RemoveFunc(isMn), norm.NFC)
+				name, _, _ = transform.String(t, name)
 			}
-			t := transform.Chain(norm.NFD, transform.RemoveFunc(isMn), norm.NFC)
-			name, _, _ = transform.String(t, name)
+
+			if fs {
+
+				/*
+				   illegal characters:
+				     < (less than)
+				     > (greater than)
+				     : (colon - sometimes works, but is actually NTFS Alternate Data Streams)
+				     " (double quote)
+				     / (forward slash)
+				     \ (backslash)
+				     | (vertical bar or pipe)
+				     ? (question mark)
+				     * (asterisk)
+				*/
+				name = regexp.MustCompile(`[<>:"/\\|?*']`).ReplaceAllString(name, " ")
+				name = regexp.MustCompile(`\s+`).ReplaceAllString(name, " ")
+			}
+
+			fmt.Println(strings.TrimSpace(name))
 		}
-
-		if fs {
-
-			/*
-			   illegal characters:
-			     < (less than)
-			     > (greater than)
-			     : (colon - sometimes works, but is actually NTFS Alternate Data Streams)
-			     " (double quote)
-			     / (forward slash)
-			     \ (backslash)
-			     | (vertical bar or pipe)
-			     ? (question mark)
-			     * (asterisk)
-			*/
-			name = regexp.MustCompile(`[<>:"/\\|?*']`).ReplaceAllString(name, " ")
-			name = regexp.MustCompile(`\s+`).ReplaceAllString(name, " ")
-		}
-
-		fmt.Println(strings.TrimSpace(name))
 	},
 }
 
