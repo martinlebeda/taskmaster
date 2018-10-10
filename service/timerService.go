@@ -165,5 +165,5 @@ func TmrClean(deleteAll bool) {
 func TmrListAfterChange() {
 	termout.EmptyLineOut()
 	timerDistances := TmrGetDistance(false, false, "")
-	termout.TmrListDistance(timerDistances, false)
+	termout.TmrListDistance(timerDistances, false, []TimerDistance{})
 }

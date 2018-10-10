@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"github.com/fatih/color"
 	"github.com/martinlebeda/taskmaster/model"
+	. "github.com/martinlebeda/taskmaster/model"
 	"github.com/ryanuber/columnize"
 	"github.com/spf13/viper"
 	"strconv"
@@ -31,11 +32,21 @@ import (
 	"time"
 )
 
-func TmrListDistance(distances []model.TimerDistance, cndOut bool) {
+func TmrListDistance(distances []model.TimerDistance, cndOut bool, timerDistancesOld []TimerDistance) {
 
 	d := color.New(color.Bold)
 	if viper.GetBool("color") {
 		color.NoColor = false // disables colorized output
+	}
+
+	// warning output
+	if len(timerDistancesOld) > 0 && cndOut {
+		var oldTimers []string
+		for _, timerOld := range timerDistancesOld {
+			oldTimers = append(oldTimers, timerOld.Note)
+		}
+		old := "(" + strings.Join(oldTimers, ",") + ")"
+		fmt.Print(old)
 	}
 
 	// build output
