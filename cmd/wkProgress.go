@@ -36,7 +36,7 @@ var wkProgressCmd = &cobra.Command{
 	Show only none open log item.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		workList := service.WrkGetWork(time.Time{}, time.Time{}, true)
-		termout.WrkListWork(workList)
+		termout.WrkListWork(workList, false)
 	},
 }
 

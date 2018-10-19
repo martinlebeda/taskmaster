@@ -73,7 +73,7 @@ var tkWorkCmd = &cobra.Command{
 			service.WrkStart(taskDesc, worklogBefore, worklogTime, worklogDate)
 			if listAfterChange {
 				workList := service.WrkGetWork(now.BeginningOfDay(), now.EndOfDay(), false)
-				termout.WrkListWork(workList)
+				termout.WrkListWork(workList, true)
 			}
 		}
 

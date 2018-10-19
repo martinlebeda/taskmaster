@@ -26,6 +26,7 @@ import (
 	"github.com/martinlebeda/taskmaster/termout"
 	"github.com/martinlebeda/taskmaster/tools"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"strconv"
 	"time"
 )
@@ -69,7 +70,11 @@ var wkStartCmd = &cobra.Command{
 
 		if listAfterChange {
 			workList := service.WrkGetWork(now.BeginningOfDay(), now.EndOfDay(), false)
-			termout.WrkListWork(workList)
+			termout.WrkListWork(workList, true)
+		}
+
+		if viper.GetString("afterchange") != "" {
+			service.SysAfterChange()
 		}
 	},
 }

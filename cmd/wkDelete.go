@@ -25,6 +25,7 @@ import (
 	"github.com/martinlebeda/taskmaster/service"
 	"github.com/martinlebeda/taskmaster/termout"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // wkDeleteCmd represents the wkDelete command
@@ -38,7 +39,10 @@ var wkDeleteCmd = &cobra.Command{
 		service.WrkDel(args)
 		if listAfterChange {
 			workList := service.WrkGetWork(now.BeginningOfDay(), now.EndOfDay(), false)
-			termout.WrkListWork(workList)
+			termout.WrkListWork(workList, true)
+		}
+		if viper.GetString("afterchange") != "" {
+			service.SysAfterChange()
 		}
 	},
 }

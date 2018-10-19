@@ -26,29 +26,34 @@ import (
 	"github.com/martinlebeda/taskmaster/tools"
 	"os"
 	"strconv"
+	"strings"
 	"text/tabwriter"
 	"time"
 )
 
-func WrkListWork(works []model.WorkList) {
+func WrkListWork(works []model.WorkList, showTable bool) {
 
 	w := tabwriter.NewWriter(os.Stdout, 5, 2, 1, ' ', 0)
 	for _, work := range works {
 
-		duration := work.Stop.Sub(work.Start)
-
 		format := "2006-01-02 15:04"
 
 		stopFmt := ""
-		durationFmt := ""
+		duration := time.Now().Sub(work.Start)
+
 		if work.Stop.After(tools.GetZeroTime()) {
+			duration = work.Stop.Sub(work.Start)
 			stopFmt = work.Stop.Format(format)
-			durationFmt = duration.Round(time.Second).String()
 		}
 
-		fmt.Fprintf(w, "%d\t%s\t - %s  \t%s  \t %s\n",
-			work.Id, work.Start.Format(format), stopFmt, durationFmt, work.Desc)
-		//}
+		durationFmt := strings.TrimRight(duration.Round(time.Minute).String(), "0s")
+
+		if showTable {
+			fmt.Fprintf(w, "%d\t%s\t - %s  \t%s  \t %s\n", work.Id, work.Start.Format(format), stopFmt, durationFmt, work.Desc)
+		} else {
+			format = "15:04"
+			fmt.Fprintf(w, "%s (%s) %s", work.Start.Format(format), durationFmt, work.Desc)
+		}
 	}
 	w.Flush()
 

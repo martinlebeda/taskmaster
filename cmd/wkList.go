@@ -43,7 +43,7 @@ var wkListCmd = &cobra.Command{
 		timeTo, err := time.Parse("2006-01-02 15:04", wkListToOpt)
 		tools.CheckErr(err)
 		workList := service.WrkGetWork(timeFrom, timeTo, false)
-		termout.WrkListWork(workList)
+		termout.WrkListWork(workList, true)
 	},
 }
 
