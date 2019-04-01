@@ -21,7 +21,6 @@
 package cmd
 
 import (
-	"github.com/martinlebeda/taskmaster/model"
 	"github.com/martinlebeda/taskmaster/service"
 	"github.com/martinlebeda/taskmaster/tools"
 	"github.com/spf13/cobra"
@@ -38,10 +37,7 @@ var tkDeferCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		service.TskPrio("", args)
 
-		var tsk model.Task
-		tsk.Status = "N"
-		tsk.DateDone = tools.GetZeroTime()
-		service.TskUpdate(tsk, args)
+		service.TskDefer(args)
 
 		part, err := cmd.Flags().GetString("context")
 		tools.CheckErr(err)

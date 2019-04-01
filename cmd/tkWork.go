@@ -49,9 +49,16 @@ var tkWorkCmd = &cobra.Command{
 		currentDone, err := cmd.Flags().GetBool("current-done")
 		tools.CheckErr(err)
 
+		currentDeffer, err := cmd.Flags().GetBool("current-defer")
+
 		if currentDone {
 			task := service.TskGetWork()
 			service.TskDone([]string{strconv.Itoa(task.Id)})
+		}
+
+		if currentDeffer {
+			task := service.TskGetWork()
+			service.TskDefer([]string{strconv.Itoa(task.Id)})
 		}
 
 		worklogBefore, err := cmd.Flags().GetString("worklog-before")
@@ -110,6 +117,7 @@ func init() {
 	taskCmd.AddCommand(tkWorkCmd)
 
 	tkWorkCmd.Flags().BoolP("current-done", "d", false, "mark current opened task as done")
+	tkWorkCmd.Flags().BoolP("current-defer", "r", false, "mark current opened task as defered")
 
 	tkWorkCmd.Flags().BoolP("worklog", "w", false, "automatic start worklog with description from task")
 	tkWorkCmd.Flags().StringP("timer", "t", "", "add new timer with desc from task")

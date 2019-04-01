@@ -330,6 +330,14 @@ func RemovePrioFromDesc(desc string) string {
 	s := rp.ReplaceAllString(desc, "")
 	return s
 }
+
+func TskDefer(args []string) {
+	var tsk Task
+	tsk.Status = "N"
+	tsk.DateDone = tools.GetZeroTime()
+	TskUpdate(tsk, args)
+}
+
 func TskDone(args []string) {
 	var tsk Task
 	//tsk.Status = "N"
