@@ -31,7 +31,7 @@ import (
 	"time"
 )
 
-func TskAdd(task Task) {
+func TskAdd(task Task) int64 {
 
 	task = prepareTask(task)
 
@@ -48,14 +48,11 @@ func TskAdd(task Task) {
 	tools.CheckErr(err)
 	count, err := result.RowsAffected()
 	tools.CheckErr(err)
-	termout.Verbose("Task inserted: " + strconv.FormatInt(count, 10))
+	lastInsertId, err := result.LastInsertId()
+	tools.CheckErr(err)
+	termout.Verbose("Task inserted: " + strconv.FormatInt(count, 10) + " ID=" + strconv.FormatInt(lastInsertId, 10))
 
-	/*
-	   tkAddCmd.Flags().StringVarP(&taskOpt.Prio.String, "prio", "p", "", "task priority")
-	       tkAddCmd.Flags().StringVarP(&taskOpt.Url.String, "url", "u", "", "url for this task (ie. sources on internet)")
-	       tkAddCmd.Flags().StringVarP(&taskOpt.Note.String, "note", "n", "", "path to file with note")
-	       tkAddCmd.Flags().StringVarP(&taskOpt.Script.String, "script", "s", "", "path to file with script")
-	*/
+	return lastInsertId
 }
 
 // set null values for empty string or int is 0

@@ -77,9 +77,6 @@ func init() {
 	// TODO Lebeda - list-after-change
 }
 
-// TODO Lebeda - subcommand txt - import/export tasks in todo.txt for sync with mobile simpletask application
-// TODO Lebeda - subcommand edit/ed ID - run editor for yaml generated and reimport id back (old edit command rename to update/upd)
-// TODO Lebeda - subcommand termui/tui - run fzf
 // TODO Lebeda - subcommand webserver/web - run server if need on port
 // TODO Lebeda - subcommand gui - run server if need on port and open browser gui
 
